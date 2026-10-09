@@ -1,0 +1,9 @@
+Efeitos sonoros: whoosh, pop, impacto, ding, notificacao, clique (.wav, 48 kHz, mono)
+
+Origem: gerados por síntese com o ffmpeg (sem amostras de terceiros), em 2026-10-09.
+O pack "Interface Sounds" do Kenney (kenney.nl, CC0) não pôde ser baixado
+porque o acesso a kenney.nl estava bloqueado pela rede do ambiente.
+
+Licença: CC0 1.0 Universal (domínio público).
+https://creativecommons.org/publicdomain/zero/1.0/
+Podem ser usados, modificados e distribuídos sem atribuição.

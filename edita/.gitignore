@@ -1,0 +1,7 @@
+# Brutos e vídeos de referência são grandes: ficam só na máquina
+originais/*
+!originais/.gitkeep
+referencias/*
+!referencias/.gitkeep
+exports/*
+!exports/.gitkeep
