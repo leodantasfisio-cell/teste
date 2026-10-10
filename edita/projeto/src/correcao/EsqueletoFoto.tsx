@@ -25,12 +25,19 @@ export type DestaquesFoto = {
   escapulas?: number;
 };
 
-const camadas: { chave: keyof DestaquesFoto; arquivo: string }[] = [
-  { chave: "coluna", arquivo: "coluna" },
-  { chave: "maos", arquivo: "maos" },
-  { chave: "pes", arquivo: "pes" },
-  { chave: "costelasEsquerda", arquivo: "costelas-esquerda" },
-  { chave: "escapulas", arquivo: "escapulas" },
+const AMBAR = "rgba(242, 184, 75, 0.9)";
+const AZUL = "rgba(77, 163, 255, 0.9)";
+
+const camadas: {
+  chave: keyof DestaquesFoto;
+  arquivo: string;
+  brilho: string;
+}[] = [
+  { chave: "coluna", arquivo: "coluna", brilho: AMBAR },
+  { chave: "maos", arquivo: "maos", brilho: AMBAR },
+  { chave: "pes", arquivo: "pes", brilho: AMBAR },
+  { chave: "costelasEsquerda", arquivo: "costelas-esquerda", brilho: AZUL },
+  { chave: "escapulas", arquivo: "escapulas", brilho: AMBAR },
 ];
 
 const preencher: React.CSSProperties = {
@@ -64,13 +71,17 @@ export const EsqueletoFoto: React.FC<{
       }}
     >
       <Img src={staticFile(`esqueleto/${imagem}`)} style={preencher} />
-      {camadas.map(({ chave, arquivo }) => {
+      {camadas.map(({ chave, arquivo, brilho }) => {
         const opacidade = destaques[chave] ?? 0;
         return opacidade > 0 ? (
           <Img
             key={chave}
             src={staticFile(`esqueleto/destaques/${arquivo}.png`)}
-            style={{ ...preencher, opacity: opacidade }}
+            style={{
+              ...preencher,
+              opacity: opacidade,
+              filter: `drop-shadow(0 0 10px ${brilho}) drop-shadow(0 0 4px ${brilho})`,
+            }}
           />
         ) : null;
       })}

@@ -8,9 +8,11 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import { Chamada } from "./Chamada";
 import { cores } from "./cores";
 import { EsqueletoFoto, naFoto, type DestaquesFoto } from "./EsqueletoFoto";
 import { fonteTexto } from "./fontes";
+import { Logo } from "./Logo";
 import { A1, A2, A3, AVISO_10, AVISO_30, cena, legendas } from "./roteiro";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -30,7 +32,7 @@ const janela = (t: number, a: number, b: number) =>
 const calcularDestaques = (t: number): DestaquesFoto => ({
   pes: janela(t, cena.posicaoInicial, cena.maos),
   maos: janela(t, cena.maos, cena.cresca),
-  coluna: janela(t, cena.cresca, cena.cotovelos) * 0.85,
+  coluna: janela(t, cena.cresca, cena.cotovelos),
   costelasEsquerda: janela(t, cena.respirar + 1, cena.encerramento) * 0.9,
   escapulas: janela(t, cena.terminar + 3, cena.fique) * 0.8,
 });
@@ -139,6 +141,42 @@ export const CorrecaoPostural: React.FC = () => {
       <SetasMaos />
       <SetaCima inicio={cena.cresca + 0.6} fim={cena.cotovelos} />
       <EviteFaca inicio={cena.cresca + 0.8} fim={cena.cotovelos} />
+      <LinhasChao />
+      <Chamada
+        texto="Pés firmes no chão"
+        alvo={naFoto(815, 1035)}
+        ancora={{ x: 690, y: 880 }}
+        inicio={cena.posicaoInicial + 0.5}
+        fim={cena.maos}
+      />
+      <Chamada
+        texto="Mãos apoiadas nas coxas"
+        alvo={naFoto(835, 690)}
+        ancora={{ x: 720, y: 660 }}
+        inicio={cena.maos + 0.6}
+        fim={cena.cresca}
+      />
+      <Chamada
+        texto="Coluna alongada"
+        alvo={naFoto(1000, 360)}
+        ancora={{ x: 800, y: 280 }}
+        inicio={cena.cresca + 1}
+        fim={cena.cotovelos}
+      />
+      <Logo
+        left={120}
+        top={160}
+        largura={440}
+        inicio={A1}
+        fim={cena.posicaoInicial - 0.1}
+      />
+      <Logo
+        right={40}
+        top={34}
+        largura={230}
+        inicio={cena.posicaoInicial}
+        fim={cena.encerramento}
+      />
       <Legendas />
 
       <Audio
@@ -444,41 +482,20 @@ const SetaCima: React.FC<{ inicio: number; fim: number }> = ({
 const RECORTE = { x: 600, y: 30, largura: 680, altura: 1080 };
 const CARTAO = 290;
 
-const QuadroLado: React.FC<{ imagem: string | null }> = ({ imagem }) => {
+const QuadroLado: React.FC<{ imagem: string; cor: string }> = ({
+  imagem,
+  cor,
+}) => {
   const escala = CARTAO / RECORTE.largura;
-  const altura = RECORTE.altura * escala;
-  if (!imagem) {
-    return (
-      <div
-        style={{
-          width: CARTAO,
-          height: altura,
-          borderRadius: 16,
-          border: `3px dashed ${cores.textoSuave}`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          color: cores.textoSuave,
-          fontSize: 24,
-          lineHeight: 1.4,
-          padding: 20,
-        }}
-      >
-        Imagem lateral correta
-        <br />
-        (aguardando)
-      </div>
-    );
-  }
   return (
     <div
       style={{
         width: CARTAO,
-        height: altura,
+        height: RECORTE.altura * escala,
         borderRadius: 16,
         overflow: "hidden",
         position: "relative",
+        border: `3px solid ${cor}`,
       }}
     >
       <Img
@@ -562,7 +579,7 @@ const EviteFaca: React.FC<{ inicio: number; fim: number }> = ({
         }}
       >
         <Selo tipo="evite" />
-        <QuadroLado imagem="lado-inicial.jpg" />
+        <QuadroLado imagem="lado-inicial.jpg" cor="#FF6B6B" />
       </div>
       <div
         style={{
@@ -571,7 +588,7 @@ const EviteFaca: React.FC<{ inicio: number; fim: number }> = ({
         }}
       >
         <Selo tipo="faca" />
-        <QuadroLado imagem={null} />
+        <QuadroLado imagem="lado-correto.jpg" cor={cores.verde} />
       </div>
     </div>
   );
@@ -616,5 +633,50 @@ const Legendas: React.FC = () => {
         {atual.text}
       </div>
     </div>
+  );
+};
+
+// Linhas de contato com o chão sob os pés: "pés firmes no chão".
+const LinhasChao: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const forte = janela(t, cena.posicaoInicial + 0.3, cena.maos);
+  const lembrete = janela(t, cena.maos, cena.encerramento) * 0.35;
+  const opacidade = Math.max(forte, lembrete);
+  if (opacidade === 0) return null;
+  const abre = interpolate(
+    t,
+    [cena.posicaoInicial + 0.3, cena.posicaoInicial + 1.1],
+    [0, 1],
+    {
+      ...clamp,
+      easing: suave,
+    },
+  );
+  return (
+    <svg
+      width={1920}
+      height={1080}
+      style={{ position: "absolute", inset: 0, opacity: opacidade }}
+    >
+      {[820, 1180].map((x) => {
+        const c = naFoto(x, 1050);
+        const meia = 55 * abre;
+        return (
+          <line
+            key={x}
+            x1={c.x - meia}
+            x2={c.x + meia}
+            y1={c.y}
+            y2={c.y}
+            stroke={cores.destaque}
+            strokeWidth={6}
+            strokeLinecap="round"
+            style={{ filter: "drop-shadow(0 0 8px rgba(242, 184, 75, 0.9))" }}
+          />
+        );
+      })}
+    </svg>
   );
 };
