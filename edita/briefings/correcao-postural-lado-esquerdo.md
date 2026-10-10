@@ -124,3 +124,45 @@ Para reaproveitar este briefing como modelo, troque apenas o que muda de um exer
 - [ ] Tempo de sustentação e cronômetro na tela
 - [ ] Tabela de cenas: uma linha por instrução, com o gráfico que mostra o movimento
 - [ ] Quadro lateral sempre que a instrução falar de curvatura da coluna
+
+---
+
+## Decisões (10/10/2026)
+
+- Público: adolescentes com escoliose. Narração reescrita com palavras simples, mantendo a técnica.
+- Visual: esqueleto vetorial animado no Remotion (opção B), mesmo desenho em todas as cenas.
+- Formato: 16:9 1080p (principal) + versão vertical 1080 × 1920 depois.
+- Rótulos ESQUERDO / DIREITO sob o esqueleto, aprovados.
+- Sustentação: cronômetro, respiração nas costelas, avisos aos 30 s e 10 s e mudança visual a cada 10 s.
+- Voz: ElevenLabs, Multilingual v2, voz "Henrique – Clear and Knowledgeable".
+
+## Narração v2 (linguagem para adolescentes)
+
+**Áudio 1 — Abertura**
+
+```
+Exercício de correção postural para o lado esquerdo. Faça tudo com calma, no seu tempo. Se sentir dor, pare o exercício. <break time="2s" />
+Sente-se em um banco, com os pés bem apoiados no chão. <break time="2s" />
+```
+
+**Áudio 2 — Exercício**
+
+```
+Coloque as duas mãos sobre as coxas e apoie o peso nelas. Esse apoio é a base da sua postura. <break time="2s" />
+Agora, cresça. Estique o corpo para cima, como se o topo da sua cabeça quisesse tocar o teto. <break time="2s" />
+Agora, a parte de cima das costas. Leve os cotovelos um pouco para a frente. Isso ajuda a manter a curva natural dessa região. <break time="2s" />
+Agora, a parte de baixo das costas. Mantenha a curvinha natural da lombar. Não deixe as costas retas. <break time="2s" />
+Hora de respirar. Puxe o ar e encha o lado esquerdo do peito, como se fosse um balão. Ao mesmo tempo, leve o tronco um pouco para o lado esquerdo. <break time="2s" />
+Agora, gire o tronco também para o lado esquerdo. <break time="2s" />
+Para terminar, continue crescendo a cabeça em direção ao teto, sem deixar os ombros subirem. <break time="2s" />
+Fique nessa posição por um minuto e continue respirando.
+```
+
+**Áudio 3 — Encerramento**
+
+```
+Pode relaxar. <break time="1s" />
+Muito bem! Se este exercício te ajudou, inscreva-se no canal para acompanhar os próximos.
+```
+
+**Avulsos:** "Faltam trinta segundos." · "Faltam dez segundos."

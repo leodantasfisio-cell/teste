@@ -4,20 +4,36 @@ import { cores } from "./cores";
 // O lado esquerdo do esqueleto fica no lado esquerdo da tela.
 // viewBox 600 × 900; o centro da coluna está em x = 300.
 
-type Props = {
+export type Pose = {
   /** px que o tronco sobe (crescimento axial) */
-  crescimento?: number;
-  /** 0–1: brilho de destaque na coluna */
-  destaqueColuna?: number;
-  /** 0–1: costelas do lado esquerdo em azul */
-  costelasEsquerda?: number;
+  crescimento: number;
   /** px de deslocamento lateral do tronco (negativo = para a esquerda) */
-  deslocamento?: number;
+  deslocamento: number;
   /** 0–1: rotação do tronco para a esquerda */
-  rotacao?: number;
-  /** 0–1: expansão das costelas (respiração) */
-  respiracao?: number;
-  style?: React.CSSProperties;
+  rotacao: number;
+  /** 0–1: cotovelos levados à frente */
+  cotovelos: number;
+  /** 0–1: expansão das costelas esquerdas */
+  expansaoEsquerda: number;
+  /** 0–1: respiração (expansão das duas costelas) */
+  respiracao: number;
+};
+
+export type Destaques = {
+  coluna?: number;
+  maos?: number;
+  pes?: number;
+  costelasEsquerda?: number;
+  escapulas?: number;
+};
+
+export const poseInicial: Pose = {
+  crescimento: 0,
+  deslocamento: 0,
+  rotacao: 0,
+  cotovelos: 0,
+  expansaoEsquerda: 0,
+  respiracao: 0,
 };
 
 const LARGURA_COSTELAS = [70, 96, 113, 123, 129, 131, 129, 123, 112, 98];
@@ -36,37 +52,83 @@ const vertebras = [
   })),
 ];
 
-const Costela: React.FC<{ i: number; lado: -1 | 1; abertura: number }> = ({
-  i,
-  lado,
-  abertura,
-}) => {
+const caminhoCostela = (i: number, lado: -1 | 1, abertura: number) => {
   const y = 256 + i * 20;
-  const w = LARGURA_COSTELAS[i] * (1 + abertura * 0.08);
+  const w = LARGURA_COSTELAS[i] * (1 + abertura * 0.09);
   const queda = 40 + i * 3;
-  const x0 = 300 + lado * 9;
-  return (
-    <path
-      d={`M ${x0} ${y} C ${300 + lado * w * 0.6} ${y - 14}, ${300 + lado * (w + 10)} ${y + 8}, ${300 + lado * w} ${y + queda}`}
-      fill="none"
-      strokeWidth={7}
-      strokeLinecap="round"
-    />
-  );
+  return `M ${300 + lado * 9} ${y} C ${300 + lado * w * 0.6} ${y - 14}, ${300 + lado * (w + 10)} ${y + 8}, ${300 + lado * w} ${y + queda}`;
 };
 
-export const Esqueleto: React.FC<Props> = ({
-  crescimento = 0,
-  destaqueColuna = 0,
-  costelasEsquerda = 0,
-  deslocamento = 0,
-  rotacao = 0,
-  respiracao = 0,
-  style,
-}) => {
-  const tronco = `translate(${deslocamento} ${-crescimento})`;
-  // Rotação sugerida por compressão horizontal e leve inclinação da caixa torácica.
-  const giro = `translate(300 400) scale(${1 - rotacao * 0.12} 1) skewY(${-rotacao * 3}) translate(-300 -400)`;
+const Costelas: React.FC<{ lado: -1 | 1; abertura: number; cor: string }> = ({
+  lado,
+  abertura,
+  cor,
+}) => (
+  <g stroke={cor} fill="none" strokeWidth={7} strokeLinecap="round">
+    {LARGURA_COSTELAS.map((_, i) => (
+      <path key={i} d={caminhoCostela(i, lado, abertura)} />
+    ))}
+  </g>
+);
+
+const Vertebras: React.FC<{ cor: string; contorno?: string }> = ({
+  cor,
+  contorno,
+}) => (
+  <g fill={cor} stroke={contorno} strokeWidth={contorno ? 1.5 : 0}>
+    {vertebras.map((v, i) => (
+      <rect key={i} x={300 - v.w / 2} y={v.y} width={v.w} height={v.h} rx={4} />
+    ))}
+  </g>
+);
+
+const Escapulas: React.FC<{ cor: string; contorno?: string }> = ({
+  cor,
+  contorno,
+}) => (
+  <g fill={cor} stroke={contorno} strokeWidth={2} strokeLinejoin="round">
+    <path d="M 262 250 L 176 244 L 218 372 Z" />
+    <path d="M 338 250 L 424 244 L 382 372 Z" />
+  </g>
+);
+
+export const Esqueleto: React.FC<{
+  pose: Pose;
+  destaques?: Destaques;
+  style?: React.CSSProperties;
+}> = ({ pose, destaques = {}, style }) => {
+  const {
+    crescimento,
+    deslocamento,
+    rotacao,
+    cotovelos,
+    expansaoEsquerda,
+    respiracao,
+  } = pose;
+  const escalaX = 1 - rotacao * 0.12;
+  const inclinacao = Math.tan((-rotacao * 3 * Math.PI) / 180);
+
+  // Ponto do tronco (coordenadas do desenho) → posição na tela, com giro e deslocamento.
+  const noTronco = (x: number, y: number) => {
+    const xg = 300 + (x - 300) * escalaX;
+    const yg = y + (x - 300) * escalaX * inclinacao;
+    return { x: xg + deslocamento, y: yg - crescimento };
+  };
+
+  // Braços ficam fora do tronco: o ombro acompanha o tronco, a mão fica parada na coxa.
+  const braco = (lado: -1 | 1) => {
+    const ombro = noTronco(300 + lado * 128, 252);
+    const mao = { x: 300 + lado * 117, y: 582 };
+    const cotovelo = {
+      x: (ombro.x + mao.x) / 2 + lado * (62 + cotovelos * 10),
+      y: 432 - crescimento * 0.5 - cotovelos * 34,
+    };
+    return { ombro, cotovelo, mao };
+  };
+  const bracos = [braco(-1), braco(1)];
+
+  const giro = `translate(${deslocamento} ${-crescimento}) translate(300 0) matrix(${escalaX} ${escalaX * inclinacao} 0 1 0 0) translate(-300 0)`;
+  const brilho = "url(#brilho)";
 
   return (
     <svg viewBox="0 0 600 900" style={style}>
@@ -94,6 +156,10 @@ export const Esqueleto: React.FC<Props> = ({
         <rect x={388} y={720} width={6} height={140} rx={3} />
         <ellipse cx={402} cy={878} rx={26} ry={10} />
       </g>
+      <g fill={cores.destaque} opacity={destaques.pes ?? 0} filter={brilho}>
+        <ellipse cx={198} cy={878} rx={28} ry={11} />
+        <ellipse cx={402} cy={878} rx={28} ry={11} />
+      </g>
 
       {/* Pelve e fêmures */}
       <g fill={cores.osso} stroke={cores.ossoContorno} strokeWidth={2}>
@@ -103,102 +169,80 @@ export const Esqueleto: React.FC<Props> = ({
         <rect x={196} y={640} width={26} height={52} rx={11} />
         <rect x={378} y={640} width={26} height={52} rx={11} />
       </g>
+      <g fill={cores.destaque} opacity={destaques.maos ?? 0} filter={brilho}>
+        <rect x={196} y={640} width={26} height={52} rx={11} />
+        <rect x={378} y={640} width={26} height={52} rx={11} />
+      </g>
 
-      <g transform={tronco}>
-        <g transform={giro}>
-          {/* Escápulas */}
-          <g
-            fill={cores.ossoSombra}
-            stroke={cores.ossoContorno}
-            strokeWidth={2}
-            strokeLinejoin="round"
-          >
-            <path d="M 262 250 L 176 244 L 218 372 Z" />
-            <path d="M 338 250 L 424 244 L 382 372 Z" />
-          </g>
+      <g transform={giro}>
+        <Escapulas cor={cores.ossoSombra} contorno={cores.ossoContorno} />
+        <g opacity={destaques.escapulas ?? 0} filter={brilho}>
+          <Escapulas cor={cores.destaque} />
+        </g>
 
-          {/* Costelas */}
-          <g stroke={cores.osso}>
-            {LARGURA_COSTELAS.map((_, i) => (
-              <Costela key={`d${i}`} i={i} lado={1} abertura={respiracao} />
-            ))}
-          </g>
-          <g stroke={cores.osso}>
-            {LARGURA_COSTELAS.map((_, i) => (
-              <Costela
-                key={`e${i}`}
-                i={i}
-                lado={-1}
-                abertura={respiracao + costelasEsquerda}
-              />
-            ))}
-          </g>
-          <g
-            stroke={cores.azul}
-            opacity={costelasEsquerda}
-            filter="url(#brilho)"
-          >
-            {LARGURA_COSTELAS.map((_, i) => (
-              <Costela
-                key={`a${i}`}
-                i={i}
-                lado={-1}
-                abertura={respiracao + costelasEsquerda}
-              />
-            ))}
-          </g>
+        <Costelas lado={1} abertura={respiracao} cor={cores.osso} />
+        <Costelas
+          lado={-1}
+          abertura={respiracao + expansaoEsquerda}
+          cor={cores.osso}
+        />
+        <g opacity={destaques.costelasEsquerda ?? 0} filter={brilho}>
+          <Costelas
+            lado={-1}
+            abertura={respiracao + expansaoEsquerda}
+            cor={cores.azul}
+          />
+        </g>
 
-          {/* Coluna */}
-          <g fill={cores.osso} stroke={cores.ossoContorno} strokeWidth={1.5}>
-            {vertebras.map((v, i) => (
-              <rect
-                key={i}
-                x={300 - v.w / 2}
-                y={v.y}
-                width={v.w}
-                height={v.h}
-                rx={4}
-              />
-            ))}
-          </g>
-          <g
-            fill={cores.destaque}
-            opacity={destaqueColuna}
-            filter="url(#brilho)"
-          >
-            {vertebras.map((v, i) => (
-              <rect
-                key={i}
-                x={300 - v.w / 2}
-                y={v.y}
-                width={v.w}
-                height={v.h}
-                rx={4}
-              />
-            ))}
-          </g>
+        <Vertebras cor={cores.osso} contorno={cores.ossoContorno} />
+        <g opacity={destaques.coluna ?? 0} filter={brilho}>
+          <Vertebras cor={cores.destaque} />
+        </g>
 
-          {/* Braços: úmero e antebraço indo até as coxas */}
-          <g stroke={cores.osso} strokeLinecap="round">
-            <line x1={172} y1={252} x2={150} y2={432} strokeWidth={17} />
-            <line x1={150} y1={432} x2={178} y2={566} strokeWidth={12} />
-            <line x1={428} y1={252} x2={450} y2={432} strokeWidth={17} />
-            <line x1={450} y1={432} x2={422} y2={566} strokeWidth={12} />
-          </g>
-          <g fill={cores.osso} stroke={cores.ossoContorno} strokeWidth={2}>
-            <ellipse cx={183} cy={582} rx={15} ry={20} />
-            <ellipse cx={417} cy={582} rx={15} ry={20} />
-            <circle cx={172} cy={250} r={14} />
-            <circle cx={428} cy={250} r={14} />
-          </g>
-
-          {/* Crânio (visto de trás) */}
-          <g fill={cores.osso} stroke={cores.ossoContorno} strokeWidth={2}>
-            <ellipse cx={300} cy={96} rx={58} ry={68} />
-            <path d="M 256 140 Q 300 162 344 140" fill="none" strokeWidth={3} />
-          </g>
+        {/* Crânio (visto de trás) */}
+        <g fill={cores.osso} stroke={cores.ossoContorno} strokeWidth={2}>
+          <ellipse cx={300} cy={96} rx={58} ry={68} />
+          <path d="M 256 140 Q 300 162 344 140" fill="none" strokeWidth={3} />
         </g>
       </g>
+
+      {/* Braços */}
+      {[cores.osso, cores.destaque].map((cor, camada) => (
+        <g
+          key={cor}
+          stroke={cor}
+          fill={cor}
+          strokeLinecap="round"
+          opacity={camada === 0 ? 1 : (destaques.maos ?? 0)}
+          filter={camada === 0 ? undefined : brilho}
+        >
+          {bracos.map(({ ombro, cotovelo, mao }, i) => (
+            <g key={i}>
+              {/* No destaque, só antebraço e mão */}
+              {camada === 0 ? (
+                <>
+                  <line
+                    x1={ombro.x}
+                    y1={ombro.y}
+                    x2={cotovelo.x}
+                    y2={cotovelo.y}
+                    strokeWidth={17}
+                  />
+                  <circle cx={ombro.x} cy={ombro.y} r={14} strokeWidth={0} />
+                </>
+              ) : null}
+              <line
+                x1={cotovelo.x}
+                y1={cotovelo.y}
+                x2={mao.x}
+                y2={mao.y}
+                strokeWidth={12}
+              />
+              <ellipse cx={mao.x} cy={mao.y} rx={15} ry={20} strokeWidth={0} />
+            </g>
+          ))}
+        </g>
+      ))}
     </svg>
   );
 };

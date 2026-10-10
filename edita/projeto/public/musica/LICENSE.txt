@@ -1,0 +1,2 @@
+fundo-calmo.wav — trilha sintetizada com ffmpeg (acordes senoidais, sem amostras de terceiros), 10/10/2026.
+Licença: CC0 1.0 (domínio público). Pode ser trocada por uma trilha definitiva.
