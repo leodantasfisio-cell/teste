@@ -12,6 +12,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 AMBAR = (242, 184, 75)
 AZUL = (77, 163, 255)
+VERDE = (76, 195, 138)
 
 
 def espelhar(poligono, centro=1000):
@@ -22,6 +23,7 @@ ANTEBRACO_MAO = [(785, 520), (860, 520), (888, 650), (882, 728), (788, 728)]
 FEMUR = [(800, 682), (930, 690), (930, 748), (800, 748)]
 PE = [(768, 982), (872, 982), (872, 1048), (768, 1048)]
 ESCAPULA = [(858, 288), (952, 288), (952, 428), (858, 428)]
+COTOVELO = [(788, 505), (868, 505), (868, 602), (788, 602)]
 
 REGIOES = {
     "coluna": (AMBAR, [[(968, 195), (1032, 195), (1034, 655), (966, 655)]]),
@@ -32,6 +34,8 @@ REGIOES = {
     "pes": (AMBAR, [PE, espelhar(PE)]),
     "costelas-esquerda": (AZUL, [[(878, 288), (962, 288), (962, 548), (888, 548)]]),
     "escapulas": (AMBAR, [ESCAPULA, espelhar(ESCAPULA)]),
+    "cotovelos": (AMBAR, [COTOVELO, espelhar(COTOVELO)]),
+    "lombar": (VERDE, [[(964, 538), (1036, 538), (1040, 652), (960, 652)]]),
 }
 
 

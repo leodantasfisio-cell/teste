@@ -13,7 +13,17 @@ import { cores } from "./cores";
 import { EsqueletoFoto, naFoto, type DestaquesFoto } from "./EsqueletoFoto";
 import { fonteTexto } from "./fontes";
 import { Logo } from "./Logo";
-import { A1, A2, A3, AVISO_10, AVISO_30, cena, legendas } from "./roteiro";
+import {
+  A1,
+  A2,
+  A3,
+  AVISO_10,
+  AVISO_30,
+  SUST_FIM,
+  SUST_INICIO,
+  cena,
+  legendas,
+} from "./roteiro";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const suave = Easing.bezier(0.16, 1, 0.3, 1);
@@ -34,7 +44,9 @@ const calcularDestaques = (t: number): DestaquesFoto => ({
   maos: janela(t, cena.maos, cena.cresca),
   coluna: janela(t, cena.cresca, cena.cotovelos),
   costelasEsquerda: janela(t, cena.respirar + 1, cena.encerramento) * 0.9,
-  escapulas: janela(t, cena.terminar + 3, cena.fique) * 0.8,
+  escapulas: janela(t, cena.terminar + 3, cena.fique),
+  cotovelos: janela(t, cena.cotovelos + 2.5, cena.lombar),
+  lombar: janela(t, cena.lombar + 1.5, cena.respirar),
 });
 
 const calcularCrescimento = (t: number) =>
@@ -102,7 +114,7 @@ const passos: Passo[] = [
   },
   {
     inicio: cena.terminar,
-    fim: cena.sustentacao,
+    fim: cena.fique,
     kicker: "PASSO 7 DE 7",
     titulo: "Cresça mais um pouco",
     sub: "Ombros baixos e firmes",
@@ -127,6 +139,11 @@ export const CorrecaoPostural: React.FC = () => {
         destaques={calcularDestaques(t)}
         crescimento={calcularCrescimento(t)}
       />
+      {ladoSustentacao(t) > 0 ? (
+        <AbsoluteFill style={{ opacity: ladoSustentacao(t) }}>
+          <EsqueletoFoto imagem="lado-correto.jpg" />
+        </AbsoluteFill>
+      ) : null}
       {curva > 0 ? (
         <AbsoluteFill style={{ opacity: curva }}>
           <EsqueletoFoto imagem="costas-curva-a.jpg" />
@@ -140,7 +157,41 @@ export const CorrecaoPostural: React.FC = () => {
       ))}
       <SetasMaos />
       <SetaCima inicio={cena.cresca + 0.6} fim={cena.cotovelos} />
-      <EviteFaca inicio={cena.cresca + 0.8} fim={cena.cotovelos} />
+      <EviteFaca inicio={cena.cresca + 0.8} fim={cena.respirar} />
+      <EviteFaca inicio={cena.terminar + 0.8} fim={cena.sustentacao} />
+      <SetaCima inicio={cena.terminar + 0.4} fim={cena.fique} />
+      <SetaLado />
+      <SetaGiro />
+      <Cronometro />
+      <Encerramento />
+      <Chamada
+        texto="Cotovelos um pouco à frente"
+        alvo={naFoto(828, 555)}
+        ancora={{ x: 735, y: 680 }}
+        inicio={cena.cotovelos + 3}
+        fim={cena.lombar}
+      />
+      <Chamada
+        texto="Curvinha natural da lombar"
+        alvo={naFoto(1000, 600)}
+        ancora={{ x: 760, y: 680 }}
+        inicio={cena.lombar + 2}
+        fim={cena.respirar}
+      />
+      <Chamada
+        texto="Encha este lado"
+        alvo={naFoto(905, 450)}
+        ancora={{ x: 760, y: 250 }}
+        inicio={cena.respirar + 1.4}
+        fim={cena.fuga + 0.2}
+      />
+      <Chamada
+        texto="Ombros baixos"
+        alvo={naFoto(890, 300)}
+        ancora={{ x: 760, y: 250 }}
+        inicio={cena.terminar + 3}
+        fim={cena.fique}
+      />
       <LinhasChao />
       <Chamada
         texto="Pés firmes no chão"
@@ -205,6 +256,12 @@ export const CorrecaoPostural: React.FC = () => {
         premountFor={fps}
       />
       <Audio src={staticFile("musica/fundo-calmo.wav")} volume={0.22} />
+      <Audio
+        src={staticFile("sfx/ding.wav")}
+        from={Math.round(SUST_FIM * fps)}
+        volume={0.3}
+        premountFor={fps}
+      />
       {passos.slice(1).map((p) => (
         <Audio
           key={p.kicker}
@@ -234,7 +291,16 @@ const Lados: React.FC = () => {
         fontSize: 26,
         fontWeight: 600,
         letterSpacing: 4,
-        opacity: interpolate(frame, [1.2 * fps, 1.8 * fps], [0, 0.8], clamp),
+        // Somem quando a vista de lado aparece e no convite final.
+        opacity:
+          interpolate(frame, [1.2 * fps, 1.8 * fps], [0, 0.8], clamp) *
+          (1 - ladoSustentacao(frame / fps)) *
+          interpolate(
+            frame / fps,
+            [cena.inscreva - 0.5, cena.inscreva],
+            [1, 0],
+            clamp,
+          ),
       }}
     >
       <span>ESQUERDO</span>
@@ -643,7 +709,7 @@ const LinhasChao: React.FC = () => {
   const t = frame / fps;
   const forte = janela(t, cena.posicaoInicial + 0.3, cena.maos);
   const lembrete = janela(t, cena.maos, cena.encerramento) * 0.35;
-  const opacidade = Math.max(forte, lembrete);
+  const opacidade = Math.max(forte, lembrete) * (1 - ladoSustentacao(t));
   if (opacidade === 0) return null;
   const abre = interpolate(
     t,
@@ -678,5 +744,263 @@ const LinhasChao: React.FC = () => {
         );
       })}
     </svg>
+  );
+};
+
+/** Na sustentação, a vista de lado aparece de 15 a 30 s e de 45 a 60 s. */
+const ladoSustentacao = (t: number) =>
+  janela(t, SUST_INICIO + 15, SUST_INICIO + 30) +
+  janela(t, SUST_INICIO + 45, SUST_FIM);
+
+// Seta horizontal para a esquerda: "leve o tronco para o lado esquerdo".
+const SetaLado: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const opacidade = janela(t, cena.fuga, cena.girar);
+  if (opacidade === 0) return null;
+  const anda = interpolate(t, [cena.fuga, cena.fuga + 1.2], [0, 1], {
+    ...clamp,
+    easing: suave,
+  });
+  const y = 300;
+  const x0 = 1060;
+  const x1 = 1060 - 230 * anda;
+  return (
+    <svg
+      width={1920}
+      height={1080}
+      style={{ position: "absolute", inset: 0, opacity: opacidade }}
+    >
+      <line
+        x1={x0}
+        y1={y}
+        x2={x1}
+        y2={y}
+        stroke={cores.azul}
+        strokeWidth={10}
+        strokeLinecap="round"
+      />
+      <path
+        d={`M ${x1 + 30} ${y - 26} L ${x1} ${y} L ${x1 + 30} ${y + 26}`}
+        fill="none"
+        stroke={cores.azul}
+        strokeWidth={10}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+// Seta curva sobre os ombros: "gire o tronco para a esquerda".
+// Visto de costas, o lado de trás da elipse anda da direita para a esquerda.
+const SetaGiro: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const opacidade = janela(t, cena.girar, cena.terminar);
+  if (opacidade === 0) return null;
+  const anda = interpolate(t, [cena.girar + 0.2, cena.girar + 1.6], [0, 1], {
+    ...clamp,
+    easing: suave,
+  });
+  const cx = 960;
+  const cy = 330;
+  const rx = 200;
+  const ry = 50;
+  // Arco superior, de 20° (direita) até 20° + 140° * anda.
+  const pontos = Array.from({ length: 40 }, (_, i) => {
+    const a = ((-20 - 140 * anda * (i / 39)) * Math.PI) / 180;
+    return [cx + rx * Math.cos(a), cy + ry * Math.sin(a)];
+  });
+  const [px, py] = pontos[pontos.length - 1];
+  const [qx, qy] = pontos[pontos.length - 2];
+  const ang = Math.atan2(py - qy, px - qx);
+  const ponta = (d: number) =>
+    `${px - 30 * Math.cos(ang + d)} ${py - 30 * Math.sin(ang + d)}`;
+  return (
+    <svg
+      width={1920}
+      height={1080}
+      style={{ position: "absolute", inset: 0, opacity: opacidade }}
+    >
+      <polyline
+        points={pontos.map(([x, y]) => `${x},${y}`).join(" ")}
+        fill="none"
+        stroke={cores.destaque}
+        strokeWidth={10}
+        strokeLinecap="round"
+      />
+      {anda > 0.05 ? (
+        <path
+          d={`M ${ponta(0.5)} L ${px} ${py} L ${ponta(-0.5)}`}
+          fill="none"
+          stroke={cores.destaque}
+          strokeWidth={10}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ) : null}
+    </svg>
+  );
+};
+
+// Cronômetro da sustentação: aparece em "Fique nessa posição" e conta 60 → 0.
+const Cronometro: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const opacidade = janela(t, cena.fique, cena.encerramento + 0.6);
+  if (opacidade === 0) return null;
+  const restante = Math.max(0, Math.min(60, SUST_FIM - t));
+  const segundos = Math.ceil(restante);
+  const texto = `${Math.floor(segundos / 60)}:${String(segundos % 60).padStart(2, "0")}`;
+  const progresso = restante / 60;
+  const r = 130;
+  const volta = 2 * Math.PI * r;
+  const entrada = interpolate(t, [cena.fique, cena.fique + 0.6], [0, 1], {
+    ...clamp,
+    easing: suave,
+  });
+  // Muda a frase a cada 10 s para a tela nunca ficar parada.
+  const frases = [
+    "Continue respirando",
+    "Cresça em direção ao teto",
+    "Encha o lado esquerdo",
+    "Ombros baixos",
+    "Pés firmes no chão",
+    "Quase lá!",
+  ];
+  const indice = Math.min(5, Math.max(0, Math.floor((t - SUST_INICIO) / 10)));
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: 120,
+        top: 250,
+        width: 560,
+        color: cores.texto,
+        opacity: opacidade * entrada,
+        translate: `0 ${(1 - entrada) * 24}px`,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 28,
+          fontWeight: 600,
+          letterSpacing: 6,
+          color: cores.destaque,
+        }}
+      >
+        SEGURE A POSIÇÃO
+      </div>
+      <div
+        style={{ position: "relative", width: 320, height: 320, marginTop: 24 }}
+      >
+        <svg
+          width={320}
+          height={320}
+          style={{ position: "absolute", inset: 0 }}
+        >
+          <circle
+            cx={160}
+            cy={160}
+            r={r}
+            fill="none"
+            stroke="rgba(255,255,255,0.15)"
+            strokeWidth={18}
+          />
+          <circle
+            cx={160}
+            cy={160}
+            r={r}
+            fill="none"
+            stroke={cores.destaque}
+            strokeWidth={18}
+            strokeLinecap="round"
+            strokeDasharray={volta}
+            strokeDashoffset={volta * (1 - progresso)}
+            transform="rotate(-90 160 160)"
+          />
+        </svg>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 96,
+            fontWeight: 800,
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          {texto}
+        </div>
+      </div>
+      <div style={{ fontSize: 34, color: cores.textoSuave, marginTop: 24 }}>
+        {t < SUST_INICIO ? frases[0] : frases[indice]}
+      </div>
+    </div>
+  );
+};
+
+// Encerramento: "Muito bem!", logo grande e convite para se inscrever.
+const Encerramento: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  if (t < A3 + 2) return null;
+  const entra = (s: number) =>
+    interpolate(t, [s, s + 0.6], [0, 1], { ...clamp, easing: suave });
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: 120,
+        top: 300,
+        width: 640,
+        color: cores.texto,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 72,
+          fontWeight: 800,
+          opacity: entra(A3 + 2.1),
+          translate: `0 ${(1 - entra(A3 + 2.1)) * 24}px`,
+        }}
+      >
+        Muito bem!
+      </div>
+      <div style={{ marginTop: 30, opacity: entra(cena.inscreva) }}>
+        <Logo
+          left={0}
+          top={0}
+          largura={460}
+          inicio={cena.inscreva}
+          fim={cena.inscreva + 60}
+          relativo
+        />
+      </div>
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 16,
+          marginTop: 40,
+          padding: "18px 34px",
+          borderRadius: 999,
+          backgroundColor: "#E53935",
+          fontSize: 38,
+          fontWeight: 800,
+          opacity: entra(cena.inscreva + 0.8),
+          translate: `0 ${(1 - entra(cena.inscreva + 0.8)) * 24}px`,
+        }}
+      >
+        Inscreva-se no canal
+      </div>
+    </div>
   );
 };

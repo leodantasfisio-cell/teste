@@ -16,7 +16,9 @@ export const Logo: React.FC<{
   largura: number;
   inicio: number;
   fim: number;
-}> = ({ left, top, right, largura, inicio, fim }) => {
+  /** ocupa espaço no fluxo do layout em vez de ficar solta na tela */
+  relativo?: boolean;
+}> = ({ left, top, right, largura, inicio, fim, relativo = false }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -34,7 +36,8 @@ export const Logo: React.FC<{
     <Img
       src={staticFile("marca/logo-labortorio-sem-fundo.png")}
       style={{
-        position: "absolute",
+        position: relativo ? "relative" : "absolute",
+        display: "block",
         left,
         top,
         right,
