@@ -1,5 +1,6 @@
 import { CalculateMetadataFunction, Composition } from "remotion";
 import { Teste } from "./Teste";
+import { Previa } from "./correcao/Previa";
 
 type Props = {};
 
@@ -26,6 +27,14 @@ export const MyComposition = () => {
         fps={30}
         width={1080}
         height={1920}
+      />
+      <Composition
+        id="CorrecaoPrevia"
+        component={Previa}
+        durationInFrames={300}
+        fps={30}
+        width={1920}
+        height={1080}
       />
     </>
   );

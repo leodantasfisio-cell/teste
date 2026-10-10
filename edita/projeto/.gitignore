@@ -8,3 +8,6 @@ out
 
 # Temporários do render
 .tmp
+
+# whisper.cpp local (binário e modelos)
+whisper.cpp
