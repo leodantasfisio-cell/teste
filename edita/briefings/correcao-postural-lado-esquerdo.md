@@ -134,7 +134,11 @@ Para reaproveitar este briefing como modelo, troque apenas o que muda de um exer
 - Formato: 16:9 1080p (principal) + versão vertical 1080 × 1920 depois.
 - Rótulos ESQUERDO / DIREITO sob o esqueleto, aprovados.
 - Sustentação: cronômetro, respiração nas costelas, avisos aos 30 s e 10 s e mudança visual a cada 10 s.
-- Voz: ElevenLabs, Multilingual v2, voz "Henrique – Clear and Knowledgeable".
+- Voz: ElevenLabs, Multilingual v2, voz "Henrique – Clear and Knowledgeable" (aprovada).
+- Visual (atualizado): imagens 3D do Gemini; abertura com a coluna curva dissolvendo para a reta; ossos acendem por passo.
+- Vista lateral em "evite × faça" nos passos 2, 3, 4 e 7.
+- Logo LAB ORTORIO no vídeo, sem nenhuma alteração.
+- Volume final: −14 LUFS (scripts/finalizar.sh).
 
 ## Narração v2 (linguagem para adolescentes)
 

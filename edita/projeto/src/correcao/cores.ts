@@ -1,5 +1,5 @@
 export const cores = {
-  fundo: "#2A2B2F",
+  fundo: "#343434",
   fundoLuz: "#3A3B40",
   osso: "#ECE5D3",
   ossoContorno: "#BDB39C",

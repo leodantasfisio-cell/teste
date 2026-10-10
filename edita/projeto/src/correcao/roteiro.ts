@@ -8,8 +8,10 @@ export const A2 = 16.8; // áudio 2 (exercício), 62,8 s
 export const SUSTENTACAO = 60;
 export const SUST_INICIO = A2 + 62.8;
 export const SUST_FIM = SUST_INICIO + SUSTENTACAO;
-export const A3 = SUST_FIM + 0.4; // áudio 3 (encerramento)
-export const DURACAO = 150;
+export const A3 = SUST_FIM + 0.4; // áudio 3 (encerramento), 7,7 s
+export const AVISO_30 = SUST_INICIO + 30;
+export const AVISO_10 = SUST_INICIO + 50;
+export const DURACAO = Math.ceil(A3 + 7.7 + 3.3);
 
 export const cena = {
   abertura: 0,
@@ -25,6 +27,7 @@ export const cena = {
   fique: A2 + 59.52,
   sustentacao: SUST_INICIO,
   encerramento: SUST_FIM,
+  inscreva: A3 + 3.47,
 };
 
 const legenda = (inicio: number, fim: number, text: string): Caption => ({

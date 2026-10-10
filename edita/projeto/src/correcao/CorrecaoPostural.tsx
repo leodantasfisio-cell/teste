@@ -2,15 +2,16 @@ import { Audio } from "@remotion/media";
 import {
   AbsoluteFill,
   Easing,
+  Img,
   interpolate,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
 import { cores } from "./cores";
-import { Esqueleto, type Destaques, type Pose } from "./Esqueleto";
+import { EsqueletoFoto, naFoto, type DestaquesFoto } from "./EsqueletoFoto";
 import { fonteTexto } from "./fontes";
-import { A1, A2, cena, legendas } from "./roteiro";
+import { A1, A2, A3, AVISO_10, AVISO_30, cena, legendas } from "./roteiro";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const suave = Easing.bezier(0.16, 1, 0.3, 1);
@@ -26,39 +27,18 @@ const rampa = (t: number, a: number, b: number) =>
 const janela = (t: number, a: number, b: number) =>
   interpolate(t, [a, a + 0.4, b - 0.4, b], [0, 1, 1, 0], clamp);
 
-// Posição do esqueleto na tela (svg 600 × 900 escalado para 560 × 840).
-const ESQ = { left: (1920 - 560) / 2, top: 110, escala: 560 / 600 };
-const naTela = (x: number, y: number) => ({
-  x: ESQ.left + x * ESQ.escala,
-  y: ESQ.top + y * ESQ.escala,
-});
-
-const calcularPose = (t: number): Pose => {
-  const volta = 1 - rampa(t, cena.encerramento + 0.8, cena.encerramento + 3.5);
-  return {
-    crescimento:
-      (14 * rampa(t, cena.cresca + 1.2, cena.cresca + 3.8) +
-        6 * rampa(t, cena.terminar + 0.6, cena.terminar + 2.8)) *
-      volta,
-    cotovelos: rampa(t, cena.cotovelos + 3, cena.cotovelos + 5.2) * volta,
-    expansaoEsquerda:
-      rampa(t, cena.respirar + 1.4, cena.respirar + 4.6) * volta,
-    deslocamento: -16 * rampa(t, cena.fuga + 0.3, cena.fuga + 3) * volta,
-    rotacao: rampa(t, cena.girar + 0.4, cena.girar + 3) * volta,
-    respiracao:
-      t > cena.sustentacao && t < cena.encerramento
-        ? ((1 - Math.cos((2 * Math.PI * (t - cena.sustentacao)) / 6)) / 2) * 0.6
-        : 0,
-  };
-};
-
-const calcularDestaques = (t: number): Destaques => ({
+const calcularDestaques = (t: number): DestaquesFoto => ({
   pes: janela(t, cena.posicaoInicial, cena.maos),
   maos: janela(t, cena.maos, cena.cresca),
   coluna: janela(t, cena.cresca, cena.cotovelos) * 0.85,
   costelasEsquerda: janela(t, cena.respirar + 1, cena.encerramento) * 0.9,
   escapulas: janela(t, cena.terminar + 3, cena.fique) * 0.8,
 });
+
+const calcularCrescimento = (t: number) =>
+  (0.7 * rampa(t, cena.cresca + 1.2, cena.cresca + 3.8) +
+    0.3 * rampa(t, cena.terminar + 0.6, cena.terminar + 2.8)) *
+  (1 - rampa(t, cena.encerramento + 0.8, cena.encerramento + 3.5));
 
 type Passo = {
   inicio: number;
@@ -132,24 +112,24 @@ export const CorrecaoPostural: React.FC = () => {
   const { fps } = useVideoConfig();
   const t = frame / fps;
 
+  // Abertura com a coluna curva; dissolve para a coluna alinhada na posição inicial.
+  const curva =
+    1 - rampa(t, cena.posicaoInicial - 0.6, cena.posicaoInicial + 0.9);
+
   return (
     <AbsoluteFill
-      style={{
-        background: `radial-gradient(ellipse at 50% 40%, ${cores.fundoLuz} 0%, ${cores.fundo} 65%)`,
-        fontFamily: fonteTexto,
-      }}
+      style={{ backgroundColor: cores.fundo, fontFamily: fonteTexto }}
     >
-      <Esqueleto
-        pose={calcularPose(t)}
+      <EsqueletoFoto
+        imagem="costas-neutro.jpg"
         destaques={calcularDestaques(t)}
-        style={{
-          position: "absolute",
-          left: ESQ.left,
-          top: ESQ.top,
-          width: 600 * ESQ.escala,
-          height: 900 * ESQ.escala,
-        }}
+        crescimento={calcularCrescimento(t)}
       />
+      {curva > 0 ? (
+        <AbsoluteFill style={{ opacity: curva }}>
+          <EsqueletoFoto imagem="costas-curva-a.jpg" />
+        </AbsoluteFill>
+      ) : null}
 
       <Lados />
       <Abertura />
@@ -158,6 +138,7 @@ export const CorrecaoPostural: React.FC = () => {
       ))}
       <SetasMaos />
       <SetaCima inicio={cena.cresca + 0.6} fim={cena.cotovelos} />
+      <EviteFaca inicio={cena.cresca + 0.8} fim={cena.cotovelos} />
       <Legendas />
 
       <Audio
@@ -168,6 +149,21 @@ export const CorrecaoPostural: React.FC = () => {
       <Audio
         src={staticFile("narracao/audio2-exercicio.mp3")}
         from={A2 * fps}
+        premountFor={fps}
+      />
+      <Audio
+        src={staticFile("narracao/aviso-faltam-30.mp3")}
+        from={Math.round(AVISO_30 * fps)}
+        premountFor={fps}
+      />
+      <Audio
+        src={staticFile("narracao/aviso-faltam-10.mp3")}
+        from={Math.round(AVISO_10 * fps)}
+        premountFor={fps}
+      />
+      <Audio
+        src={staticFile("narracao/audio3-encerramento.mp3")}
+        from={Math.round(A3 * fps)}
         premountFor={fps}
       />
       <Audio src={staticFile("musica/fundo-calmo.wav")} volume={0.22} />
@@ -191,9 +187,9 @@ const Lados: React.FC = () => {
     <div
       style={{
         position: "absolute",
-        top: 780,
-        left: 590,
-        width: 740,
+        top: 725,
+        left: 560,
+        width: 800,
         display: "flex",
         justifyContent: "space-between",
         color: cores.textoSuave,
@@ -224,7 +220,7 @@ const Abertura: React.FC = () => {
         position: "absolute",
         left: 120,
         top: 360,
-        width: 720,
+        width: 620,
         color: cores.texto,
         opacity: interpolate(
           frame,
@@ -247,7 +243,7 @@ const Abertura: React.FC = () => {
       </div>
       <div
         style={{
-          fontSize: 68,
+          fontSize: 64,
           fontWeight: 800,
           lineHeight: 1.05,
           marginTop: 12,
@@ -312,7 +308,7 @@ const EtiquetaPasso: React.FC<{ passo: Passo }> = ({ passo }) => {
         position: "absolute",
         left: 120,
         top: 400,
-        width: 600,
+        width: 580,
         color: cores.texto,
         opacity: entrada * saida,
         translate: `0 ${(1 - entrada) * 24}px`,
@@ -330,7 +326,7 @@ const EtiquetaPasso: React.FC<{ passo: Passo }> = ({ passo }) => {
       </div>
       <div
         style={{
-          fontSize: 64,
+          fontSize: 60,
           fontWeight: 800,
           marginTop: 10,
           lineHeight: 1.05,
@@ -352,7 +348,7 @@ const EtiquetaPasso: React.FC<{ passo: Passo }> = ({ passo }) => {
   );
 };
 
-// Setas para baixo sobre as mãos: "apoie o peso nelas".
+// Setas para baixo ao lado das mãos: "apoie o peso nelas".
 const SetasMaos: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -366,8 +362,8 @@ const SetasMaos: React.FC = () => {
   });
   return (
     <>
-      {[183, 417].map((x) => {
-        const p = naTela(x + (x < 300 ? -62 : 62), 582);
+      {[770, 1230].map((x) => {
+        const p = naFoto(x, 690);
         return (
           <svg
             key={x}
@@ -375,7 +371,7 @@ const SetasMaos: React.FC = () => {
             style={{
               position: "absolute",
               left: p.x - 20,
-              top: p.y - 70 + desce,
+              top: p.y - 80 + desce,
               width: 40,
               height: 60,
               opacity: opacidade,
@@ -415,7 +411,7 @@ const SetaCima: React.FC<{ inicio: number; fim: number }> = ({
       style={{
         position: "absolute",
         left: 960 - 35,
-        top: 4,
+        top: 0,
         width: 70,
         height: 110,
         opacity: opacidade,
@@ -443,6 +439,144 @@ const SetaCima: React.FC<{ inicio: number; fim: number }> = ({
   );
 };
 
+// Vista de lado: "evite" (imagem curvada) × "faça" (lateral correta).
+// Recorte da imagem lateral (2000 × 1116): x 600–1280, y 30–1110.
+const RECORTE = { x: 600, y: 30, largura: 680, altura: 1080 };
+const CARTAO = 290;
+
+const QuadroLado: React.FC<{ imagem: string | null }> = ({ imagem }) => {
+  const escala = CARTAO / RECORTE.largura;
+  const altura = RECORTE.altura * escala;
+  if (!imagem) {
+    return (
+      <div
+        style={{
+          width: CARTAO,
+          height: altura,
+          borderRadius: 16,
+          border: `3px dashed ${cores.textoSuave}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          color: cores.textoSuave,
+          fontSize: 24,
+          lineHeight: 1.4,
+          padding: 20,
+        }}
+      >
+        Imagem lateral correta
+        <br />
+        (aguardando)
+      </div>
+    );
+  }
+  return (
+    <div
+      style={{
+        width: CARTAO,
+        height: altura,
+        borderRadius: 16,
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
+      <Img
+        src={staticFile(`esqueleto/${imagem}`)}
+        style={{
+          position: "absolute",
+          width: 2000 * escala,
+          height: 1116 * escala,
+          left: -RECORTE.x * escala,
+          top: -RECORTE.y * escala,
+        }}
+      />
+    </div>
+  );
+};
+
+const Selo: React.FC<{ tipo: "evite" | "faca" }> = ({ tipo }) => {
+  const cor = tipo === "evite" ? "#FF6B6B" : cores.verde;
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        marginBottom: 14,
+        color: cor,
+        fontSize: 30,
+        fontWeight: 800,
+        letterSpacing: 3,
+      }}
+    >
+      <span
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          backgroundColor: cor,
+          color: cores.fundo,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 26,
+        }}
+      >
+        {tipo === "evite" ? "✕" : "✓"}
+      </span>
+      {tipo === "evite" ? "EVITE" : "FAÇA"}
+    </div>
+  );
+};
+
+const EviteFaca: React.FC<{ inicio: number; fim: number }> = ({
+  inicio,
+  fim,
+}) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const opacidade = janela(t, inicio, fim);
+  if (opacidade === 0) return null;
+  const entrada = (atraso: number) =>
+    interpolate(t, [inicio + atraso, inicio + atraso + 0.7], [0, 1], {
+      ...clamp,
+      easing: suave,
+    });
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: 1235,
+        top: 190,
+        display: "flex",
+        gap: 30,
+        opacity: opacidade,
+      }}
+    >
+      <div
+        style={{
+          opacity: entrada(0),
+          translate: `${(1 - entrada(0)) * 40}px 0`,
+        }}
+      >
+        <Selo tipo="evite" />
+        <QuadroLado imagem="lado-inicial.jpg" />
+      </div>
+      <div
+        style={{
+          opacity: entrada(0.5),
+          translate: `${(1 - entrada(0.5)) * 40}px 0`,
+        }}
+      >
+        <Selo tipo="faca" />
+        <QuadroLado imagem={null} />
+      </div>
+    </div>
+  );
+};
+
 const Legendas: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -459,7 +593,7 @@ const Legendas: React.FC = () => {
     <div
       style={{
         position: "absolute",
-        bottom: 48,
+        bottom: 40,
         width: "100%",
         display: "flex",
         justifyContent: "center",
@@ -470,7 +604,7 @@ const Legendas: React.FC = () => {
         style={{
           maxWidth: 1300,
           textAlign: "center",
-          backgroundColor: "rgba(0, 0, 0, 0.62)",
+          backgroundColor: "rgba(0, 0, 0, 0.66)",
           color: cores.texto,
           fontSize: 40,
           fontWeight: 600,
