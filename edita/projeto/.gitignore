@@ -11,3 +11,6 @@ out
 
 # whisper.cpp local (binário e modelos)
 whisper.cpp
+
+# Modelo anatômico pesado (64 MB): fica só local
+public/modelos3d/anatomico/scene.bin

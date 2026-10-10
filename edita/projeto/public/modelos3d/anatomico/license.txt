@@ -1,0 +1,11 @@
+Model Information:
+* title:	anatomical skeleton
+* source:	https://sketchfab.com/3d-models/anatomical-skeleton-6af32b8cd84b412cbc775b1f318761d7
+* author:	PEREGRUZ (https://sketchfab.com/PEREGRUZ)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "anatomical skeleton" (https://sketchfab.com/3d-models/anatomical-skeleton-6af32b8cd84b412cbc775b1f318761d7) by PEREGRUZ (https://sketchfab.com/PEREGRUZ) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

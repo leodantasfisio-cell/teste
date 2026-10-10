@@ -1,0 +1,11 @@
+Modelos 3D (licença CC BY 4.0 — uso comercial permitido, com crédito ao autor)
+
+lowpoly/skeleton.glb
+  "Lowpoly Human Skeleton (Rigged)" por Void (https://sketchfab.com/Void.com)
+  https://sketchfab.com/3d-models/lowpoly-human-skeleton-rigged-08ab10e2a78549ab86e1b6129678b3aa
+  CC BY 4.0 — http://creativecommons.org/licenses/by/4.0/
+
+anatomico/scene.gltf
+  "anatomical skeleton" por PEREGRUZ (https://sketchfab.com/PEREGRUZ)
+  https://sketchfab.com/3d-models/anatomical-skeleton-6af32b8cd84b412cbc775b1f318761d7
+  CC BY 4.0 — http://creativecommons.org/licenses/by/4.0/

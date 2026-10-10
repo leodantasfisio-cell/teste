@@ -2,6 +2,7 @@ import { CalculateMetadataFunction, Composition } from "remotion";
 import { Teste } from "./Teste";
 import { CorrecaoPostural } from "./correcao/CorrecaoPostural";
 import { DURACAO } from "./correcao/roteiro";
+import { ModeloTeste } from "./modelo3d/ModeloTeste";
 
 type Props = {};
 
@@ -36,6 +37,19 @@ export const MyComposition = () => {
         fps={30}
         width={1920}
         height={1080}
+      />
+      <Composition
+        id="ModeloTeste"
+        component={ModeloTeste}
+        durationInFrames={30}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          arquivo: "modelos3d/lowpoly/skeleton.glb",
+          vista: "costas" as const,
+          marfim: false,
+        }}
       />
     </>
   );
