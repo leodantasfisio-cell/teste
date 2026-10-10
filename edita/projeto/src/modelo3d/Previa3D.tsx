@@ -44,7 +44,8 @@ export const Previa3D: React.FC<{ vista?: "costas" | "lado" }> = ({
         style={{
           position: "absolute",
           left: 120,
-          top: 420,
+          top: 400,
+          width: 520,
           color: cores.texto,
           opacity: opEtiqueta,
         }}
@@ -59,7 +60,14 @@ export const Previa3D: React.FC<{ vista?: "costas" | "lado" }> = ({
         >
           {etiqueta.kicker}
         </div>
-        <div style={{ fontSize: 60, fontWeight: 800, marginTop: 10 }}>
+        <div
+          style={{
+            fontSize: 56,
+            fontWeight: 800,
+            marginTop: 10,
+            lineHeight: 1.05,
+          }}
+        >
           {etiqueta.titulo}
         </div>
       </div>

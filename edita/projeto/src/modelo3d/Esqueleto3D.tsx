@@ -55,6 +55,7 @@ const X = new THREE.Vector3(1, 0, 0);
 const Y = new THREE.Vector3(0, 1, 0);
 const Z = new THREE.Vector3(0, 0, 1);
 const grau = THREE.MathUtils.degToRad;
+const CORRECAO_CABECA = -14;
 
 /** Gira o osso em torno de um eixo do mundo, preservando a hierarquia. */
 const girarNoMundo = (
@@ -152,6 +153,9 @@ const aplicarPose = (m: Modelo, pose: PoseExercicio) => {
     girarNoMundo(o[`antebraco${lado}`], X, grau(-40));
   }
 
+  // A cabeça vem levemente virada no arquivo original: alinha com o tronco.
+  girarNoMundo(o.cabeca, Y, grau(CORRECAO_CABECA));
+
   // Cresça: alonga os segmentos da coluna (sem esticar a cabeça).
   const alonga = 1 + 0.05 * pose.crescer;
   for (const k of ["coluna2", "coluna3", "pescoco"])
@@ -193,7 +197,7 @@ const Cena: React.FC<{
   aplicarPose(modelo, pose);
 
   useEffect(() => {
-    camera.lookAt(0, 0.62, vistaLado ? 0.25 : 0);
+    camera.lookAt(0, 0.7, vistaLado ? 0.25 : 0);
     camera.updateProjectionMatrix();
     gl.shadowMap.enabled = true;
     gl.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -239,7 +243,7 @@ export const Esqueleto3D: React.FC<{
   const { width, height } = useVideoConfig();
   const { modelo, espera } = useModelo();
   const posicao: [number, number, number] =
-    vista === "costas" ? [0, 0.8, -3.4] : [3.4, 0.8, 0.25];
+    vista === "costas" ? [0, 0.85, -3.9] : [3.9, 0.85, 0.25];
   return (
     <ThreeCanvas
       width={width}
