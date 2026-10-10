@@ -2,15 +2,19 @@ import { Audio } from "@remotion/media";
 import {
   AbsoluteFill,
   Easing,
-  Img,
   interpolate,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import {
+  Esqueleto3D,
+  type Destaques3D,
+  type Pose3D,
+  type Setas3D,
+} from "../modelo3d/Esqueleto3D";
 import { Chamada } from "./Chamada";
 import { cores } from "./cores";
-import { EsqueletoFoto, naFoto, type DestaquesFoto } from "./EsqueletoFoto";
 import { fonteTexto } from "./fontes";
 import { Logo } from "./Logo";
 import {
@@ -39,20 +43,70 @@ const rampa = (t: number, a: number, b: number) =>
 const janela = (t: number, a: number, b: number) =>
   interpolate(t, [a, a + 0.4, b - 0.4, b], [0, 1, 1, 0], clamp);
 
-const calcularDestaques = (t: number): DestaquesFoto => ({
+/** Quanto a câmera está de lado (0 = costas, 1 = lado esquerdo): na sustentação, de 15 a 30 s e de 45 a 60 s. */
+const ladoSustentacao = (t: number) => {
+  const gira = (a: number, b: number) =>
+    rampa(t, a, a + 1.4) - rampa(t, b - 1.4, b);
+  return (
+    gira(SUST_INICIO + 15, SUST_INICIO + 30) +
+    gira(SUST_INICIO + 45, SUST_FIM + 0.8)
+  );
+};
+
+const calcularPose = (t: number): Pose3D => {
+  // Tudo volta à posição inicial depois de "Pode relaxar".
+  const volta = 1 - rampa(t, cena.encerramento + 0.8, cena.encerramento + 3.5);
+  return {
+    curva: 1 - rampa(t, cena.posicaoInicial - 0.6, cena.posicaoInicial + 1.6),
+    crescer:
+      (0.7 * rampa(t, cena.cresca + 1.2, cena.cresca + 3.8) +
+        0.3 * rampa(t, cena.terminar + 0.6, cena.terminar + 2.8)) *
+      volta,
+    cotovelos: rampa(t, cena.cotovelos + 3, cena.cotovelos + 5.2) * volta,
+    deslocar: rampa(t, cena.fuga + 0.3, cena.fuga + 3) * volta,
+    girar: rampa(t, cena.girar + 0.4, cena.girar + 3) * volta,
+    ombros: rampa(t, cena.terminar + 3, cena.terminar + 5) * volta,
+    // Respiração calma durante a sustentação: uma a cada 6 s.
+    respirar:
+      t > SUST_INICIO && t < SUST_FIM
+        ? (1 - Math.cos((2 * Math.PI * (t - SUST_INICIO)) / 6)) / 2
+        : 0,
+  };
+};
+
+const calcularDestaques = (t: number): Destaques3D => ({
   pes: janela(t, cena.posicaoInicial, cena.maos),
   maos: janela(t, cena.maos, cena.cresca),
   coluna: janela(t, cena.cresca, cena.cotovelos),
-  costelasEsquerda: janela(t, cena.respirar + 1, cena.encerramento) * 0.9,
-  escapulas: janela(t, cena.terminar + 3, cena.fique),
   cotovelos: janela(t, cena.cotovelos + 2.5, cena.lombar),
   lombar: janela(t, cena.lombar + 1.5, cena.respirar),
+  costelasEsquerda: janela(t, cena.respirar + 1, cena.encerramento) * 0.9,
+  escapulas: janela(t, cena.terminar + 3, cena.fique),
 });
 
-const calcularCrescimento = (t: number) =>
-  (0.7 * rampa(t, cena.cresca + 1.2, cena.cresca + 3.8) +
-    0.3 * rampa(t, cena.terminar + 0.6, cena.terminar + 2.8)) *
-  (1 - rampa(t, cena.encerramento + 0.8, cena.encerramento + 3.5));
+const calcularSetas = (t: number): Setas3D => {
+  const progresso = (a: number, dur: number) =>
+    interpolate(t, [a, a + dur], [0, 1], { ...clamp, easing: suave });
+  return {
+    maos:
+      janela(t, cena.maos + 1.2, cena.cresca) * progresso(cena.maos + 1.2, 0.8),
+    cima: Math.max(
+      janela(t, cena.cresca + 0.6, cena.cotovelos) *
+        progresso(cena.cresca + 0.6, 1.1),
+      janela(t, cena.terminar + 0.4, cena.fique) *
+        progresso(cena.terminar + 0.4, 1.1),
+    ),
+    esquerda: janela(t, cena.fuga, cena.girar) * progresso(cena.fuga, 1.4),
+    giro:
+      janela(t, cena.girar, cena.terminar) * progresso(cena.girar + 0.2, 1.6),
+    chao:
+      Math.max(
+        janela(t, cena.posicaoInicial + 0.3, cena.maos),
+        janela(t, cena.maos, cena.encerramento) * 0.35,
+      ) *
+      (1 - ladoSustentacao(t)),
+  };
+};
 
 type Passo = {
   inicio: number;
@@ -126,94 +180,73 @@ export const CorrecaoPostural: React.FC = () => {
   const { fps } = useVideoConfig();
   const t = frame / fps;
 
-  // Abertura com a coluna curva; dissolve para a coluna alinhada na posição inicial.
-  const curva =
-    1 - rampa(t, cena.posicaoInicial - 0.6, cena.posicaoInicial + 0.9);
-
   return (
     <AbsoluteFill
       style={{ backgroundColor: cores.fundo, fontFamily: fonteTexto }}
     >
-      <EsqueletoFoto
-        imagem="costas-neutro.jpg"
+      <Esqueleto3D
+        pose={calcularPose(t)}
         destaques={calcularDestaques(t)}
-        crescimento={calcularCrescimento(t)}
+        setas={calcularSetas(t)}
+        lado={ladoSustentacao(t)}
       />
-      {ladoSustentacao(t) > 0 ? (
-        <AbsoluteFill style={{ opacity: ladoSustentacao(t) }}>
-          <EsqueletoFoto imagem="lado-correto.jpg" />
-        </AbsoluteFill>
-      ) : null}
-      {curva > 0 ? (
-        <AbsoluteFill style={{ opacity: curva }}>
-          <EsqueletoFoto imagem="costas-curva-a.jpg" />
-        </AbsoluteFill>
-      ) : null}
 
       <Lados />
       <Abertura />
       {passos.map((p) => (
         <EtiquetaPasso key={p.kicker} passo={p} />
       ))}
-      <SetasMaos />
-      <SetaCima inicio={cena.cresca + 0.6} fim={cena.cotovelos} />
-      <EviteFaca inicio={cena.cresca + 0.8} fim={cena.respirar} />
-      <EviteFaca inicio={cena.terminar + 0.8} fim={cena.sustentacao} />
-      <SetaCima inicio={cena.terminar + 0.4} fim={cena.fique} />
-      <SetaLado />
-      <SetaGiro />
-      <Cronometro />
-      <Encerramento />
-      <Chamada
-        texto="Cotovelos um pouco à frente"
-        alvo={naFoto(828, 555)}
-        ancora={{ x: 735, y: 680 }}
-        inicio={cena.cotovelos + 3}
-        fim={cena.lombar}
-      />
-      <Chamada
-        texto="Curvinha natural da lombar"
-        alvo={naFoto(1000, 600)}
-        ancora={{ x: 760, y: 680 }}
-        inicio={cena.lombar + 2}
-        fim={cena.respirar}
-      />
-      <Chamada
-        texto="Encha este lado"
-        alvo={naFoto(905, 450)}
-        ancora={{ x: 760, y: 250 }}
-        inicio={cena.respirar + 1.4}
-        fim={cena.fuga + 0.2}
-      />
-      <Chamada
-        texto="Ombros baixos"
-        alvo={naFoto(890, 300)}
-        ancora={{ x: 760, y: 250 }}
-        inicio={cena.terminar + 3}
-        fim={cena.fique}
-      />
-      <LinhasChao />
       <Chamada
         texto="Pés firmes no chão"
-        alvo={naFoto(815, 1035)}
-        ancora={{ x: 690, y: 880 }}
+        alvo={{ x: 880, y: 840 }}
+        ancora={{ x: 690, y: 860 }}
         inicio={cena.posicaoInicial + 0.5}
         fim={cena.maos}
       />
       <Chamada
         texto="Mãos apoiadas nas coxas"
-        alvo={naFoto(835, 690)}
-        ancora={{ x: 720, y: 660 }}
+        alvo={{ x: 800, y: 600 }}
+        ancora={{ x: 700, y: 650 }}
         inicio={cena.maos + 0.6}
         fim={cena.cresca}
       />
       <Chamada
         texto="Coluna alongada"
-        alvo={naFoto(1000, 360)}
-        ancora={{ x: 800, y: 280 }}
+        alvo={{ x: 965, y: 370 }}
+        ancora={{ x: 790, y: 270 }}
         inicio={cena.cresca + 1}
         fim={cena.cotovelos}
       />
+      <Chamada
+        texto="Cotovelos um pouco à frente"
+        alvo={{ x: 850, y: 470 }}
+        ancora={{ x: 720, y: 630 }}
+        inicio={cena.cotovelos + 3}
+        fim={cena.lombar}
+      />
+      <Chamada
+        texto="Curvinha natural da lombar"
+        alvo={{ x: 975, y: 505 }}
+        ancora={{ x: 760, y: 700 }}
+        inicio={cena.lombar + 2}
+        fim={cena.respirar}
+      />
+      <Chamada
+        texto="Encha este lado"
+        alvo={{ x: 915, y: 410 }}
+        ancora={{ x: 760, y: 270 }}
+        inicio={cena.respirar + 1.4}
+        fim={cena.fuga + 0.2}
+      />
+      <Chamada
+        texto="Ombros baixos"
+        alvo={{ x: 895, y: 305 }}
+        ancora={{ x: 760, y: 250 }}
+        inicio={cena.terminar + 3}
+        fim={cena.fique}
+      />
+      <Cronometro />
+      <Encerramento />
       <Logo
         left={120}
         top={160}
@@ -282,7 +315,7 @@ const Lados: React.FC = () => {
     <div
       style={{
         position: "absolute",
-        top: 725,
+        top: 800,
         left: 560,
         width: 800,
         display: "flex",
@@ -452,214 +485,6 @@ const EtiquetaPasso: React.FC<{ passo: Passo }> = ({ passo }) => {
   );
 };
 
-// Setas para baixo ao lado das mãos: "apoie o peso nelas".
-const SetasMaos: React.FC = () => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
-  const a = cena.maos + 1.2;
-  const opacidade = janela(t, a, cena.cresca);
-  if (opacidade === 0) return null;
-  const desce = interpolate(t, [a, a + 0.8], [-30, 0], {
-    ...clamp,
-    easing: suave,
-  });
-  return (
-    <>
-      {[770, 1230].map((x) => {
-        const p = naFoto(x, 690);
-        return (
-          <svg
-            key={x}
-            viewBox="0 0 40 60"
-            style={{
-              position: "absolute",
-              left: p.x - 20,
-              top: p.y - 80 + desce,
-              width: 40,
-              height: 60,
-              opacity: opacidade,
-            }}
-          >
-            <path
-              d="M 20 4 L 20 50 M 6 36 L 20 52 L 34 36"
-              fill="none"
-              stroke={cores.destaque}
-              strokeWidth={6}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        );
-      })}
-    </>
-  );
-};
-
-const SetaCima: React.FC<{ inicio: number; fim: number }> = ({
-  inicio,
-  fim,
-}) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
-  const opacidade = janela(t, inicio, fim);
-  if (opacidade === 0) return null;
-  const cresce = interpolate(t, [inicio, inicio + 1.1], [0, 1], {
-    ...clamp,
-    easing: suave,
-  });
-  return (
-    <svg
-      viewBox="0 0 80 126"
-      style={{
-        position: "absolute",
-        left: 960 - 35,
-        top: 0,
-        width: 70,
-        height: 110,
-        opacity: opacidade,
-      }}
-    >
-      <line
-        x1={40}
-        y1={118}
-        x2={40}
-        y2={118 - 88 * cresce}
-        stroke={cores.destaque}
-        strokeWidth={10}
-        strokeLinecap="round"
-      />
-      <path
-        d="M 14 52 L 40 16 L 66 52"
-        fill="none"
-        stroke={cores.destaque}
-        strokeWidth={10}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        transform={`translate(0 ${88 * (1 - cresce)})`}
-      />
-    </svg>
-  );
-};
-
-// Vista de lado: "evite" (imagem curvada) × "faça" (lateral correta).
-// Recorte da imagem lateral (2000 × 1116): x 600–1280, y 30–1110.
-const RECORTE = { x: 600, y: 30, largura: 680, altura: 1080 };
-const CARTAO = 290;
-
-const QuadroLado: React.FC<{ imagem: string; cor: string }> = ({
-  imagem,
-  cor,
-}) => {
-  const escala = CARTAO / RECORTE.largura;
-  return (
-    <div
-      style={{
-        width: CARTAO,
-        height: RECORTE.altura * escala,
-        borderRadius: 16,
-        overflow: "hidden",
-        position: "relative",
-        border: `3px solid ${cor}`,
-      }}
-    >
-      <Img
-        src={staticFile(`esqueleto/${imagem}`)}
-        style={{
-          position: "absolute",
-          width: 2000 * escala,
-          height: 1116 * escala,
-          left: -RECORTE.x * escala,
-          top: -RECORTE.y * escala,
-        }}
-      />
-    </div>
-  );
-};
-
-const Selo: React.FC<{ tipo: "evite" | "faca" }> = ({ tipo }) => {
-  const cor = tipo === "evite" ? "#FF6B6B" : cores.verde;
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        marginBottom: 14,
-        color: cor,
-        fontSize: 30,
-        fontWeight: 800,
-        letterSpacing: 3,
-      }}
-    >
-      <span
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          backgroundColor: cor,
-          color: cores.fundo,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 26,
-        }}
-      >
-        {tipo === "evite" ? "✕" : "✓"}
-      </span>
-      {tipo === "evite" ? "EVITE" : "FAÇA"}
-    </div>
-  );
-};
-
-const EviteFaca: React.FC<{ inicio: number; fim: number }> = ({
-  inicio,
-  fim,
-}) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
-  const opacidade = janela(t, inicio, fim);
-  if (opacidade === 0) return null;
-  const entrada = (atraso: number) =>
-    interpolate(t, [inicio + atraso, inicio + atraso + 0.7], [0, 1], {
-      ...clamp,
-      easing: suave,
-    });
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: 1235,
-        top: 190,
-        display: "flex",
-        gap: 30,
-        opacity: opacidade,
-      }}
-    >
-      <div
-        style={{
-          opacity: entrada(0),
-          translate: `${(1 - entrada(0)) * 40}px 0`,
-        }}
-      >
-        <Selo tipo="evite" />
-        <QuadroLado imagem="lado-inicial.jpg" cor="#FF6B6B" />
-      </div>
-      <div
-        style={{
-          opacity: entrada(0.5),
-          translate: `${(1 - entrada(0.5)) * 40}px 0`,
-        }}
-      >
-        <Selo tipo="faca" />
-        <QuadroLado imagem="lado-correto.jpg" cor={cores.verde} />
-      </div>
-    </div>
-  );
-};
-
 const Legendas: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -699,150 +524,6 @@ const Legendas: React.FC = () => {
         {atual.text}
       </div>
     </div>
-  );
-};
-
-// Linhas de contato com o chão sob os pés: "pés firmes no chão".
-const LinhasChao: React.FC = () => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
-  const forte = janela(t, cena.posicaoInicial + 0.3, cena.maos);
-  const lembrete = janela(t, cena.maos, cena.encerramento) * 0.35;
-  const opacidade = Math.max(forte, lembrete) * (1 - ladoSustentacao(t));
-  if (opacidade === 0) return null;
-  const abre = interpolate(
-    t,
-    [cena.posicaoInicial + 0.3, cena.posicaoInicial + 1.1],
-    [0, 1],
-    {
-      ...clamp,
-      easing: suave,
-    },
-  );
-  return (
-    <svg
-      width={1920}
-      height={1080}
-      style={{ position: "absolute", inset: 0, opacity: opacidade }}
-    >
-      {[820, 1180].map((x) => {
-        const c = naFoto(x, 1050);
-        const meia = 55 * abre;
-        return (
-          <line
-            key={x}
-            x1={c.x - meia}
-            x2={c.x + meia}
-            y1={c.y}
-            y2={c.y}
-            stroke={cores.destaque}
-            strokeWidth={6}
-            strokeLinecap="round"
-            style={{ filter: "drop-shadow(0 0 8px rgba(242, 184, 75, 0.9))" }}
-          />
-        );
-      })}
-    </svg>
-  );
-};
-
-/** Na sustentação, a vista de lado aparece de 15 a 30 s e de 45 a 60 s. */
-const ladoSustentacao = (t: number) =>
-  janela(t, SUST_INICIO + 15, SUST_INICIO + 30) +
-  janela(t, SUST_INICIO + 45, SUST_FIM);
-
-// Seta horizontal para a esquerda: "leve o tronco para o lado esquerdo".
-const SetaLado: React.FC = () => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
-  const opacidade = janela(t, cena.fuga, cena.girar);
-  if (opacidade === 0) return null;
-  const anda = interpolate(t, [cena.fuga, cena.fuga + 1.2], [0, 1], {
-    ...clamp,
-    easing: suave,
-  });
-  const y = 300;
-  const x0 = 1060;
-  const x1 = 1060 - 230 * anda;
-  return (
-    <svg
-      width={1920}
-      height={1080}
-      style={{ position: "absolute", inset: 0, opacity: opacidade }}
-    >
-      <line
-        x1={x0}
-        y1={y}
-        x2={x1}
-        y2={y}
-        stroke={cores.azul}
-        strokeWidth={10}
-        strokeLinecap="round"
-      />
-      <path
-        d={`M ${x1 + 30} ${y - 26} L ${x1} ${y} L ${x1 + 30} ${y + 26}`}
-        fill="none"
-        stroke={cores.azul}
-        strokeWidth={10}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-};
-
-// Seta curva sobre os ombros: "gire o tronco para a esquerda".
-// Visto de costas, o lado de trás da elipse anda da direita para a esquerda.
-const SetaGiro: React.FC = () => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
-  const opacidade = janela(t, cena.girar, cena.terminar);
-  if (opacidade === 0) return null;
-  const anda = interpolate(t, [cena.girar + 0.2, cena.girar + 1.6], [0, 1], {
-    ...clamp,
-    easing: suave,
-  });
-  const cx = 960;
-  const cy = 330;
-  const rx = 200;
-  const ry = 50;
-  // Arco superior, de 20° (direita) até 20° + 140° * anda.
-  const pontos = Array.from({ length: 40 }, (_, i) => {
-    const a = ((-20 - 140 * anda * (i / 39)) * Math.PI) / 180;
-    return [cx + rx * Math.cos(a), cy + ry * Math.sin(a)];
-  });
-  const [px, py] = pontos[pontos.length - 1];
-  const [qx, qy] = pontos[pontos.length - 2];
-  const ang = Math.atan2(py - qy, px - qx);
-  const ponta = (d: number) =>
-    `${px - 30 * Math.cos(ang + d)} ${py - 30 * Math.sin(ang + d)}`;
-  return (
-    <svg
-      width={1920}
-      height={1080}
-      style={{ position: "absolute", inset: 0, opacity: opacidade }}
-    >
-      <polyline
-        points={pontos.map(([x, y]) => `${x},${y}`).join(" ")}
-        fill="none"
-        stroke={cores.destaque}
-        strokeWidth={10}
-        strokeLinecap="round"
-      />
-      {anda > 0.05 ? (
-        <path
-          d={`M ${ponta(0.5)} L ${px} ${py} L ${ponta(-0.5)}`}
-          fill="none"
-          stroke={cores.destaque}
-          strokeWidth={10}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      ) : null}
-    </svg>
   );
 };
 
