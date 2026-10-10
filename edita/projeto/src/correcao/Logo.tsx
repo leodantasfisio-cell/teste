@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 
-// Logo LAB ORTORIO: usada exatamente como veio (973 × 344, fundo branco), só posicionada e escalada.
+// Logo LAB ORTORIO sem o fundo branco (scripts/logo_sem_fundo.py); desenho e cores originais.
 const PROPORCAO = 344 / 973;
 
 export const Logo: React.FC<{
@@ -32,7 +32,7 @@ export const Logo: React.FC<{
   if (opacidade === 0) return null;
   return (
     <Img
-      src={staticFile("marca/logo-labortorio.jpg")}
+      src={staticFile("marca/logo-labortorio-sem-fundo.png")}
       style={{
         position: "absolute",
         left,
