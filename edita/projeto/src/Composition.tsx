@@ -3,6 +3,7 @@ import { Teste } from "./Teste";
 import { CorrecaoPostural } from "./correcao/CorrecaoPostural";
 import { DURACAO } from "./correcao/roteiro";
 import { ModeloTeste } from "./modelo3d/ModeloTeste";
+import { Previa3D } from "./modelo3d/Previa3D";
 
 type Props = {};
 
@@ -50,6 +51,14 @@ export const MyComposition = () => {
           vista: "costas" as const,
           marfim: false,
         }}
+      />
+      <Composition
+        id="Previa3D"
+        component={Previa3D}
+        durationInFrames={14 * 30}
+        fps={30}
+        width={1920}
+        height={1080}
       />
     </>
   );
