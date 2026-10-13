@@ -2,7 +2,7 @@
 
 Cada camada pinta só os ossos (pixels claros) dentro de uma região,
 para acender coluna, mãos, pés etc. por cima da imagem no Remotion.
-Uso: python3 -I scripts/destaques.py public/esqueleto/costas-neutro.jpg public/esqueleto/destaques
+Uso: python3 -I scripts/destaques.py <imagem> <pasta de saída> [neutro|curva]
 """
 import sys
 from pathlib import Path
@@ -39,7 +39,36 @@ REGIOES = {
 }
 
 
-def main(origem: str, destino: str) -> None:
+def faixa(pontos, meia_largura):
+    """Polígono em volta de uma linha (para seguir a coluna curva)."""
+    esquerda = [(x - meia_largura, y) for x, y in pontos]
+    direita = [(x + meia_largura, y) for x, y in reversed(pontos)]
+    return esquerda + direita
+
+
+# Imagem com escoliose (costas-curva-a.jpg): mesma moldura, mas coluna torta
+# e cotovelo direito mais alto.
+COLUNA_CURVA = [(985, 200), (995, 280), (1010, 340), (1024, 420), (1025, 480), (1015, 540), (1002, 590), (996, 650)]
+REGIOES_CURVA = {
+    "coluna": (AMBAR, [faixa(COLUNA_CURVA, 32)]),
+    "maos": (
+        AMBAR,
+        [
+            ANTEBRACO_MAO,
+            [(1180, 470), (1255, 470), (1235, 600), (1212, 730), (1110, 730), (1118, 640)],
+            FEMUR,
+            espelhar(FEMUR),
+        ],
+    ),
+    "pes": (AMBAR, [PE, espelhar(PE)]),
+    "costelas-esquerda": (AZUL, [[(892, 330), (985, 330), (995, 552), (902, 552)]]),
+    "escapulas": (AMBAR, [[(866, 300), (992, 300), (992, 445), (866, 445)], [(1066, 270), (1146, 270), (1146, 395), (1066, 395)]]),
+    "cotovelos": (AMBAR, [[(790, 520), (870, 520), (870, 612), (790, 612)], [(1175, 458), (1258, 458), (1258, 556), (1175, 556)]]),
+    "lombar": (VERDE, [faixa(COLUNA_CURVA[5:], 36)]),
+}
+
+
+def main(origem: str, destino: str, conjunto: str = "neutro") -> None:
     img = Image.open(origem).convert("RGB")
     rgb = np.asarray(img).astype(float)
     lum = rgb.mean(axis=2)
@@ -47,7 +76,8 @@ def main(origem: str, destino: str) -> None:
     # Ossos: claros e levemente amarelados; o banco é cinza neutro e mais escuro.
     osso = np.clip((lum - 95) / 90, 0, 1) * (sat > 6)
     Path(destino).mkdir(parents=True, exist_ok=True)
-    for nome, (cor, poligonos) in REGIOES.items():
+    regioes = REGIOES_CURVA if conjunto == "curva" else REGIOES
+    for nome, (cor, poligonos) in regioes.items():
         regiao = Image.new("L", img.size, 0)
         desenho = ImageDraw.Draw(regiao)
         for p in poligonos:
@@ -65,4 +95,4 @@ def main(origem: str, destino: str) -> None:
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(*sys.argv[1:4])

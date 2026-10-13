@@ -21,6 +21,7 @@ export const cena = {
   cotovelos: A2 + 16.61,
   lombar: A2 + 26.84,
   respirar: A2 + 35.96,
+  puxeOAr: A2 + 37.34, // a coluna curva dá lugar à coluna reta aqui
   fuga: A2 + 41.44,
   girar: A2 + 47.26,
   terminar: A2 + 52.29,

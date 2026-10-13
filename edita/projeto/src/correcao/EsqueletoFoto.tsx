@@ -54,10 +54,17 @@ const preencher: React.CSSProperties = {
 
 export const EsqueletoFoto: React.FC<{
   imagem: string;
+  /** pasta com as camadas de destaque recortadas desta imagem */
+  pastaDestaques?: string;
   destaques?: DestaquesFoto;
   /** 0–1: alongamento sutil do tronco (crescimento axial) */
   crescimento?: number;
-}> = ({ imagem, destaques = {}, crescimento = 0 }) => {
+}> = ({
+  imagem,
+  pastaDestaques = "destaques",
+  destaques = {},
+  crescimento = 0,
+}) => {
   // Alonga a partir do assento do banco (y = 730 na imagem).
   const origemY = 730 * FOTO.escala;
   return (
@@ -81,7 +88,7 @@ export const EsqueletoFoto: React.FC<{
         return opacidade > 0 ? (
           <Img
             key={chave}
-            src={staticFile(`esqueleto/destaques/${arquivo}.png`)}
+            src={staticFile(`esqueleto/${pastaDestaques}/${arquivo}.png`)}
             style={{
               ...preencher,
               opacity: opacidade,
