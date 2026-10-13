@@ -1,7 +1,7 @@
 import { CalculateMetadataFunction, Composition } from "remotion";
 import { Teste } from "./Teste";
 import { CorrecaoPostural } from "./correcao/CorrecaoPostural";
-import { DURACAO } from "./correcao/roteiro";
+import { criarRoteiro } from "./correcao/roteiro";
 import { ModeloTeste } from "./modelo3d/ModeloTeste";
 import { Previa3D } from "./modelo3d/Previa3D";
 
@@ -34,10 +34,20 @@ export const MyComposition = () => {
       <Composition
         id="CorrecaoPostural"
         component={CorrecaoPostural}
-        durationInFrames={DURACAO * 30}
+        durationInFrames={criarRoteiro("esquerdo").DURACAO * 30}
         fps={30}
         width={1920}
         height={1080}
+        defaultProps={{ lado: "esquerdo" as const }}
+      />
+      <Composition
+        id="CorrecaoPosturalDireito"
+        component={CorrecaoPostural}
+        durationInFrames={criarRoteiro("direito").DURACAO * 30}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{ lado: "direito" as const }}
       />
       <Composition
         id="ModeloTeste"

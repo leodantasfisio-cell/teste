@@ -12,7 +12,20 @@ export const Chamada: React.FC<{
   ancora: { x: number; y: number };
   inicio: number;
   fim: number;
-}> = ({ texto, alvo, ancora, inicio, fim }) => {
+  /** espelha posições (versão do lado direito) e põe a etiqueta à direita do traço */
+  espelhar?: boolean;
+}> = ({
+  texto,
+  alvo: alvoOriginal,
+  ancora: ancoraOriginal,
+  inicio,
+  fim,
+  espelhar = false,
+}) => {
+  const espelha = (p: { x: number; y: number }) =>
+    espelhar ? { x: 1920 - p.x, y: p.y } : p;
+  const alvo = espelha(alvoOriginal);
+  const ancora = espelha(ancoraOriginal);
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -58,7 +71,9 @@ export const Chamada: React.FC<{
       <div
         style={{
           position: "absolute",
-          right: 1920 - ancora.x + 12,
+          ...(espelhar
+            ? { left: ancora.x + 12 }
+            : { right: 1920 - ancora.x + 12 }),
           top: ancora.y,
           translate: "0 -50%",
           whiteSpace: "nowrap",

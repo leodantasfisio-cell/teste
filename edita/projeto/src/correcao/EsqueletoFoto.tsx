@@ -54,6 +54,8 @@ const preencher: React.CSSProperties = {
 
 export const EsqueletoFoto: React.FC<{
   imagem: string;
+  /** pasta das imagens (o lado direito usa as espelhadas) */
+  pasta?: string;
   /** pasta com as camadas de destaque recortadas desta imagem */
   pastaDestaques?: string;
   destaques?: DestaquesFoto;
@@ -61,6 +63,7 @@ export const EsqueletoFoto: React.FC<{
   crescimento?: number;
 }> = ({
   imagem,
+  pasta = "esqueleto",
   pastaDestaques = "destaques",
   destaques = {},
   crescimento = 0,
@@ -82,13 +85,13 @@ export const EsqueletoFoto: React.FC<{
           "radial-gradient(ellipse 48% 60% at 50% 50%, black 80%, transparent 100%)",
       }}
     >
-      <Img src={staticFile(`esqueleto/${imagem}`)} style={preencher} />
+      <Img src={staticFile(`${pasta}/${imagem}`)} style={preencher} />
       {camadas.map(({ chave, arquivo, brilho }) => {
         const opacidade = destaques[chave] ?? 0;
         return opacidade > 0 ? (
           <Img
             key={chave}
-            src={staticFile(`esqueleto/${pastaDestaques}/${arquivo}.png`)}
+            src={staticFile(`${pasta}/${pastaDestaques}/${arquivo}.png`)}
             style={{
               ...preencher,
               opacity: opacidade,

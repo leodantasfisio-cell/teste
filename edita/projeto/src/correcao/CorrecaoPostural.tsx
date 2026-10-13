@@ -1,4 +1,5 @@
 import { Audio } from "@remotion/media";
+import { useMemo } from "react";
 import {
   AbsoluteFill,
   Easing,
@@ -13,15 +14,11 @@ import { EsqueletoFoto, naFoto, type DestaquesFoto } from "./EsqueletoFoto";
 import { fonteTexto } from "./fontes";
 import { Logo } from "./Logo";
 import {
-  A1,
-  A2,
-  A3,
-  AVISO_10,
-  AVISO_30,
-  SUST_FIM,
-  SUST_INICIO,
-  cena,
-  legendas,
+  RoteiroContexto,
+  criarRoteiro,
+  useRoteiro,
+  type Lado,
+  type Roteiro,
 } from "./roteiro";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -38,20 +35,20 @@ const rampa = (t: number, a: number, b: number) =>
 const janela = (t: number, a: number, b: number) =>
   interpolate(t, [a, a + 0.4, b - 0.4, b], [0, 1, 1, 0], clamp);
 
-const calcularDestaques = (t: number): DestaquesFoto => ({
-  pes: janela(t, cena.posicaoInicial, cena.maos),
-  maos: janela(t, cena.maos, cena.cresca),
-  coluna: janela(t, cena.cresca, cena.cotovelos),
-  costelasEsquerda: janela(t, cena.respirar + 1, cena.encerramento) * 0.9,
-  escapulas: janela(t, cena.terminar + 3, cena.fique),
-  cotovelos: janela(t, cena.cotovelos + 2.5, cena.lombar),
-  lombar: janela(t, cena.lombar + 1.5, cena.respirar),
+const calcularDestaques = (r: Roteiro, t: number): DestaquesFoto => ({
+  pes: janela(t, r.cena.posicaoInicial, r.cena.maos),
+  maos: janela(t, r.cena.maos, r.cena.cresca),
+  coluna: janela(t, r.cena.cresca, r.cena.cotovelos),
+  costelasEsquerda: janela(t, r.cena.respirar + 1, r.cena.encerramento) * 0.9,
+  escapulas: janela(t, r.cena.terminar + 3, r.cena.fique),
+  cotovelos: janela(t, r.cena.cotovelos + 2.5, r.cena.lombar),
+  lombar: janela(t, r.cena.lombar + 1.5, r.cena.respirar),
 });
 
-const calcularCrescimento = (t: number) =>
-  (0.7 * rampa(t, cena.cresca + 1.2, cena.cresca + 3.8) +
-    0.3 * rampa(t, cena.terminar + 0.6, cena.terminar + 2.8)) *
-  (1 - rampa(t, cena.encerramento + 0.8, cena.encerramento + 3.5));
+const calcularCrescimento = (r: Roteiro, t: number) =>
+  (0.7 * rampa(t, r.cena.cresca + 1.2, r.cena.cresca + 3.8) +
+    0.3 * rampa(t, r.cena.terminar + 0.6, r.cena.terminar + 2.8)) *
+  (1 - rampa(t, r.cena.encerramento + 0.8, r.cena.encerramento + 3.5));
 
 type Passo = {
   inicio: number;
@@ -61,66 +58,72 @@ type Passo = {
   sub: string;
 };
 
-const passos: Passo[] = [
-  {
-    inicio: cena.posicaoInicial,
-    fim: cena.maos,
-    kicker: "POSIÇÃO INICIAL",
-    titulo: "Sentado no banco",
-    sub: "Pés bem apoiados no chão",
-  },
-  {
-    inicio: cena.maos,
-    fim: cena.cresca,
-    kicker: "PASSO 1 DE 7",
-    titulo: "Mãos nas coxas",
-    sub: "Apoie o peso nelas",
-  },
-  {
-    inicio: cena.cresca,
-    fim: cena.cotovelos,
-    kicker: "PASSO 2 DE 7",
-    titulo: "Cresça",
-    sub: "Estique o corpo para cima",
-  },
-  {
-    inicio: cena.cotovelos,
-    fim: cena.lombar,
-    kicker: "PASSO 3 DE 7",
-    titulo: "Cotovelos à frente",
-    sub: "Mantém a curva do alto das costas",
-  },
-  {
-    inicio: cena.lombar,
-    fim: cena.respirar,
-    kicker: "PASSO 4 DE 7",
-    titulo: "Curvinha da lombar",
-    sub: "Não deixe as costas retas",
-  },
-  {
-    inicio: cena.respirar,
-    fim: cena.girar,
-    kicker: "PASSO 5 DE 7",
-    titulo: "Respire pelo lado esquerdo",
-    sub: "Encha o peito e leve o tronco para a esquerda",
-  },
-  {
-    inicio: cena.girar,
-    fim: cena.terminar,
-    kicker: "PASSO 6 DE 7",
-    titulo: "Gire para a esquerda",
-    sub: "Devagar, sem forçar",
-  },
-  {
-    inicio: cena.terminar,
-    fim: cena.fique,
-    kicker: "PASSO 7 DE 7",
-    titulo: "Cresça mais um pouco",
-    sub: "Ombros baixos e firmes",
-  },
-];
+const criarPassos = (r: Roteiro): Passo[] => {
+  const { cena, lado } = r;
+  const sentido = lado === "direito" ? "direita" : "esquerda";
+  return [
+    {
+      inicio: cena.posicaoInicial,
+      fim: cena.maos,
+      kicker: "POSIÇÃO INICIAL",
+      titulo: "Sentado no banco",
+      sub: "Pés bem apoiados no chão",
+    },
+    {
+      inicio: cena.maos,
+      fim: cena.cresca,
+      kicker: "PASSO 1 DE 7",
+      titulo: "Mãos nas coxas",
+      sub: "Apoie o peso nelas",
+    },
+    {
+      inicio: cena.cresca,
+      fim: cena.cotovelos,
+      kicker: "PASSO 2 DE 7",
+      titulo: "Cresça",
+      sub: "Estique o corpo para cima",
+    },
+    {
+      inicio: cena.cotovelos,
+      fim: cena.lombar,
+      kicker: "PASSO 3 DE 7",
+      titulo: "Cotovelos à frente",
+      sub: "Mantém a curva do alto das costas",
+    },
+    {
+      inicio: cena.lombar,
+      fim: cena.respirar,
+      kicker: "PASSO 4 DE 7",
+      titulo: "Curvinha da lombar",
+      sub: "Não deixe as costas retas",
+    },
+    {
+      inicio: cena.respirar,
+      fim: cena.girar,
+      kicker: "PASSO 5 DE 7",
+      titulo: `Respire pelo lado ${lado}`,
+      sub: `Encha o peito e leve o tronco para a ${sentido}`,
+    },
+    {
+      inicio: cena.girar,
+      fim: cena.terminar,
+      kicker: "PASSO 6 DE 7",
+      titulo: `Gire para a ${sentido}`,
+      sub: "Devagar, sem forçar",
+    },
+    {
+      inicio: cena.terminar,
+      fim: cena.fique,
+      kicker: "PASSO 7 DE 7",
+      titulo: "Cresça mais um pouco",
+      sub: "Ombros baixos e firmes",
+    },
+  ];
+};
 
-export const CorrecaoPostural: React.FC = () => {
+const Conteudo: React.FC = () => {
+  const r = useRoteiro();
+  const { A1, A2, A3, AVISO_10, AVISO_30, SUST_FIM, cena } = r;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -134,29 +137,31 @@ export const CorrecaoPostural: React.FC = () => {
       style={{ backgroundColor: cores.fundo, fontFamily: fonteTexto }}
     >
       <EsqueletoFoto
+        pasta={r.pastaEsqueleto}
         imagem="costas-neutro.jpg"
-        destaques={calcularDestaques(t)}
-        crescimento={calcularCrescimento(t)}
+        destaques={calcularDestaques(r, t)}
+        crescimento={calcularCrescimento(r, t)}
       />
-      {ladoSustentacao(t) > 0 ? (
-        <AbsoluteFill style={{ opacity: ladoSustentacao(t) }}>
-          <EsqueletoFoto imagem="lado-correto.jpg" />
+      {ladoSustentacao(r, t) > 0 ? (
+        <AbsoluteFill style={{ opacity: ladoSustentacao(r, t) }}>
+          <EsqueletoFoto pasta={r.pastaEsqueleto} imagem="lado-correto.jpg" />
         </AbsoluteFill>
       ) : null}
       {curva > 0 ? (
         <AbsoluteFill style={{ opacity: curva }}>
           <EsqueletoFoto
+            pasta={r.pastaEsqueleto}
             imagem="costas-curva-a.jpg"
             pastaDestaques="destaques-curva"
-            destaques={calcularDestaques(t)}
-            crescimento={calcularCrescimento(t)}
+            destaques={calcularDestaques(r, t)}
+            crescimento={calcularCrescimento(r, t)}
           />
         </AbsoluteFill>
       ) : null}
 
       <Lados />
       <Abertura />
-      {passos.map((p) => (
+      {criarPassos(r).map((p) => (
         <EtiquetaPasso key={p.kicker} passo={p} />
       ))}
       <SetasMaos />
@@ -167,6 +172,7 @@ export const CorrecaoPostural: React.FC = () => {
       <Cronometro />
       <Encerramento />
       <Chamada
+        espelhar={r.espelhado}
         texto="Cotovelos um pouco à frente"
         alvo={naFoto(830, 565)}
         ancora={{ x: 735, y: 680 }}
@@ -174,6 +180,7 @@ export const CorrecaoPostural: React.FC = () => {
         fim={cena.lombar}
       />
       <Chamada
+        espelhar={r.espelhado}
         texto="Curvinha natural da lombar"
         alvo={naFoto(1003, 600)}
         ancora={{ x: 760, y: 680 }}
@@ -181,6 +188,7 @@ export const CorrecaoPostural: React.FC = () => {
         fim={cena.respirar}
       />
       <Chamada
+        espelhar={r.espelhado}
         texto="Encha este lado"
         alvo={naFoto(905, 450)}
         ancora={{ x: 760, y: 250 }}
@@ -188,6 +196,7 @@ export const CorrecaoPostural: React.FC = () => {
         fim={cena.fuga + 0.2}
       />
       <Chamada
+        espelhar={r.espelhado}
         texto="Ombros baixos"
         alvo={naFoto(890, 300)}
         ancora={{ x: 760, y: 250 }}
@@ -196,6 +205,7 @@ export const CorrecaoPostural: React.FC = () => {
       />
       <LinhasChao />
       <Chamada
+        espelhar={r.espelhado}
         texto="Pés firmes no chão"
         alvo={naFoto(815, 1035)}
         ancora={{ x: 690, y: 880 }}
@@ -203,6 +213,7 @@ export const CorrecaoPostural: React.FC = () => {
         fim={cena.maos}
       />
       <Chamada
+        espelhar={r.espelhado}
         texto="Mãos apoiadas nas coxas"
         alvo={naFoto(835, 690)}
         ancora={{ x: 720, y: 660 }}
@@ -210,6 +221,7 @@ export const CorrecaoPostural: React.FC = () => {
         fim={cena.cresca}
       />
       <Chamada
+        espelhar={r.espelhado}
         texto="Coluna alongada"
         alvo={naFoto(1015, 360)}
         ancora={{ x: 800, y: 280 }}
@@ -233,12 +245,12 @@ export const CorrecaoPostural: React.FC = () => {
       <Legendas />
 
       <Audio
-        src={staticFile("narracao/audio1-abertura.mp3")}
+        src={staticFile(`${r.pastaNarracao}/audio1-abertura.mp3`)}
         from={A1 * fps}
         premountFor={fps}
       />
       <Audio
-        src={staticFile("narracao/audio2-exercicio.mp3")}
+        src={staticFile(`${r.pastaNarracao}/audio2-exercicio.mp3`)}
         from={A2 * fps}
         premountFor={fps}
       />
@@ -264,20 +276,34 @@ export const CorrecaoPostural: React.FC = () => {
         volume={0.3}
         premountFor={fps}
       />
-      {passos.slice(1).map((p) => (
-        <Audio
-          key={p.kicker}
-          src={staticFile("sfx/pop.wav")}
-          from={Math.round(p.inicio * fps)}
-          volume={0.25}
-          premountFor={fps}
-        />
-      ))}
+      {criarPassos(r)
+        .slice(1)
+        .map((p) => (
+          <Audio
+            key={p.kicker}
+            src={staticFile("sfx/pop.wav")}
+            from={Math.round(p.inicio * fps)}
+            volume={0.25}
+            premountFor={fps}
+          />
+        ))}
     </AbsoluteFill>
   );
 };
 
+/** Vídeo de correção postural; `lado` escolhe narração, imagens e o sentido dos gráficos. */
+export const CorrecaoPostural: React.FC<{ lado: Lado }> = ({ lado }) => {
+  const roteiro = useMemo(() => criarRoteiro(lado), [lado]);
+  return (
+    <RoteiroContexto.Provider value={roteiro}>
+      <Conteudo />
+    </RoteiroContexto.Provider>
+  );
+};
+
 const Lados: React.FC = () => {
+  const r = useRoteiro();
+  const { cena } = r;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   return (
@@ -296,7 +322,7 @@ const Lados: React.FC = () => {
         // Somem quando a vista de lado aparece e no convite final.
         opacity:
           interpolate(frame, [1.2 * fps, 1.8 * fps], [0, 0.8], clamp) *
-          (1 - ladoSustentacao(frame / fps)) *
+          (1 - ladoSustentacao(r, frame / fps)) *
           interpolate(
             frame / fps,
             [cena.inscreva - 0.5, cena.inscreva],
@@ -312,6 +338,8 @@ const Lados: React.FC = () => {
 };
 
 const Abertura: React.FC = () => {
+  const r = useRoteiro();
+  const { A1, cena } = r;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const fim = cena.posicaoInicial - 0.1;
@@ -359,7 +387,7 @@ const Abertura: React.FC = () => {
       >
         Correção postural
         <br />
-        <span style={{ color: cores.destaque }}>lado esquerdo</span>
+        <span style={{ color: cores.destaque }}>lado {r.lado}</span>
       </div>
       <div
         style={{
@@ -456,6 +484,8 @@ const EtiquetaPasso: React.FC<{ passo: Passo }> = ({ passo }) => {
 
 // Setas para baixo ao lado das mãos: "apoie o peso nelas".
 const SetasMaos: React.FC = () => {
+  const r = useRoteiro();
+  const { cena } = r;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -546,6 +576,8 @@ const SetaCima: React.FC<{ inicio: number; fim: number }> = ({
 };
 
 const Legendas: React.FC = () => {
+  const r = useRoteiro();
+  const { legendas } = r;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const ms = (frame / fps) * 1000;
@@ -589,12 +621,14 @@ const Legendas: React.FC = () => {
 
 // Linhas de contato com o chão sob os pés: "pés firmes no chão".
 const LinhasChao: React.FC = () => {
+  const r = useRoteiro();
+  const { cena } = r;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
   const forte = janela(t, cena.posicaoInicial + 0.3, cena.maos);
   const lembrete = janela(t, cena.maos, cena.encerramento) * 0.35;
-  const opacidade = Math.max(forte, lembrete) * (1 - ladoSustentacao(t));
+  const opacidade = Math.max(forte, lembrete) * (1 - ladoSustentacao(r, t));
   if (opacidade === 0) return null;
   const abre = interpolate(
     t,
@@ -633,12 +667,14 @@ const LinhasChao: React.FC = () => {
 };
 
 /** Na sustentação, a vista de lado aparece de 15 a 30 s e de 45 a 60 s. */
-const ladoSustentacao = (t: number) =>
-  janela(t, SUST_INICIO + 15, SUST_INICIO + 30) +
-  janela(t, SUST_INICIO + 45, SUST_FIM);
+const ladoSustentacao = (r: Roteiro, t: number) =>
+  janela(t, r.SUST_INICIO + 15, r.SUST_INICIO + 30) +
+  janela(t, r.SUST_INICIO + 45, r.SUST_FIM);
 
 // Seta horizontal para a esquerda: "leve o tronco para o lado esquerdo".
 const SetaLado: React.FC = () => {
+  const r = useRoteiro();
+  const { cena } = r;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -655,7 +691,13 @@ const SetaLado: React.FC = () => {
     <svg
       width={1920}
       height={1080}
-      style={{ position: "absolute", inset: 0, opacity: opacidade }}
+      style={{
+        position: "absolute",
+        inset: 0,
+        opacity: opacidade,
+        // No lado direito, a seta aponta para a direita (espelhada no centro da tela).
+        scale: r.espelhado ? "-1 1" : undefined,
+      }}
     >
       <line
         x1={x0}
@@ -681,6 +723,8 @@ const SetaLado: React.FC = () => {
 // Seta curva sobre os ombros: "gire o tronco para a esquerda".
 // Visto de costas, o lado de trás da elipse anda da direita para a esquerda.
 const SetaGiro: React.FC = () => {
+  const r = useRoteiro();
+  const { cena } = r;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -708,7 +752,13 @@ const SetaGiro: React.FC = () => {
     <svg
       width={1920}
       height={1080}
-      style={{ position: "absolute", inset: 0, opacity: opacidade }}
+      style={{
+        position: "absolute",
+        inset: 0,
+        opacity: opacidade,
+        // No lado direito, a seta aponta para a direita (espelhada no centro da tela).
+        scale: r.espelhado ? "-1 1" : undefined,
+      }}
     >
       <polyline
         points={pontos.map(([x, y]) => `${x},${y}`).join(" ")}
@@ -733,6 +783,8 @@ const SetaGiro: React.FC = () => {
 
 // Cronômetro da sustentação: aparece em "Fique nessa posição" e conta 60 → 0.
 const Cronometro: React.FC = () => {
+  const r = useRoteiro();
+  const { SUST_FIM, SUST_INICIO, cena } = r;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -742,8 +794,8 @@ const Cronometro: React.FC = () => {
   const segundos = Math.ceil(restante);
   const texto = `${Math.floor(segundos / 60)}:${String(segundos % 60).padStart(2, "0")}`;
   const progresso = restante / 60;
-  const r = 130;
-  const volta = 2 * Math.PI * r;
+  const raio = 130;
+  const volta = 2 * Math.PI * raio;
   const entrada = interpolate(t, [cena.fique, cena.fique + 0.6], [0, 1], {
     ...clamp,
     easing: suave,
@@ -752,7 +804,7 @@ const Cronometro: React.FC = () => {
   const frases = [
     "Continue respirando",
     "Cresça em direção ao teto",
-    "Encha o lado esquerdo",
+    `Encha o lado ${r.lado}`,
     "Ombros baixos",
     "Pés firmes no chão",
     "Quase lá!",
@@ -791,7 +843,7 @@ const Cronometro: React.FC = () => {
           <circle
             cx={160}
             cy={160}
-            r={r}
+            r={raio}
             fill="none"
             stroke="rgba(255,255,255,0.15)"
             strokeWidth={18}
@@ -799,7 +851,7 @@ const Cronometro: React.FC = () => {
           <circle
             cx={160}
             cy={160}
-            r={r}
+            r={raio}
             fill="none"
             stroke={cores.destaque}
             strokeWidth={18}
@@ -833,6 +885,8 @@ const Cronometro: React.FC = () => {
 
 // Encerramento: "Muito bem!", logo grande e convite para se inscrever.
 const Encerramento: React.FC = () => {
+  const r = useRoteiro();
+  const { A3, cena } = r;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
