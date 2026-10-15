@@ -429,7 +429,11 @@ const Abertura: React.FC = () => {
   );
 };
 
-export const EtiquetaPasso: React.FC<{ passo: Passo }> = ({ passo }) => {
+export const EtiquetaPasso: React.FC<{
+  passo: Passo;
+  /** texto do lado direito da tela (quando as chamadas ocupam o esquerdo) */
+  direita?: boolean;
+}> = ({ passo, direita = false }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -443,7 +447,7 @@ export const EtiquetaPasso: React.FC<{ passo: Passo }> = ({ passo }) => {
     <div
       style={{
         position: "absolute",
-        left: 120,
+        ...(direita ? { right: 120 } : { left: 120 }),
         top: 400,
         width: 580,
         color: cores.texto,

@@ -28,31 +28,40 @@ import {
 import { EsqueletoFoto, type DestaquesFoto } from "./EsqueletoFoto";
 import { fonteTexto } from "./fontes";
 import { Logo } from "./Logo";
-import { RoteiroContexto } from "./roteiro";
-import { ARQUIVO_NARRACAO, criarRoteiro3, NARRACAO_PRONTA } from "./roteiro3";
+import { RoteiroContexto, type Lado } from "./roteiro";
+import { criarRoteiro3 } from "./roteiro3";
 
 // Vídeo 3: crescimento axial, quadril, respiração nas últimas costelas da direita,
 // ombros e cabeça alinhados e lombar. Imagens espelhadas (lado direito).
 
 type Roteiro3 = ReturnType<typeof criarRoteiro3>;
 
-const PASTA = "esqueleto/video3";
-
-/** Chamada com a etiqueta à direita do traço; recebe coordenadas de tela. */
-const ChamadaDireita: React.FC<{
+/**
+ * Chamada com coordenadas de tela do vídeo 3 (lado direito): etiqueta à direita do traço.
+ * No vídeo 4 (lado esquerdo) tudo espelha no centro da tela e a etiqueta vai para a esquerda.
+ */
+const ChamadaLado: React.FC<{
+  espelhado: boolean;
   texto: string;
   alvo: { x: number; y: number };
   ancora: { x: number; y: number };
   inicio: number;
   fim: number;
-}> = ({ alvo, ancora, ...resto }) => (
-  <Chamada
-    {...resto}
-    espelhar
-    alvo={{ x: 1920 - alvo.x, y: alvo.y }}
-    ancora={{ x: 1920 - ancora.x, y: ancora.y }}
-  />
-);
+}> = ({ espelhado, alvo, ancora, ...resto }) =>
+  espelhado ? (
+    <Chamada
+      {...resto}
+      alvo={{ x: 1920 - alvo.x, y: alvo.y }}
+      ancora={{ x: 1920 - ancora.x, y: ancora.y }}
+    />
+  ) : (
+    <Chamada
+      {...resto}
+      espelhar
+      alvo={{ x: 1920 - alvo.x, y: alvo.y }}
+      ancora={{ x: 1920 - ancora.x, y: ancora.y }}
+    />
+  );
 
 const calcularDestaques = (r: Roteiro3, t: number): DestaquesFoto => {
   const e = r.etapas;
@@ -85,14 +94,14 @@ const criarPassos = (r: Roteiro3): Passo[] => {
       fim: e.respiracao,
       kicker: "PASSO 2 DE 5",
       titulo: "Ajuste o quadril",
-      sub: "Aperte o lado direito e leve o quadril para a direita",
+      sub: `Aperte o lado ${r.lado} e leve o quadril para a ${r.sentido}`,
     },
     {
       inicio: e.respiracao,
       fim: e.ombros,
       kicker: "PASSO 3 DE 5",
       titulo: "Respiração e tórax",
-      sub: "Expanda as últimas costelas da direita e afaste o tronco da esquerda",
+      sub: `Expanda as últimas costelas da ${r.sentido} e afaste o tronco da ${r.ladoOposto === "direito" ? "direita" : "esquerda"}`,
     },
     {
       inicio: e.ombros,
@@ -132,7 +141,7 @@ const Conteudo: React.FC<{ r: Roteiro3 }> = ({ r }) => {
       style={{ backgroundColor: cores.fundo, fontFamily: fonteTexto }}
     >
       <EsqueletoFoto
-        pasta={PASTA}
+        pasta={r.pastaImagens}
         imagem="costas-curva-s.jpg"
         pastaDestaques="destaques-curva-s"
         destaques={so(["maos", "coluna", "quadril"])}
@@ -141,7 +150,7 @@ const Conteudo: React.FC<{ r: Roteiro3 }> = ({ r }) => {
       {intermediaria > 0 && reta < 1 ? (
         <AbsoluteFill style={{ opacity: intermediaria }}>
           <EsqueletoFoto
-            pasta={PASTA}
+            pasta={r.pastaImagens}
             imagem="costas-intermediaria.jpg"
             pastaDestaques="destaques-intermediaria"
             destaques={so(["quadril", "costelasBaixas"])}
@@ -152,7 +161,7 @@ const Conteudo: React.FC<{ r: Roteiro3 }> = ({ r }) => {
       {reta > 0 ? (
         <AbsoluteFill style={{ opacity: reta }}>
           <EsqueletoFoto
-            pasta={PASTA}
+            pasta={r.pastaImagens}
             imagem="costas-reta.jpg"
             pastaDestaques="destaques-reta"
             destaques={so(["costelasBaixas", "cabecaOmbros", "lombar"])}
@@ -169,18 +178,24 @@ const Conteudo: React.FC<{ r: Roteiro3 }> = ({ r }) => {
       <Lados />
       <Abertura3 r={r} />
       {passos.map((p) => (
-        <EtiquetaPasso key={p.kicker} passo={p} />
+        <EtiquetaPasso
+          key={p.kicker}
+          passo={p}
+          direita={r.lado === "esquerdo"}
+        />
       ))}
       <SetasMaos />
       <SetaCima inicio={e.empurre + 1.2} fim={e.quadril} />
-      <SetaDireita
+      <SetaLadoCorrecao
+        espelhado={r.lado === "esquerdo"}
         y={655}
         x0={1080}
         cor={cores.destaque}
         inicio={e.leveQuadril + 0.3}
         fim={e.respiracao}
       />
-      <SetaDireita
+      <SetaLadoCorrecao
+        espelhado={r.lado === "esquerdo"}
         y={300}
         x0={990}
         cor={cores.azul}
@@ -190,35 +205,40 @@ const Conteudo: React.FC<{ r: Roteiro3 }> = ({ r }) => {
       <Cronometro />
       <Encerramento />
       <LinhasChao />
-      <ChamadaDireita
+      <ChamadaLado
+        espelhado={r.lado === "esquerdo"}
         texto="Empurre as mãos nas coxas"
         alvo={{ x: 1113, y: 590 }}
         ancora={{ x: 1250, y: 540 }}
         inicio={e.empurre + 0.4}
         fim={e.puxe}
       />
-      <ChamadaDireita
+      <ChamadaLado
+        espelhado={r.lado === "esquerdo"}
         texto="Aperte este lado do quadril"
         alvo={{ x: 1020, y: 630 }}
         ancora={{ x: 1250, y: 800 }}
         inicio={e.aperte + 0.3}
         fim={e.leveQuadril + 0.2}
       />
-      <ChamadaDireita
+      <ChamadaLado
+        espelhado={r.lado === "esquerdo"}
         texto="Expanda as últimas costelas"
         alvo={{ x: 1003, y: 477 }}
         ancora={{ x: 1210, y: 440 }}
         inicio={e.encha + 0.6}
         fim={e.fuga + 0.2}
       />
-      <ChamadaDireita
+      <ChamadaLado
+        espelhado={r.lado === "esquerdo"}
         texto="Ombros e cabeça alinhados"
         alvo={{ x: 1037, y: 355 }}
         ancora={{ x: 1210, y: 230 }}
         inicio={e.ombros + 0.5}
         fim={e.lombar}
       />
-      <ChamadaDireita
+      <ChamadaLado
+        espelhado={r.lado === "esquerdo"}
         texto="Curvatura natural da lombar"
         alvo={{ x: 956, y: 570 }}
         ancora={{ x: 1210, y: 520 }}
@@ -235,12 +255,8 @@ const Conteudo: React.FC<{ r: Roteiro3 }> = ({ r }) => {
       />
       <Legendas />
 
-      {NARRACAO_PRONTA ? (
-        <Audio
-          src={staticFile(ARQUIVO_NARRACAO)}
-          from={A2 * fps}
-          premountFor={fps}
-        />
+      {r.narracao ? (
+        <Audio src={staticFile(r.narracao)} from={A2 * fps} premountFor={fps} />
       ) : null}
       <Audio
         src={staticFile("narracao/aviso-faltam-30.mp3")}
@@ -277,8 +293,8 @@ const Conteudo: React.FC<{ r: Roteiro3 }> = ({ r }) => {
   );
 };
 
-export const Exercicio3: React.FC = () => {
-  const roteiro = useMemo(() => criarRoteiro3(), []);
+export const Exercicio3: React.FC<{ lado: Lado }> = ({ lado }) => {
+  const roteiro = useMemo(() => criarRoteiro3(lado), [lado]);
   return (
     <RoteiroContexto.Provider value={roteiro}>
       <Conteudo r={roteiro} />
@@ -320,7 +336,7 @@ const Abertura3: React.FC<{ r: Roteiro3 }> = ({ r }) => {
           opacity: entra(r.A1),
         }}
       >
-        EXERCÍCIO 3
+        EXERCÍCIO {r.numeroVideo}
       </div>
       <div
         style={{
@@ -373,14 +389,15 @@ const Abertura3: React.FC<{ r: Roteiro3 }> = ({ r }) => {
   );
 };
 
-// Seta horizontal que cresce para a direita (lado direito do corpo, visto de costas).
-const SetaDireita: React.FC<{
+// Seta horizontal que cresce para o lado trabalhado (visto de costas).
+const SetaLadoCorrecao: React.FC<{
+  espelhado: boolean;
   y: number;
   x0: number;
   cor: string;
   inicio: number;
   fim: number;
-}> = ({ y, x0, cor, inicio, fim }) => {
+}> = ({ espelhado, y, x0, cor, inicio, fim }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -395,7 +412,13 @@ const SetaDireita: React.FC<{
     <svg
       width={1920}
       height={1080}
-      style={{ position: "absolute", inset: 0, opacity: opacidade }}
+      style={{
+        position: "absolute",
+        inset: 0,
+        opacity: opacidade,
+        // No vídeo 4 (lado esquerdo) a seta aponta para a esquerda.
+        scale: espelhado ? "-1 1" : undefined,
+      }}
     >
       <line
         x1={x0}
