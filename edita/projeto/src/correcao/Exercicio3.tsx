@@ -36,6 +36,8 @@ import { ARQUIVO_NARRACAO, criarRoteiro3, NARRACAO_PRONTA } from "./roteiro3";
 
 type Roteiro3 = ReturnType<typeof criarRoteiro3>;
 
+const PASTA = "esqueleto/video3";
+
 /** Chamada com a etiqueta à direita do traço; recebe coordenadas de tela. */
 const ChamadaDireita: React.FC<{
   texto: string;
@@ -115,36 +117,52 @@ const Conteudo: React.FC<{ r: Roteiro3 }> = ({ r }) => {
   const { fps } = useVideoConfig();
   const t = frame / fps;
 
-  // A coluna com escoliose fica até "Encha de ar", quando a postura é corrigida.
-  const curva = 1 - rampa(t, e.encha, e.encha + 1.5);
+  // Três imagens: curva em S até "Vamos ajustar o quadril", intermediária até
+  // "Encha de ar" e coluna reta daí em diante.
+  const intermediaria = rampa(t, e.quadril, e.quadril + 1.5);
+  const reta = rampa(t, e.encha, e.encha + 1.5);
   const destaques = calcularDestaques(r, t);
   const crescimento = calcularCrescimento(r, t);
   const passos = criarPassos(r);
+  const so = (chaves: (keyof DestaquesFoto)[]): DestaquesFoto =>
+    Object.fromEntries(chaves.map((c) => [c, destaques[c]]));
 
   return (
     <AbsoluteFill
       style={{ backgroundColor: cores.fundo, fontFamily: fonteTexto }}
     >
       <EsqueletoFoto
-        pasta={r.pastaEsqueleto}
-        imagem="costas-neutro.jpg"
-        destaques={destaques}
+        pasta={PASTA}
+        imagem="costas-curva-s.jpg"
+        pastaDestaques="destaques-curva-s"
+        destaques={so(["maos", "coluna", "quadril"])}
         crescimento={crescimento}
       />
+      {intermediaria > 0 && reta < 1 ? (
+        <AbsoluteFill style={{ opacity: intermediaria }}>
+          <EsqueletoFoto
+            pasta={PASTA}
+            imagem="costas-intermediaria.jpg"
+            pastaDestaques="destaques-intermediaria"
+            destaques={so(["quadril", "costelasBaixas"])}
+            crescimento={crescimento}
+          />
+        </AbsoluteFill>
+      ) : null}
+      {reta > 0 ? (
+        <AbsoluteFill style={{ opacity: reta }}>
+          <EsqueletoFoto
+            pasta={PASTA}
+            imagem="costas-reta.jpg"
+            pastaDestaques="destaques-reta"
+            destaques={so(["costelasBaixas", "cabecaOmbros", "lombar"])}
+            crescimento={crescimento}
+          />
+        </AbsoluteFill>
+      ) : null}
       {ladoSustentacao(r, t) > 0 ? (
         <AbsoluteFill style={{ opacity: ladoSustentacao(r, t) }}>
           <EsqueletoFoto pasta={r.pastaEsqueleto} imagem="lado-correto.jpg" />
-        </AbsoluteFill>
-      ) : null}
-      {curva > 0 ? (
-        <AbsoluteFill style={{ opacity: curva }}>
-          <EsqueletoFoto
-            pasta={r.pastaEsqueleto}
-            imagem="costas-curva-a.jpg"
-            pastaDestaques="destaques-curva"
-            destaques={destaques}
-            crescimento={crescimento}
-          />
         </AbsoluteFill>
       ) : null}
 
@@ -174,35 +192,35 @@ const Conteudo: React.FC<{ r: Roteiro3 }> = ({ r }) => {
       <LinhasChao />
       <ChamadaDireita
         texto="Empurre as mãos nas coxas"
-        alvo={{ x: 1155, y: 646 }}
+        alvo={{ x: 1113, y: 590 }}
         ancora={{ x: 1250, y: 540 }}
         inicio={e.empurre + 0.4}
         fim={e.puxe}
       />
       <ChamadaDireita
         texto="Aperte este lado do quadril"
-        alvo={{ x: 1010, y: 640 }}
+        alvo={{ x: 1020, y: 630 }}
         ancora={{ x: 1250, y: 800 }}
         inicio={e.aperte + 0.3}
         fim={e.leveQuadril + 0.2}
       />
       <ChamadaDireita
         texto="Expanda as últimas costelas"
-        alvo={{ x: 1012, y: 480 }}
+        alvo={{ x: 1003, y: 477 }}
         ancora={{ x: 1210, y: 440 }}
         inicio={e.encha + 0.6}
         fim={e.fuga + 0.2}
       />
       <ChamadaDireita
         texto="Ombros e cabeça alinhados"
-        alvo={{ x: 1045, y: 330 }}
+        alvo={{ x: 1037, y: 355 }}
         ancora={{ x: 1210, y: 230 }}
         inicio={e.ombros + 0.5}
         fim={e.lombar}
       />
       <ChamadaDireita
         texto="Curvatura natural da lombar"
-        alvo={{ x: 962, y: 570 }}
+        alvo={{ x: 956, y: 570 }}
         ancora={{ x: 1210, y: 520 }}
         inicio={e.curvatura}
         fim={e.fique}

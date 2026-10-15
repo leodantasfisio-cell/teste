@@ -83,6 +83,45 @@ REGIOES_CURVA = {
 }
 
 
+# Vídeo 3: imagens já espelhadas (public/esqueleto/video3), coordenadas da própria imagem.
+def _v3(coluna, escapulas, cranio, costelas, ilio, _lombar):
+    return {
+        "maos": (
+            AMBAR,
+            [[(780, 520), (862, 520), (862, 712), (780, 712)], [(1145, 540), (1215, 540), (1215, 712), (1145, 712)],
+             [(808, 688), (950, 688), (950, 752), (808, 752)], [(1050, 688), (1192, 688), (1192, 752), (1050, 752)]],
+        ),
+        "coluna": (AMBAR, [faixa(coluna, 30)]),
+        "quadril": (AMBAR, [ilio]),
+        "costelas-baixas": (AZUL, [costelas]),
+        "cabeca-ombros": (AMBAR, [cranio, *escapulas, [(838, 270), (1145, 270), (1145, 325), (838, 325)]]),
+        "lombar": (VERDE, [faixa(coluna[-3:], 34)]),
+    }
+
+
+def _ret(x0, y0, x1, y1):
+    return [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+
+
+REGIOES_V3 = {
+    "v3-s": _v3(
+        [(995, 210), (985, 280), (975, 350), (975, 420), (985, 480), (1000, 540), (1005, 590), (995, 650)],
+        [_ret(838, 282, 928, 402), _ret(1033, 306, 1133, 422)],
+        _ret(945, 40, 1085, 252), _ret(1008, 428, 1088, 542), _ret(1028, 605, 1112, 742), None,
+    ),
+    "v3-mid": _v3(
+        [(990, 210), (990, 300), (988, 400), (985, 480), (985, 560), (990, 640)],
+        [_ret(848, 282, 942, 408), _ret(1048, 302, 1142, 422)],
+        _ret(940, 40, 1070, 252), _ret(1018, 436, 1092, 542), _ret(1028, 602, 1112, 742), None,
+    ),
+    "v3-reta": _v3(
+        [(995, 210), (995, 300), (995, 400), (995, 480), (995, 560), (995, 645)],
+        [_ret(848, 292, 942, 412), _ret(1048, 292, 1147, 412)],
+        _ret(930, 40, 1065, 245), _ret(1013, 436, 1092, 542), _ret(1028, 602, 1112, 742), None,
+    ),
+}
+
+
 def main(origem: str, destino: str, conjunto: str = "neutro") -> None:
     img = Image.open(origem).convert("RGB")
     rgb = np.asarray(img).astype(float)
@@ -91,7 +130,7 @@ def main(origem: str, destino: str, conjunto: str = "neutro") -> None:
     # Ossos: claros e levemente amarelados; o banco é cinza neutro e mais escuro.
     osso = np.clip((lum - 95) / 90, 0, 1) * (sat > 6)
     Path(destino).mkdir(parents=True, exist_ok=True)
-    regioes = REGIOES_CURVA if conjunto == "curva" else REGIOES
+    regioes = REGIOES_V3.get(conjunto) or (REGIOES_CURVA if conjunto == "curva" else REGIOES)
     for nome, (cor, poligonos) in regioes.items():
         regiao = Image.new("L", img.size, 0)
         desenho = ImageDraw.Draw(regiao)

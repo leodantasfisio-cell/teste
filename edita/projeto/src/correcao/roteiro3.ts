@@ -1,11 +1,10 @@
 import type { Caption } from "@remotion/captions";
 import { criarRoteiro, SUSTENTACAO, type Roteiro } from "./roteiro";
 
-// Linha do tempo do vídeo 3 (texto do cliente). Usa as imagens espelhadas do lado direito.
-// Enquanto a narração não existe, os trechos são estimados (~2,9 palavras/s);
-// quando o áudio chegar, trocar por medidas de silencedetect e ligar NARRACAO_PRONTA.
+// Linha do tempo do vídeo 3 (texto do cliente). Trechos medidos na narração da ElevenLabs
+// com silencedetect (n=-38dB, d=0.28) e conferidos na transcrição local.
 
-export const NARRACAO_PRONTA = false;
+export const NARRACAO_PRONTA = true;
 export const ARQUIVO_NARRACAO = "narracao/video3/audio-exercicio.mp3";
 
 export const TEXTOS_3 = [
@@ -24,21 +23,24 @@ export const TEXTOS_3 = [
   "Mantenha a posição e continue respirando.",
 ];
 
-/** Frases seguidas de pausa de 2 s no texto. */
-const PAUSA_DEPOIS = new Set([2, 5, 8, 9, 11]);
-
-const estimar = (): { duracao: number; trechos: [number, number][] } => {
-  let t = 0;
-  const trechos = TEXTOS_3.map((texto, i): [number, number] => {
-    const inicio = t;
-    const fim = inicio + texto.split(" ").length / 2.9 + 0.3;
-    t = fim + (PAUSA_DEPOIS.has(i) ? 2 : 0.35);
-    return [inicio, fim];
-  });
-  return { duracao: trechos[trechos.length - 1][1] + 0.3, trechos };
+const MEDIDAS_3: { duracao: number; trechos: [number, number][] } = {
+  duracao: 60.0,
+  trechos: [
+    [0, 2.53],
+    [3.11, 10.0],
+    [10.98, 12.18],
+    [14.6, 15.87],
+    [16.37, 18.72],
+    [19.48, 22.69],
+    [25.08, 28.41],
+    [29.08, 32.8],
+    [33.83, 39.76],
+    [41.79, 44.43],
+    [46.48, 49.6],
+    [50.56, 55.32],
+    [57.54, 59.64],
+  ],
 };
-
-const MEDIDAS_3 = estimar();
 
 const legenda = (inicio: number, fim: number, text: string): Caption => ({
   text,
