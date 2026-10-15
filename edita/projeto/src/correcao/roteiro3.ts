@@ -3,11 +3,11 @@ import { criarRoteiro, SUSTENTACAO, type Lado, type Roteiro } from "./roteiro";
 
 // Linha do tempo dos vídeos 3 (lado direito) e 4 (mesmo exercício para o lado esquerdo).
 // Trechos medidos na narração da ElevenLabs com silencedetect (n=-38dB, d=0.28) e
-// conferidos na transcrição local. O vídeo 4 usa os tempos do 3 até ter a própria narração.
+// conferidos na transcrição local.
 
 const CONFIG = {
   direito: { video: 3, pasta: "esqueleto/video3", narracaoPronta: true },
-  esquerdo: { video: 4, pasta: "esqueleto/video4", narracaoPronta: false },
+  esquerdo: { video: 4, pasta: "esqueleto/video4", narracaoPronta: true },
 } as const;
 
 const oposto = (lado: Lado): Lado =>
@@ -30,7 +30,9 @@ export const textos3 = (lado: Lado) => [
   "Mantenha a posição e continue respirando.",
 ];
 
-const MEDIDAS_3: { duracao: number; trechos: [number, number][] } = {
+type Medidas3 = { duracao: number; trechos: [number, number][] };
+
+const MEDIDAS_3: Medidas3 = {
   duracao: 60.0,
   trechos: [
     [0, 2.53],
@@ -49,6 +51,25 @@ const MEDIDAS_3: { duracao: number; trechos: [number, number][] } = {
   ],
 };
 
+const MEDIDAS_4: Medidas3 = {
+  duracao: 57.39,
+  trechos: [
+    [0, 2.43],
+    [3.08, 9.84],
+    [10.84, 12.23],
+    [14.45, 15.72],
+    [16.13, 18.71],
+    [19.34, 22.81],
+    [25.11, 27.55],
+    [28.17, 31.11],
+    [31.72, 37.69],
+    [39.85, 42.38],
+    [44.59, 47.48],
+    [48.17, 52.8],
+    [54.98, 57.07],
+  ],
+};
+
 const legenda = (inicio: number, fim: number, text: string): Caption => ({
   text,
   startMs: Math.round(inicio * 1000),
@@ -60,7 +81,7 @@ const legenda = (inicio: number, fim: number, text: string): Caption => ({
 export const criarRoteiro3 = (lado: Lado = "direito") => {
   const base = criarRoteiro(lado);
   const config = CONFIG[lado];
-  const m = MEDIDAS_3;
+  const m = lado === "direito" ? MEDIDAS_3 : MEDIDAS_4;
   const A1 = 0.5; // cartela de título, sem narração
   const A2 = 4.5; // narração do exercício
   const SUST_INICIO = A2 + m.duracao;
