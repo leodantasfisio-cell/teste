@@ -40,7 +40,7 @@ type Roteiro3 = ReturnType<typeof criarRoteiro3>;
  * Chamada com coordenadas de tela do vídeo 3 (lado direito): etiqueta à direita do traço.
  * No vídeo 4 (lado esquerdo) tudo espelha no centro da tela e a etiqueta vai para a esquerda.
  */
-const ChamadaLado: React.FC<{
+export const ChamadaLado: React.FC<{
   espelhado: boolean;
   texto: string;
   alvo: { x: number; y: number };
@@ -302,7 +302,10 @@ export const Exercicio3: React.FC<{ lado: Lado }> = ({ lado }) => {
   );
 };
 
-const Abertura3: React.FC<{ r: Roteiro3 }> = ({ r }) => {
+export const Abertura3: React.FC<{
+  r: { A1: number; A2: number; numeroVideo: number };
+  subtitulo?: string;
+}> = ({ r, subtitulo = "quadril e tórax" }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const fim = r.A2 - 0.1;
@@ -350,7 +353,7 @@ const Abertura3: React.FC<{ r: Roteiro3 }> = ({ r }) => {
       >
         Correção postural
         <br />
-        <span style={{ color: cores.destaque }}>quadril e tórax</span>
+        <span style={{ color: cores.destaque }}>{subtitulo}</span>
       </div>
       <div
         style={{
@@ -390,7 +393,7 @@ const Abertura3: React.FC<{ r: Roteiro3 }> = ({ r }) => {
 };
 
 // Seta horizontal que cresce para o lado trabalhado (visto de costas).
-const SetaLadoCorrecao: React.FC<{
+export const SetaLadoCorrecao: React.FC<{
   espelhado: boolean;
   y: number;
   x0: number;

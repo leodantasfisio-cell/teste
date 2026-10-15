@@ -28,6 +28,7 @@ export type DestaquesFoto = {
   quadril?: number;
   costelasBaixas?: number;
   cabecaOmbros?: number;
+  torax?: number;
 };
 
 const AMBAR = "rgba(242, 184, 75, 0.9)";
@@ -49,6 +50,7 @@ const camadas: {
   { chave: "quadril", arquivo: "quadril", brilho: AMBAR },
   { chave: "costelasBaixas", arquivo: "costelas-baixas", brilho: AZUL },
   { chave: "cabecaOmbros", arquivo: "cabeca-ombros", brilho: AMBAR },
+  { chave: "torax", arquivo: "torax", brilho: AZUL },
 ];
 
 const preencher: React.CSSProperties = {

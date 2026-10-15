@@ -122,6 +122,21 @@ REGIOES_V3 = {
 }
 
 
+# Vídeo 5 (curva dupla) usa as imagens do vídeo 4 (espelho das do vídeo 3). As regiões
+# são escritas nas coordenadas do vídeo 3 e espelhadas; quadril e tórax trocam de lado.
+def _v5(v3, quadril_oposto, torax_oposto):
+    base = {k: v3[k] for k in ("maos", "coluna", "cabeca-ombros", "lombar")}
+    base["cotovelos"] = (AMBAR, [_ret(765, 470, 855, 585), _ret(1145, 470, 1235, 585)])
+    base["quadril"] = (AMBAR, [quadril_oposto])
+    base["torax"] = (AZUL, [torax_oposto])
+    return {nome: (cor, [espelhar(p) for p in poligonos]) for nome, (cor, poligonos) in base.items()}
+
+
+REGIOES_V3["v5-s"] = _v5(REGIOES_V3["v3-s"], _ret(872, 605, 968, 742), _ret(1015, 385, 1115, 548))
+REGIOES_V3["v5-mid"] = _v5(REGIOES_V3["v3-mid"], _ret(872, 602, 968, 742), _ret(1012, 385, 1122, 548))
+REGIOES_V3["v5-reta"] = _v5(REGIOES_V3["v3-reta"], _ret(872, 602, 968, 742), _ret(1015, 380, 1128, 548))
+
+
 def main(origem: str, destino: str, conjunto: str = "neutro") -> None:
     img = Image.open(origem).convert("RGB")
     rgb = np.asarray(img).astype(float)
