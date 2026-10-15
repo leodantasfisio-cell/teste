@@ -21,18 +21,21 @@ import {
   type Roteiro,
 } from "./roteiro";
 
-const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-const suave = Easing.bezier(0.16, 1, 0.3, 1);
+export const clamp = {
+  extrapolateLeft: "clamp",
+  extrapolateRight: "clamp",
+} as const;
+export const suave = Easing.bezier(0.16, 1, 0.3, 1);
 
 /** 0 → 1 entre a e b (segundos), com ease. */
-const rampa = (t: number, a: number, b: number) =>
+export const rampa = (t: number, a: number, b: number) =>
   interpolate(t, [a, b], [0, 1], {
     ...clamp,
     easing: Easing.inOut(Easing.sin),
   });
 
 /** 0 → 1 → 0: acende em [a, a+0.4] e apaga em [b-0.4, b]. */
-const janela = (t: number, a: number, b: number) =>
+export const janela = (t: number, a: number, b: number) =>
   interpolate(t, [a, a + 0.4, b - 0.4, b], [0, 1, 1, 0], clamp);
 
 const calcularDestaques = (r: Roteiro, t: number): DestaquesFoto => ({
@@ -50,7 +53,7 @@ const calcularCrescimento = (r: Roteiro, t: number) =>
     0.3 * rampa(t, r.cena.terminar + 0.6, r.cena.terminar + 2.8)) *
   (1 - rampa(t, r.cena.encerramento + 0.8, r.cena.encerramento + 3.5));
 
-type Passo = {
+export type Passo = {
   inicio: number;
   fim: number;
   kicker: string;
@@ -301,7 +304,7 @@ export const CorrecaoPostural: React.FC<{ lado: Lado }> = ({ lado }) => {
   );
 };
 
-const Lados: React.FC = () => {
+export const Lados: React.FC = () => {
   const r = useRoteiro();
   const { cena } = r;
   const frame = useCurrentFrame();
@@ -426,7 +429,7 @@ const Abertura: React.FC = () => {
   );
 };
 
-const EtiquetaPasso: React.FC<{ passo: Passo }> = ({ passo }) => {
+export const EtiquetaPasso: React.FC<{ passo: Passo }> = ({ passo }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -483,7 +486,7 @@ const EtiquetaPasso: React.FC<{ passo: Passo }> = ({ passo }) => {
 };
 
 // Setas para baixo ao lado das mãos: "apoie o peso nelas".
-const SetasMaos: React.FC = () => {
+export const SetasMaos: React.FC = () => {
   const r = useRoteiro();
   const { cena } = r;
   const frame = useCurrentFrame();
@@ -528,7 +531,7 @@ const SetasMaos: React.FC = () => {
   );
 };
 
-const SetaCima: React.FC<{ inicio: number; fim: number }> = ({
+export const SetaCima: React.FC<{ inicio: number; fim: number }> = ({
   inicio,
   fim,
 }) => {
@@ -575,7 +578,7 @@ const SetaCima: React.FC<{ inicio: number; fim: number }> = ({
   );
 };
 
-const Legendas: React.FC = () => {
+export const Legendas: React.FC = () => {
   const r = useRoteiro();
   const { legendas } = r;
   const frame = useCurrentFrame();
@@ -620,7 +623,7 @@ const Legendas: React.FC = () => {
 };
 
 // Linhas de contato com o chão sob os pés: "pés firmes no chão".
-const LinhasChao: React.FC = () => {
+export const LinhasChao: React.FC = () => {
   const r = useRoteiro();
   const { cena } = r;
   const frame = useCurrentFrame();
@@ -667,7 +670,7 @@ const LinhasChao: React.FC = () => {
 };
 
 /** Na sustentação, a vista de lado aparece de 15 a 30 s e de 45 a 60 s. */
-const ladoSustentacao = (r: Roteiro, t: number) =>
+export const ladoSustentacao = (r: Roteiro, t: number) =>
   janela(t, r.SUST_INICIO + 15, r.SUST_INICIO + 30) +
   janela(t, r.SUST_INICIO + 45, r.SUST_FIM);
 
@@ -782,7 +785,7 @@ const SetaGiro: React.FC = () => {
 };
 
 // Cronômetro da sustentação: aparece em "Fique nessa posição" e conta 60 → 0.
-const Cronometro: React.FC = () => {
+export const Cronometro: React.FC = () => {
   const r = useRoteiro();
   const { SUST_FIM, SUST_INICIO, cena } = r;
   const frame = useCurrentFrame();
@@ -884,7 +887,7 @@ const Cronometro: React.FC = () => {
 };
 
 // Encerramento: "Muito bem!", logo grande e convite para se inscrever.
-const Encerramento: React.FC = () => {
+export const Encerramento: React.FC = () => {
   const r = useRoteiro();
   const { A3, cena } = r;
   const frame = useCurrentFrame();
