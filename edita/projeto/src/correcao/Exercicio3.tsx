@@ -28,6 +28,7 @@ import {
 import { EsqueletoFoto, type DestaquesFoto } from "./EsqueletoFoto";
 import { fonteTexto } from "./fontes";
 import { Logo } from "./Logo";
+import { LogoScolioFisio } from "./LogoScolioFisio";
 import { RoteiroContexto, type Lado } from "./roteiro";
 import { criarRoteiro3 } from "./roteiro3";
 
@@ -204,6 +205,20 @@ const Conteudo: React.FC<{ r: Roteiro3 }> = ({ r }) => {
       />
       <Cronometro />
       <Encerramento />
+      <LogoScolioFisio
+        left={120}
+        top={680}
+        largura={420}
+        inicio={r.A1 + 1.2}
+        fim={A2 - 0.1}
+      />
+      <LogoScolioFisio
+        left={120}
+        top={750}
+        largura={420}
+        inicio={r.cena.inscreva + 1.4}
+        fim={r.DURACAO + 1}
+      />
       <LinhasChao />
       <ChamadaLado
         espelhado={r.lado === "esquerdo"}
