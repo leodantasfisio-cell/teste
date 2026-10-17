@@ -29,6 +29,7 @@ import { EsqueletoFoto, type DestaquesFoto } from "./EsqueletoFoto";
 import { Abertura3, ChamadaLado } from "./Exercicio3";
 import { fonteTexto } from "./fontes";
 import { Logo } from "./Logo";
+import { LogoScolioFisio } from "./LogoScolioFisio";
 import { RoteiroContexto } from "./roteiro";
 import { criarRoteiro5 } from "./roteiro5";
 
@@ -46,6 +47,8 @@ const calcularDestaques = (r: Roteiro5, t: number): DestaquesFoto => {
     quadril: janela(t, e.quadril + 0.6, e.costas),
     lombar: janela(t, e.gireQuadril + 2.5, e.costas),
     cotovelos: janela(t, e.cotovelos, e.respiracao),
+    // Alto das costas (cifose torácica), onde o terapeuta põe a mão no modelo.
+    cifose: janela(t, e.cotovelos + 1.5, e.respiracao) * 0.85,
     torax: janela(t, e.encha + 0.4, r.SUST_FIM) * 0.9,
     cabecaOmbros: janela(t, e.ombros, e.fique),
   };
@@ -134,6 +137,7 @@ const Conteudo: React.FC<{ r: Roteiro5 }> = ({ r }) => {
               "quadril",
               "lombar",
               "cotovelos",
+              "cifose",
               "torax",
             ])}
             crescimento={crescimento}
@@ -182,6 +186,20 @@ const Conteudo: React.FC<{ r: Roteiro5 }> = ({ r }) => {
       />
       <Cronometro />
       <Encerramento />
+      <LogoScolioFisio
+        left={120}
+        top={680}
+        largura={420}
+        inicio={r.A1 + 1.2}
+        fim={A2 - 0.1}
+      />
+      <LogoScolioFisio
+        left={120}
+        top={750}
+        largura={420}
+        inicio={r.cena.inscreva + 1.4}
+        fim={r.DURACAO + 1}
+      />
       <LinhasChao />
       <ChamadaLado
         espelhado={false}

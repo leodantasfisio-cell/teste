@@ -29,6 +29,7 @@ export type DestaquesFoto = {
   costelasBaixas?: number;
   cabecaOmbros?: number;
   torax?: number;
+  cifose?: number;
 };
 
 const AMBAR = "rgba(242, 184, 75, 0.9)";
@@ -51,6 +52,7 @@ const camadas: {
   { chave: "costelasBaixas", arquivo: "costelas-baixas", brilho: AZUL },
   { chave: "cabecaOmbros", arquivo: "cabeca-ombros", brilho: AMBAR },
   { chave: "torax", arquivo: "torax", brilho: AZUL },
+  { chave: "cifose", arquivo: "cifose", brilho: AMBAR },
 ];
 
 const preencher: React.CSSProperties = {
