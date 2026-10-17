@@ -305,7 +305,7 @@ export const Exercicio5: React.FC = () => {
 };
 
 // Seta curva de rotação, vista de costas: o arco de trás da elipse anda para o lado do giro.
-const SetaGiro: React.FC<{
+export const SetaGiro: React.FC<{
   cy: number;
   rx: number;
   ry: number;
