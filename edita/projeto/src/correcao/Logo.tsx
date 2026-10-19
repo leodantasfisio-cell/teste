@@ -6,8 +6,10 @@ import {
   useVideoConfig,
 } from "remotion";
 
-// Logo LAB ORTORIO sem fundo, recortada pelo usuário (1365 × 483); usada sem alteração.
-const PROPORCAO = 483 / 1365;
+// Logo ScolioFisio (PNG transparente do cliente, só girado e recortado; 1539 × 571).
+// Tem partes pretas, então vai sobre um cartão branco para aparecer no fundo escuro.
+// Substituiu a logo LAB ORTORIO em todos os vídeos.
+const PROPORCAO = 571 / 1539;
 
 export const Logo: React.FC<{
   left?: number;
@@ -32,19 +34,31 @@ export const Logo: React.FC<{
     },
   );
   if (opacidade === 0) return null;
+  const padding = Math.round(largura * 0.045);
+  const interna = largura - 2 * padding;
   return (
-    <Img
-      src={staticFile("marca/logo-labortorio-sem-fundo-manual.png")}
+    <div
       style={{
         position: relativo ? "relative" : "absolute",
-        display: "block",
         left,
         top,
         right,
         width: largura,
-        height: largura * PROPORCAO,
+        padding,
+        borderRadius: Math.round(largura * 0.045),
+        backgroundColor: "#FFFFFF",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.35)",
         opacity: opacidade,
       }}
-    />
+    >
+      <Img
+        src={staticFile("marca/scoliofisio.png")}
+        style={{
+          display: "block",
+          width: interna,
+          height: interna * PROPORCAO,
+        }}
+      />
+    </div>
   );
 };

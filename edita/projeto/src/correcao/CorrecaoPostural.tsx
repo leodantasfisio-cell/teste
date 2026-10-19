@@ -233,7 +233,7 @@ const Conteudo: React.FC = () => {
       />
       <Logo
         left={120}
-        top={160}
+        top={110}
         largura={440}
         inicio={A1}
         fim={cena.posicaoInicial - 0.1}

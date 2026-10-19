@@ -30,7 +30,6 @@ import { Abertura3, ChamadaLado, SetaLadoCorrecao } from "./Exercicio3";
 import { SetaGiro } from "./Exercicio5";
 import { fonteTexto } from "./fontes";
 import { Logo } from "./Logo";
-import { LogoScolioFisio } from "./LogoScolioFisio";
 import { RoteiroContexto } from "./roteiro";
 import { criarRoteiro6 } from "./roteiro6";
 
@@ -201,20 +200,6 @@ const Conteudo: React.FC<{ r: Roteiro6 }> = ({ r }) => {
       />
       <Cronometro />
       <Encerramento />
-      <LogoScolioFisio
-        left={120}
-        top={680}
-        largura={420}
-        inicio={r.A1 + 1.2}
-        fim={A2 - 0.1}
-      />
-      <LogoScolioFisio
-        left={120}
-        top={750}
-        largura={420}
-        inicio={r.cena.inscreva + 1.4}
-        fim={r.DURACAO + 1}
-      />
       <LinhasChao />
       <ChamadaLado
         espelhado={false}
@@ -288,7 +273,7 @@ const Conteudo: React.FC<{ r: Roteiro6 }> = ({ r }) => {
         inicio={e.alinhados + 0.5}
         fim={e.fique}
       />
-      <Logo left={120} top={160} largura={440} inicio={r.A1} fim={A2 - 0.1} />
+      <Logo left={120} top={110} largura={440} inicio={r.A1} fim={A2 - 0.1} />
       <Logo
         right={40}
         top={34}
