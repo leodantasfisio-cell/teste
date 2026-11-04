@@ -71,3 +71,9 @@ e a mesma sala nos próximos exercícios.
 - Sala: Poly Haven está bloqueado pela rede desta sessão (api.polyhaven.com, dl.polyhaven.org);
   ou o usuário libera os domínios, ou baixa os arquivos e manda, ou a sala é montada com geometria simples.
 - Movimento da pelve programado e sincronizado com a narração; seta, aproximação e logos na mesma cena.
+
+## Volta ao plano original (Kling)
+
+O usuário cancelou o 3D e voltou ao plano original: clipes realistas gerados no Kling a partir de uma
+imagem de referência (sala de estar, duas cadeiras), montados no Remotion com seta, aproximação,
+logos e narração. O código 3D (src/amputacao) fica guardado, sem uso.
