@@ -38,3 +38,19 @@ numa sala de estar, enquadrada da cintura para baixo, transferindo o peso de um 
 Animação realista gerada no Kling AI (a marca d'água "KlingAI" aparece por baixo da logo LAB).
 Sem texto e sem narração; som ambiente baixo. Duas logos fixas nos cantos inferiores: à esquerda,
 um corredor verde e preto; à direita, LAB ORTORIO (cobrindo a marca d'água do Kling).
+
+## Narração (breve, ElevenLabs)
+
+Decisão do usuário: narração curta no ElevenLabs (Henrique, Multilingual v2, stability 70, similarity 75,
+style 0, speed 0.95). A montagem segue a narração: cada ciclo de vídeo é encaixado na frase correspondente.
+
+```
+Transferência de peso. Fique em pé entre as barras, com os pés afastados na largura dos ombros e as mãos apoiadas de leve. <break time="1.5s" />
+Leve o quadril e o tronco devagar para o lado da prótese. <break time="1.5s" /> Segure. <break time="1.5s" /> Volte devagar ao centro. <break time="2s" />
+Agora, leve o peso para a perna esquerda. <break time="1.5s" /> Segure. <break time="1.5s" /> Volte ao centro. <break time="2s" />
+Mantenha o tronco reto e os dois pés apoiados no chão, sem dar passos. <break time="2s" />
+Mais uma vez: para o lado da prótese. <break time="3s" /> E para a perna esquerda. <break time="3s" />
+Muito bem.
+```
+
+Logos: as duas do exemplo (corredor e LAB ORTORIO) — o usuário vai mandar os arquivos.
