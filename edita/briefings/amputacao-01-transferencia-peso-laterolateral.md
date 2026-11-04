@@ -45,7 +45,7 @@ Decisão do usuário: narração curta no ElevenLabs (Henrique, Multilingual v2,
 style 0, speed 0.95). A montagem segue a narração: cada ciclo de vídeo é encaixado na frase correspondente.
 
 ```
-Transferência de peso. Fique em pé entre as barras, com os pés afastados na largura dos ombros e as mãos apoiadas de leve. <break time="1.5s" />
+Transferência de peso. Fique em pé entre duas cadeiras firmes, com os pés afastados na largura dos ombros e as mãos apoiadas de leve no encosto. <break time="1.5s" />
 Leve o quadril e o tronco devagar para o lado da prótese. <break time="1.5s" /> Segure. <break time="1.5s" /> Volte devagar ao centro. <break time="2s" />
 Agora, leve o peso para a perna esquerda. <break time="1.5s" /> Segure. <break time="1.5s" /> Volte ao centro. <break time="2s" />
 Mantenha o tronco reto e os dois pés apoiados no chão, sem dar passos. <break time="2s" />
@@ -54,3 +54,9 @@ Muito bem.
 ```
 
 Logos: as duas do exemplo (corredor e LAB ORTORIO) — o usuário vai mandar os arquivos.
+
+## Ambiente em casa (decisão do usuário)
+
+O fundo passa a ser uma casa, como no exemplo, para o paciente se reconhecer fazendo em casa.
+As barras paralelas são trocadas por **duas cadeiras firmes**, uma de cada lado, com as mãos no encosto
+(mesmo apoio bilateral das barras). A narração foi ajustada para "entre duas cadeiras firmes".
