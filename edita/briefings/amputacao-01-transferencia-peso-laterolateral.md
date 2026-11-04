@@ -60,3 +60,14 @@ Logos: as duas do exemplo (corredor e LAB ORTORIO) — o usuário vai mandar os 
 O fundo passa a ser uma casa, como no exemplo, para o paciente se reconhecer fazendo em casa.
 As barras paralelas são trocadas por **duas cadeiras firmes**, uma de cada lado, com as mãos no encosto
 (mesmo apoio bilateral das barras). A narração foi ajustada para "entre duas cadeiras firmes".
+
+## Decisão: animação 3D no Remotion (Three.js)
+
+O usuário escolheu fazer em 3D no projeto, em vez do Kling, para reaproveitar o mesmo personagem
+e a mesma sala nos próximos exercícios.
+
+- Personagem: Mixamo (FBX, sem animação), baixado pelo usuário.
+- Prótese transtibial: Sketchfab, baixada pelo usuário.
+- Sala: Poly Haven está bloqueado pela rede desta sessão (api.polyhaven.com, dl.polyhaven.org);
+  ou o usuário libera os domínios, ou baixa os arquivos e manda, ou a sala é montada com geometria simples.
+- Movimento da pelve programado e sincronizado com a narração; seta, aproximação e logos na mesma cena.
