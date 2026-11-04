@@ -30,3 +30,11 @@ Na vista frontal, o lado direito do paciente (prótese) aparece à **esquerda** 
 | 20–28 s | Ciclo para a direita, aproximação da pelve e pernas |
 | 28–36 s | Ciclo para a esquerda, aproximação |
 | 36–40 s | Volta ao centro, posição final |
+
+## Vídeo de exemplo
+
+`referencias/amputacao-exemplo-nivel-moderado.mp4` (20 s, 1920 × 1080): mulher com prótese transtibial
+numa sala de estar, enquadrada da cintura para baixo, transferindo o peso de um lado para o outro.
+Animação realista gerada no Kling AI (a marca d'água "KlingAI" aparece por baixo da logo LAB).
+Sem texto e sem narração; som ambiente baixo. Duas logos fixas nos cantos inferiores: à esquerda,
+um corredor verde e preto; à direita, LAB ORTORIO (cobrindo a marca d'água do Kling).
