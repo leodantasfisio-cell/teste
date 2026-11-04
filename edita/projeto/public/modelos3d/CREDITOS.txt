@@ -9,3 +9,7 @@ anatomico/scene.gltf
   "anatomical skeleton" por PEREGRUZ (https://sketchfab.com/PEREGRUZ)
   https://sketchfab.com/3d-models/anatomical-skeleton-6af32b8cd84b412cbc775b1f318761d7
   CC BY 4.0 — http://creativecommons.org/licenses/by/4.0/
+
+amputacao/protese — "leg prosthesis" (https://sketchfab.com/3d-models/leg-prosthesis-59d7e2b28b8b45ec8b179fff0134ceec)
+  por victorghys (https://sketchfab.com/victorghys), licença CC-BY-4.0. Crédito obrigatório.
+amputacao/personagem.fbx — personagem Mixamo (Adobe), uso permitido em projetos próprios.

@@ -7,6 +7,8 @@ import { DURACAO_3, DURACAO_4 } from "./correcao/roteiro3";
 import { Exercicio5 } from "./correcao/Exercicio5";
 import { DURACAO_5 } from "./correcao/roteiro5";
 import { Exercicio6 } from "./correcao/Exercicio6";
+import { InspecaoAmputacao } from "./amputacao/Inspecao";
+import { PreviaAmputacao } from "./amputacao/PreviaAmputacao";
 import { DURACAO_6 } from "./correcao/roteiro6";
 import { ModeloTeste } from "./modelo3d/ModeloTeste";
 import { Previa3D } from "./modelo3d/Previa3D";
@@ -88,6 +90,23 @@ export const MyComposition = () => {
         fps={30}
         width={1920}
         height={1080}
+      />
+      <Composition
+        id="InspecaoAmputacao"
+        component={InspecaoAmputacao}
+        durationInFrames={30}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="PreviaAmputacao"
+        component={PreviaAmputacao}
+        durationInFrames={30}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
       />
       <Composition
         id="ModeloTeste"
