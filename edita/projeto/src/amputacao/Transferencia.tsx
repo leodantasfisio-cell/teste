@@ -1,4 +1,4 @@
-import { Video } from "@remotion/media";
+import { Audio, Video } from "@remotion/media";
 import { fonteTexto } from "../correcao/fontes";
 import {
   AbsoluteFill,
@@ -26,7 +26,9 @@ export const CICLO_PROTESE = 7.7 / VELOCIDADE;
 export const CICLO_PERNA = 7.86 / VELOCIDADE;
 /** Capa de entrada e quadro parado com a posição inicial (tempo da instrução falada). */
 const CAPA = 3;
-const POSICAO_INICIAL = 3.5;
+const POSICAO_INICIAL = 5.6;
+/** Quadro parado enquanto a câmera aproxima e a narração diz "Mais uma vez…". */
+const PAUSA_ZOOM = 2.8;
 const FUSAO = 0.4; // sobreposição entre clipes para esconder a diferença de luz
 
 const T = (() => {
@@ -34,11 +36,30 @@ const T = (() => {
   const protese1 = CAPA + POSICAO_INICIAL;
   const perna1 = protese1 + CICLO_PROTESE - FUSAO;
   const zoomIn = perna1 + CICLO_PERNA;
-  const protese2 = zoomIn + 1;
+  const protese2 = zoomIn + PAUSA_ZOOM;
   const perna2 = protese2 + CICLO_PROTESE - FUSAO;
   const zoomOut = perna2 + CICLO_PERNA;
   return { inicio, protese1, perna1, zoomIn, protese2, perna2, zoomOut };
 })();
+
+/**
+ * Narração (ElevenLabs, Henrique): cada frase é recortada do MP3 pelos silêncios
+ * (silencedetect n=-38dB d=0.28, conferido na transcrição local) e posta no seu momento.
+ */
+const FRASES: { de: number; ate: number; quando: (t: typeof T) => number }[] = [
+  { de: 0, ate: 1.24, quando: () => 0.5 }, // Transferência de peso.
+  { de: 2.47, ate: 7.67, quando: (t) => t.inicio }, // Fique em pé entre duas cadeiras…
+  { de: 8.67, ate: 10.45, quando: (t) => t.protese1 }, // Leve o peso devagar para a prótese.
+  { de: 11.47, ate: 12.02, quando: (t) => t.protese1 + 3 / VELOCIDADE }, // Segure.
+  { de: 13.05, ate: 13.92, quando: (t) => t.protese1 + 5 / VELOCIDADE }, // Volte ao centro.
+  { de: 14.96, ate: 16.51, quando: (t) => t.perna1 }, // Agora, para a perna esquerda.
+  { de: 17.53, ate: 18.14, quando: (t) => t.perna1 + 3 / VELOCIDADE }, // Segure.
+  { de: 19.22, ate: 20.14, quando: (t) => t.perna1 + 5 / VELOCIDADE }, // Volte ao centro.
+  { de: 21.16, ate: 23.76, quando: (t) => t.zoomIn }, // Mais uma vez, com o tronco reto…
+  { de: 25.1, ate: 26.0, quando: (t) => t.protese2 }, // Para a prótese.
+  { de: 27.28, ate: 28.61, quando: (t) => t.perna2 }, // E para a perna esquerda.
+  { de: 29.82, ate: 30.45, quando: (t) => t.zoomOut + 0.3 }, // Muito bem!
+];
 
 export const DURACAO_TRANSFERENCIA = Math.ceil(T.zoomOut + 3);
 
@@ -169,7 +190,7 @@ export const Transferencia: React.FC = () => {
         <Sequence durationInFrames={f(T.protese1) + 2}>
           <Img src={staticFile("amputacao/inicio.jpg")} />
         </Sequence>
-        <Sequence from={f(T.zoomIn) - 1} durationInFrames={f(1) + 2}>
+        <Sequence from={f(T.zoomIn) - 1} durationInFrames={f(PAUSA_ZOOM) + 2}>
           <Img src={staticFile("amputacao/inicio.jpg")} />
         </Sequence>
         <Sequence from={f(T.zoomOut) - 1}>
@@ -200,6 +221,19 @@ export const Transferencia: React.FC = () => {
       <Sequence durationInFrames={f(CAPA)}>
         <Capa />
       </Sequence>
+      {FRASES.map(({ de, ate, quando }) => (
+        <Sequence
+          key={de}
+          from={f(quando(T))}
+          durationInFrames={f(ate - de) + 6}
+        >
+          <Audio
+            src={staticFile("amputacao/narracao.mp3")}
+            trimBefore={f(de)}
+            trimAfter={f(ate) + 3}
+          />
+        </Sequence>
+      ))}
     </AbsoluteFill>
   );
 };
