@@ -24,15 +24,31 @@ export const InspecaoAmputacao: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      new FBXLoader().loadAsync(staticFile("modelos3d/amputacao/personagem.fbx")),
-      new GLTFLoader().loadAsync(staticFile("modelos3d/amputacao/protese/scene.gltf")),
+      new FBXLoader().loadAsync(
+        staticFile("modelos3d/amputacao/personagem.fbx"),
+      ),
+      new GLTFLoader().loadAsync(
+        staticFile("modelos3d/amputacao/protese/scene.gltf"),
+      ),
     ]).then(([pessoa, gltf]) => {
       const info: string[] = [];
       pessoa.updateMatrixWorld(true);
       const caixa = new THREE.Box3().setFromObject(pessoa);
-      info.push(`pessoa min ${caixa.min.toArray().map((v) => v.toFixed(1))} max ${caixa.max.toArray().map((v) => v.toFixed(1))}`);
-      for (const nome of ["Hips", "RightUpLeg", "RightLeg", "RightFoot", "LeftLeg", "LeftFoot", "Head"]) {
-        const osso = pessoa.getObjectByName(`mixamorig12${nome}`) ?? pessoa.getObjectByName(`mixamorig12:${nome}`);
+      info.push(
+        `pessoa min ${caixa.min.toArray().map((v) => v.toFixed(1))} max ${caixa.max.toArray().map((v) => v.toFixed(1))}`,
+      );
+      for (const nome of [
+        "Hips",
+        "RightUpLeg",
+        "RightLeg",
+        "RightFoot",
+        "LeftLeg",
+        "LeftFoot",
+        "Head",
+      ]) {
+        const osso =
+          pessoa.getObjectByName(`mixamorig12${nome}`) ??
+          pessoa.getObjectByName(`mixamorig12:${nome}`);
         if (osso) {
           const p = new THREE.Vector3();
           osso.getWorldPosition(p);
@@ -42,12 +58,16 @@ export const InspecaoAmputacao: React.FC = () => {
       const protese = gltf.scene;
       protese.updateMatrixWorld(true);
       const cp = new THREE.Box3().setFromObject(protese);
-      info.push(`protese min ${cp.min.toArray().map((v) => v.toFixed(1))} max ${cp.max.toArray().map((v) => v.toFixed(1))}`);
+      info.push(
+        `protese min ${cp.min.toArray().map((v) => v.toFixed(1))} max ${cp.max.toArray().map((v) => v.toFixed(1))}`,
+      );
       pessoa.traverse((o) => {
         const m = o as THREE.SkinnedMesh;
         if (m.isMesh) {
           const n = m.geometry.attributes.position.count;
-          const mats = (Array.isArray(m.material) ? m.material : [m.material]).map((x) => x.name).join("/");
+          const mats = (Array.isArray(m.material) ? m.material : [m.material])
+            .map((x) => x.name)
+            .join("/");
           info.push(`malha ${m.name} v=${n} mat=${mats}`);
         }
       });
@@ -60,7 +80,11 @@ export const InspecaoAmputacao: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#2b2b2b" }}>
-      <ThreeCanvas width={width} height={height} camera={{ fov: 30, position: [0, 95, 430], near: 1, far: 5000 }}>
+      <ThreeCanvas
+        width={width}
+        height={height}
+        camera={{ fov: 30, position: [0, 95, 430], near: 1, far: 5000 }}
+      >
         <ambientLight intensity={1.2} />
         <directionalLight position={[200, 300, 400]} intensity={2} />
         {cena ? (
@@ -73,8 +97,19 @@ export const InspecaoAmputacao: React.FC = () => {
           </>
         ) : null}
       </ThreeCanvas>
-      <div style={{ position: "absolute", left: 20, top: 20, color: "#fff", fontSize: 22, fontFamily: "monospace" }}>
-        {cena?.info.map((l) => <div key={l}>{l}</div>)}
+      <div
+        style={{
+          position: "absolute",
+          left: 20,
+          top: 20,
+          color: "#fff",
+          fontSize: 22,
+          fontFamily: "monospace",
+        }}
+      >
+        {cena?.info.map((l) => (
+          <div key={l}>{l}</div>
+        ))}
       </div>
     </AbsoluteFill>
   );

@@ -50,10 +50,7 @@ export type Modelo = {
 };
 
 /** Mantém só os triângulos cujos três vértices passam no teste (posição no mundo, pose de repouso). */
-const recortar = (
-  malha: THREE.Mesh,
-  manter: (p: THREE.Vector3) => boolean,
-) => {
+const recortar = (malha: THREE.Mesh, manter: (p: THREE.Vector3) => boolean) => {
   const geo = malha.geometry;
   const pos = geo.attributes.position;
   const p = new THREE.Vector3();
@@ -101,7 +98,11 @@ const prepararProtese = (cena: THREE.Group) => {
   const escala = TOPO_ENCAIXE / tamanho.y;
   const centro = caixa.getCenter(new THREE.Vector3());
   // Pé no chão, encaixe centrado no eixo vertical.
-  cena.position.set(-centro.x * escala, -caixa.min.y * escala, -centro.z * escala);
+  cena.position.set(
+    -centro.x * escala,
+    -caixa.min.y * escala,
+    -centro.z * escala,
+  );
   cena.scale.setScalar(escala);
   cena.traverse((o) => {
     const m = o as THREE.Mesh;
@@ -117,10 +118,14 @@ const prepararProtese = (cena: THREE.Group) => {
 
 export const useModelo = () => {
   const [modelo, setModelo] = useState<Modelo | null>(null);
-  const [espera] = useState(() => delayRender("Carregando personagem e prótese"));
+  const [espera] = useState(() =>
+    delayRender("Carregando personagem e prótese"),
+  );
   useEffect(() => {
     Promise.all([
-      new FBXLoader().loadAsync(staticFile("modelos3d/amputacao/personagem.fbx")),
+      new FBXLoader().loadAsync(
+        staticFile("modelos3d/amputacao/personagem.fbx"),
+      ),
       new GLTFLoader().loadAsync(
         staticFile("modelos3d/amputacao/protese/scene.gltf"),
       ),
@@ -129,7 +134,9 @@ export const useModelo = () => {
         prepararPessoa(pessoa);
         const ossos = {} as Record<Osso, THREE.Bone>;
         for (const nome of OSSOS) {
-          const osso = pessoa.getObjectByName(`${PREFIXO}${nome}`) as THREE.Bone;
+          const osso = pessoa.getObjectByName(
+            `${PREFIXO}${nome}`,
+          ) as THREE.Bone;
           if (!osso) throw new Error(`Osso não encontrado: ${nome}`);
           ossos[nome] = osso;
         }
@@ -143,7 +150,11 @@ export const useModelo = () => {
         ossos.RightLeg.getWorldPosition(joelho);
         const tornozelo = new THREE.Vector3();
         ossos.RightFoot.getWorldPosition(tornozelo);
-        const naCena = new THREE.Matrix4().makeTranslation(tornozelo.x, 0, tornozelo.z);
+        const naCena = new THREE.Matrix4().makeTranslation(
+          tornozelo.x,
+          0,
+          tornozelo.z,
+        );
         const proteseNoJoelho = ossos.RightLeg.matrixWorld
           .clone()
           .invert()
@@ -181,7 +192,12 @@ export const girarNoMundo = (
   osso.parent?.getWorldQuaternion(pai);
   const delta = new THREE.Quaternion().setFromAxisAngle(eixo, angulo);
   // q_local' = pai⁻¹ · delta · pai · q_local
-  const q = pai.clone().invert().multiply(delta).multiply(pai).multiply(osso.quaternion);
+  const q = pai
+    .clone()
+    .invert()
+    .multiply(delta)
+    .multiply(pai)
+    .multiply(osso.quaternion);
   osso.quaternion.copy(q);
   osso.updateMatrixWorld(true);
 };
@@ -195,13 +211,21 @@ export type Pose = {
   maoZ: number;
 };
 
-export const POSE_INICIAL: Pose = { deslocamento: 0, maoX: 43, maoY: 95, maoZ: 2 };
+export const POSE_INICIAL: Pose = {
+  deslocamento: 0,
+  maoX: 43,
+  maoY: 95,
+  maoZ: 2,
+};
 
 const posMundo = (o: THREE.Object3D) => o.getWorldPosition(new THREE.Vector3());
 
 /** Gira um osso no mundo para levar a direção `de` até `para`. */
 const apontar = (osso: THREE.Bone, de: THREE.Vector3, para: THREE.Vector3) => {
-  const q = new THREE.Quaternion().setFromUnitVectors(de.normalize(), para.normalize());
+  const q = new THREE.Quaternion().setFromUnitVectors(
+    de.normalize(),
+    para.normalize(),
+  );
   const eixo = new THREE.Vector3(q.x, q.y, q.z);
   const s = eixo.length();
   if (s < 1e-6) return;
@@ -260,7 +284,10 @@ export const aplicarPose = (m: Modelo, pose: Pose) => {
   }
 
   // Mãos sobre os encostos das cadeiras: as mãos ficam paradas enquanto o corpo desloca.
-  for (const [lado, sinal] of [["Right", -1], ["Left", 1]] as const) {
+  for (const [lado, sinal] of [
+    ["Right", -1],
+    ["Left", 1],
+  ] as const) {
     alcancar(
       ossos[`${lado}Arm`],
       ossos[`${lado}ForeArm`],

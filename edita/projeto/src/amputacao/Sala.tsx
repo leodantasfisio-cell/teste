@@ -34,15 +34,33 @@ const Cadeira: React.FC<{ x: number; lado: 1 | -1 }> = ({ x, lado }) => {
   ];
   return (
     <group>
-      <Caixa pos={[x, assento, 0]} tam={[profundidade, 4, largura]} cor={MADEIRA_CLARA} />
+      <Caixa
+        pos={[x, assento, 0]}
+        tam={[profundidade, 4, largura]}
+        cor={MADEIRA_CLARA}
+      />
       {pernas.map(([px, pz]) => (
-        <Caixa key={`${px}-${pz}`} pos={[px, assento / 2, pz]} tam={[4, assento, 4]} cor={MADEIRA} />
+        <Caixa
+          key={`${px}-${pz}`}
+          pos={[px, assento / 2, pz]}
+          tam={[4, assento, 4]}
+          cor={MADEIRA}
+        />
       ))}
       {/* montantes e travessa do encosto (topo a 88 cm, onde as mãos apoiam) */}
       {[-largura / 2 + 3, largura / 2 - 3].map((pz) => (
-        <Caixa key={pz} pos={[xEncosto, 67, pz]} tam={[4, 42, 4]} cor={MADEIRA} />
+        <Caixa
+          key={pz}
+          pos={[xEncosto, 67, pz]}
+          tam={[4, 42, 4]}
+          cor={MADEIRA}
+        />
       ))}
-      <Caixa pos={[xEncosto, 85, 0]} tam={[5, 7, largura]} cor={MADEIRA_CLARA} />
+      <Caixa
+        pos={[xEncosto, 85, 0]}
+        tam={[5, 7, largura]}
+        cor={MADEIRA_CLARA}
+      />
       <Caixa pos={[xEncosto, 72, 0]} tam={[3, 5, largura - 6]} cor={MADEIRA} />
     </group>
   );
@@ -60,7 +78,11 @@ export const Sala: React.FC = () => (
     </mesh>
     {/* tábuas do piso */}
     {Array.from({ length: 40 }, (_, i) => (
-      <mesh key={i} rotation={[-Math.PI / 2, 0, 0]} position={[-600 + i * 30, 0.05, 0]}>
+      <mesh
+        key={i}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[-600 + i * 30, 0.05, 0]}
+      >
         <planeGeometry args={[0.6, 1200]} />
         <meshStandardMaterial color="#7a5230" />
       </mesh>
@@ -76,7 +98,11 @@ export const Sala: React.FC = () => (
       <Caixa pos={[0, 0, 0]} tam={[130, 150, 3]} cor="#f6f3ee" />
       <mesh position={[0, 0, 2]}>
         <planeGeometry args={[116, 136]} />
-        <meshStandardMaterial color="#dfeaf0" emissive="#cfe3ee" emissiveIntensity={0.9} />
+        <meshStandardMaterial
+          color="#dfeaf0"
+          emissive="#cfe3ee"
+          emissiveIntensity={0.9}
+        />
       </mesh>
       <Caixa pos={[0, 0, 3]} tam={[4, 136, 2]} cor="#f6f3ee" />
       <Caixa pos={[0, 0, 3]} tam={[116, 4, 2]} cor="#f6f3ee" />

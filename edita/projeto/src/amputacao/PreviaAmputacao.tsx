@@ -3,7 +3,13 @@ import { ThreeCanvas } from "@remotion/three";
 import { useEffect } from "react";
 import { AbsoluteFill, useVideoConfig } from "remotion";
 import { Sala } from "./Sala";
-import { aplicarPose, POSE_INICIAL, useModelo, type Modelo, type Pose } from "./Personagem";
+import {
+  aplicarPose,
+  POSE_INICIAL,
+  useModelo,
+  type Modelo,
+  type Pose,
+} from "./Personagem";
 
 // Quadro de calibração do personagem amputado: pose escolhida por props.
 export const PreviaAmputacao: React.FC<{
@@ -15,7 +21,12 @@ export const PreviaAmputacao: React.FC<{
   const { modelo, liberar } = useModelo();
   return (
     <AbsoluteFill style={{ backgroundColor: "#d9d4cc" }}>
-      <ThreeCanvas width={width} height={height} camera={{ fov: 30, position: camera, near: 1, far: 5000 }} shadows>
+      <ThreeCanvas
+        width={width}
+        height={height}
+        camera={{ fov: 30, position: camera, near: 1, far: 5000 }}
+        shadows
+      >
         <ambientLight intensity={0.9} />
         <hemisphereLight args={["#ffffff", "#8a7f70", 0.6]} />
         <directionalLight
@@ -32,7 +43,12 @@ export const PreviaAmputacao: React.FC<{
         />
         <Sala />
         {modelo ? (
-          <Cena modelo={modelo} pose={{ ...POSE_INICIAL, ...pose }} alvo={alvo} liberar={liberar} />
+          <Cena
+            modelo={modelo}
+            pose={{ ...POSE_INICIAL, ...pose }}
+            alvo={alvo}
+            liberar={liberar}
+          />
         ) : null}
       </ThreeCanvas>
     </AbsoluteFill>
