@@ -1,4 +1,5 @@
 import { Video } from "@remotion/media";
+import { fonteTexto } from "../correcao/fontes";
 import {
   AbsoluteFill,
   Easing,
@@ -13,18 +14,24 @@ import {
 // Amputação 01 — transferência de peso laterolateral.
 // Clipes do Gemini (Veo) espelhados para a prótese ficar na perna direita (à esquerda da tela),
 // desacelerados e com parada de 2 s (ver briefings/amputacao-01-transferencia-peso-laterolateral.md).
-// Cada ciclo: 3 s indo, 2 s parado, ~2,8 s voltando.
+// O vídeo roda 25% mais rápido (pedido do usuário): cada ciclo fica ~2,4 s indo,
+// 1,6 s parado e ~2,2 s voltando. Abre com uma capa de 3 s.
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const suave = Easing.inOut(Easing.sin);
 
-export const CICLO_PROTESE = 7.7;
-export const CICLO_PERNA = 7.86;
+/** Velocidade dos clipes em relação à montagem anterior (1 = 3 s indo, 2 s parado). */
+const VELOCIDADE = 1.25;
+export const CICLO_PROTESE = 7.7 / VELOCIDADE;
+export const CICLO_PERNA = 7.86 / VELOCIDADE;
+/** Capa de entrada e quadro parado com a posição inicial (tempo da instrução falada). */
+const CAPA = 3;
+const POSICAO_INICIAL = 3.5;
 const FUSAO = 0.4; // sobreposição entre clipes para esconder a diferença de luz
 
 const T = (() => {
-  const inicio = 0;
-  const protese1 = 4;
+  const inicio = CAPA;
+  const protese1 = CAPA + POSICAO_INICIAL;
   const perna1 = protese1 + CICLO_PROTESE - FUSAO;
   const zoomIn = perna1 + CICLO_PERNA;
   const protese2 = zoomIn + 1;
@@ -33,14 +40,17 @@ const T = (() => {
   return { inicio, protese1, perna1, zoomIn, protese2, perna2, zoomOut };
 })();
 
-export const DURACAO_TRANSFERENCIA = Math.ceil(T.zoomOut + 4);
+export const DURACAO_TRANSFERENCIA = Math.ceil(T.zoomOut + 3);
 
 /** Aproximação da pelve e das pernas, com os pés na base do quadro. */
 const ZOOM = 1.6;
 
 /** 0 → 1 → 0 do deslocamento da pelve dentro de um ciclo (segundos do ciclo). */
 const deslocamento = (t: number, duracao: number) =>
-  interpolate(t, [0, 3, 5, duracao], [0, 1, 1, 0], { ...clamp, easing: suave });
+  interpolate(t, [0, 3 / VELOCIDADE, 5 / VELOCIDADE, duracao], [0, 1, 1, 0], {
+    ...clamp,
+    easing: suave,
+  });
 
 // Seta horizontal discreta na altura da cintura, crescendo para o lado do deslocamento.
 const SetaPelve: React.FC<{ direcao: -1 | 1; duracao: number }> = ({
@@ -99,7 +109,11 @@ const Ciclo: React.FC<{
     : 1;
   return (
     <AbsoluteFill style={{ opacity: opacidade }}>
-      <Video src={staticFile(`amputacao/${arquivo}`)} muted />
+      <Video
+        src={staticFile(`amputacao/${arquivo}`)}
+        muted
+        playbackRate={VELOCIDADE}
+      />
       <SetaPelve direcao={direcao} duracao={duracao} />
     </AbsoluteFill>
   );
@@ -114,7 +128,7 @@ export const Transferencia: React.FC = () => {
   // Câmera: leve aproximação na abertura, zoom na pelve no 2º ciclo e volta ao quadro inteiro.
   const zoom =
     t < T.zoomIn
-      ? interpolate(t, [0, T.protese1], [1, 1.03], {
+      ? interpolate(t, [T.inicio, T.protese1], [1, 1.03], {
           ...clamp,
           easing: suave,
         }) *
@@ -168,15 +182,117 @@ export const Transferencia: React.FC = () => {
         {ciclo(T.perna2, "ciclo-perna.mp4", CICLO_PERNA, 1, true)}
       </AbsoluteFill>
 
-      {/* Logos nos cantos inferiores, como no vídeo de exemplo */}
+      {/* Logos nos cantos inferiores, como no vídeo de exemplo (entram depois da capa) */}
+      <AbsoluteFill
+        style={{
+          opacity: interpolate(t, [CAPA - 0.4, CAPA + 0.2], [0, 1], clamp),
+        }}
+      >
+        <Img
+          src={staticFile("marca/logo-corredor.png")}
+          style={{ position: "absolute", left: 36, bottom: 28, height: 150 }}
+        />
+        <Img
+          src={staticFile("marca/logo-labortorio-sem-fundo-manual.png")}
+          style={{ position: "absolute", right: 36, bottom: 36, width: 300 }}
+        />
+      </AbsoluteFill>
+      <Sequence durationInFrames={f(CAPA)}>
+        <Capa />
+      </Sequence>
+    </AbsoluteFill>
+  );
+};
+
+// Capa de entrada: quadro inicial escurecido e desfocado, título e as duas logos.
+const Capa: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const entra = (a: number) =>
+    interpolate(t, [a, a + 0.6], [0, 1], {
+      ...clamp,
+      easing: Easing.bezier(0.16, 1, 0.3, 1),
+    });
+  const sai = interpolate(t, [CAPA - 0.5, CAPA], [1, 0], clamp);
+  return (
+    <AbsoluteFill style={{ opacity: sai, fontFamily: fonteTexto }}>
       <Img
-        src={staticFile("marca/logo-corredor.png")}
-        style={{ position: "absolute", left: 36, bottom: 28, height: 150 }}
+        src={staticFile("amputacao/inicio.jpg")}
+        style={{
+          width: "100%",
+          height: "100%",
+          filter: "blur(14px) brightness(0.45)",
+          scale: "1.08",
+        }}
       />
-      <Img
-        src={staticFile("marca/logo-labortorio-sem-fundo-manual.png")}
-        style={{ position: "absolute", right: 36, bottom: 36, width: 300 }}
-      />
+      <AbsoluteFill
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          color: "#FFFFFF",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 34,
+            fontWeight: 700,
+            letterSpacing: 8,
+            color: "#F2B84B",
+            opacity: entra(0.1),
+          }}
+        >
+          EXERCÍCIO 01
+        </div>
+        <div
+          style={{
+            fontSize: 96,
+            fontWeight: 800,
+            lineHeight: 1.05,
+            marginTop: 18,
+            opacity: entra(0.25),
+            translate: `0 ${(1 - entra(0.25)) * 30}px`,
+          }}
+        >
+          Transferência de peso
+          <br />
+          laterolateral
+        </div>
+        <div
+          style={{
+            fontSize: 38,
+            fontWeight: 500,
+            color: "#E6E6E6",
+            marginTop: 26,
+            opacity: entra(0.6),
+          }}
+        >
+          Amputação transtibial · em casa, com apoio de duas cadeiras
+        </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 60,
+            marginTop: 60,
+            padding: "22px 48px",
+            borderRadius: 26,
+            // Cartão branco: o corpo do corredor é preto e sumiria no fundo escuro.
+            backgroundColor: "rgba(255, 255, 255, 0.94)",
+            opacity: entra(0.9),
+          }}
+        >
+          <Img
+            src={staticFile("marca/logo-corredor.png")}
+            style={{ height: 170 }}
+          />
+          <Img
+            src={staticFile("marca/logo-labortorio-sem-fundo-manual.png")}
+            style={{ width: 380 }}
+          />
+        </div>
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };

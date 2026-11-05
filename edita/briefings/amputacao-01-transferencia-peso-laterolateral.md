@@ -77,3 +77,19 @@ e a mesma sala nos próximos exercícios.
 O usuário cancelou o 3D e voltou ao plano original: clipes realistas gerados no Kling a partir de uma
 imagem de referência (sala de estar, duas cadeiras), montados no Remotion com seta, aproximação,
 logos e narração. O código 3D (src/amputacao) fica guardado, sem uso.
+
+## Prévia v2 (05/11/2026)
+
+Capa de entrada de 3 s, vídeo 25% mais rápido (ciclo ~2,4 s indo, 1,6 s parado, ~2,2 s voltando),
+35 s no total. Narração revista para o ritmo novo (cada frase separada por pausa, para ser encaixada
+no seu movimento na edição):
+
+```
+Transferência de peso. <break time="1s" />
+Fique em pé entre duas cadeiras firmes, com os pés afastados e as mãos apoiadas de leve no encosto. <break time="1s" />
+Leve o peso devagar para a prótese. <break time="1s" /> Segure. <break time="1s" /> Volte ao centro. <break time="1s" />
+Agora, para a perna esquerda. <break time="1s" /> Segure. <break time="1s" /> Volte ao centro. <break time="1s" />
+Mais uma vez, com o tronco reto e os pés no chão. <break time="1s" />
+Para a prótese. <break time="1s" /> E para a perna esquerda. <break time="1s" />
+Muito bem.
+```
