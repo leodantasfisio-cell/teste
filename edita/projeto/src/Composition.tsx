@@ -1,3 +1,4 @@
+import { Marcha, DURACAO_MARCHA } from "./amputacao/Marcha";
 import { CalculateMetadataFunction, Composition } from "remotion";
 import { Teste } from "./Teste";
 import { CorrecaoPostural } from "./correcao/CorrecaoPostural";
@@ -107,6 +108,14 @@ export const MyComposition = () => {
         id="AmputacaoTransferencia"
         component={Transferencia}
         durationInFrames={DURACAO_TRANSFERENCIA * 30}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="AmputacaoMarcha"
+        component={Marcha}
+        durationInFrames={DURACAO_MARCHA * 30}
         fps={30}
         width={1920}
         height={1080}
