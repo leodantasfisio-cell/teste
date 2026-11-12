@@ -1,4 +1,4 @@
-import { Video } from "@remotion/media";
+import { Audio, Video } from "@remotion/media";
 import { fonteTexto } from "../correcao/fontes";
 import {
   AbsoluteFill,
@@ -25,7 +25,7 @@ const IDA = 2.9;
 const PARADO = 1.5;
 const FUSAO = 0.2;
 const CAPA = 3;
-const POSICAO_INICIAL = 4;
+const POSICAO_INICIAL = 5.2;
 const REPETICOES = 3;
 const FINAL = 3;
 
@@ -40,6 +40,28 @@ const PASSOS: Passo[] = Array.from({ length: REPETICOES }, (_, i) => ({
 }));
 
 const FIM_PASSOS = PASSOS[PASSOS.length - 1].inicio + CICLO;
+// Narração (ElevenLabs, Henrique) recortada pelos silêncios (silencedetect n=-38dB d=0.28).
+const SEG = {
+  titulo: [0, 1.91],
+  posicao: [2.62, 7.42],
+  passo: [8.24, 10.03],
+  segure: [10.54, 11.17],
+  volte: [11.55, 12.49],
+  maisUma: [12.83, 13.72],
+  ultima: [14.2, 15.16],
+  muitoBem: [15.81, 16.58],
+} as const;
+const FRASES: { seg: readonly [number, number]; quando: number }[] = [
+  { seg: SEG.titulo, quando: 0.5 },
+  { seg: SEG.posicao, quando: CAPA + 0.1 },
+  ...PASSOS.flatMap((p, i) => [
+    { seg: [SEG.passo, SEG.maisUma, SEG.ultima][i], quando: p.inicio },
+    { seg: SEG.segure, quando: p.inicio + IDA },
+    { seg: SEG.volte, quando: p.inicio + IDA + PARADO },
+  ]),
+  { seg: SEG.muitoBem, quando: FIM_PASSOS + 0.2 },
+];
+
 export const DURACAO_MARCHA = Math.ceil(FIM_PASSOS + FINAL);
 
 
@@ -169,6 +191,11 @@ export const Marcha: React.FC = () => {
       <Sequence durationInFrames={f(CAPA)}>
         <Capa />
       </Sequence>
+      {FRASES.map(({ seg: [de, ate], quando }, i) => (
+        <Sequence key={i} from={f(quando)} durationInFrames={f(ate - de) + 6}>
+          <Audio src={staticFile("amputacao/marcha/narracao.mp3")} trimBefore={f(de)} trimAfter={f(ate) + 3} />
+        </Sequence>
+      ))}
     </AbsoluteFill>
   );
 };
