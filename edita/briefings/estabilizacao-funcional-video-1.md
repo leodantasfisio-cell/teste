@@ -13,24 +13,56 @@
 
 ## Imagens a gerar no Gemini
 
-Use a mesma descrição fixa em todas, trocando só a etapa do movimento, para manter a aparência da pessoa e do fundo idênticas entre as imagens.
+Gere a imagem 1 pelo texto. Para as imagens 2 a 6, suba a imagem 1 de volta no Gemini (edição de
+imagem) e peça só a mudança da etapa, para manter a mesma pessoa, roupa e fundo em todas.
 
-**Descrição fixa**
+**Imagem 1 — posição inicial (prompt de texto)**
 
 ```
-Mulher jovem sentada em um banco sem encosto, vista de frente, postura ereta, pés descalços
-apoiados no chão, joelhos a 90 graus. Fundo cinza-claro liso, iluminação suave de estúdio,
-câmera fixa na altura do tronco, estilo foto realista.
+Mulher jovem sentada em um banco sem encosto, vista de frente, corpo inteiro visível, postura
+ereta, mãos apoiadas sobre as coxas, pés descalços apoiados no chão, joelhos a 90 graus.
+Fundo cinza-claro liso, iluminação suave de estúdio, câmera fixa na altura do tronco,
+estilo foto realista.
 ```
 
-**Etapas (uma imagem por etapa)**
+**Imagem 2 — braços à frente (edição a partir da imagem 1)**
 
-1. Posição inicial — mãos apoiadas sobre as coxas
-2. Braços elevados à frente, na altura dos ombros, pés ainda apoiados no chão
-3. Braços parados à frente + pé direito elevado (joelho fletido), pé esquerdo no chão
-4. Braços parados à frente + pé esquerdo elevado, pé direito no chão
-5. Braço esquerdo elevado + pé direito elevado ao mesmo tempo (padrão alternado)
-6. Braço direito elevado + pé esquerdo elevado ao mesmo tempo
+```
+A partir desta imagem, mude apenas os braços: eleve os dois braços esticados à frente, na
+altura dos ombros. Mantenha a pessoa, a roupa, o fundo e a câmera exatamente iguais.
+```
+
+**Imagem 3 — pé direito elevado (edição a partir da imagem 2)**
+
+```
+A partir desta imagem, mantenha os braços à frente na altura dos ombros e mude apenas as
+pernas: eleve o pé direito dela, com o joelho fletido, mantendo o pé esquerdo apoiado no chão.
+Mantenha a pessoa, a roupa, o fundo e a câmera exatamente iguais.
+```
+
+**Imagem 4 — pé esquerdo elevado (edição a partir da imagem 2)**
+
+```
+A partir desta imagem, mantenha os braços à frente na altura dos ombros e mude apenas as
+pernas: eleve o pé esquerdo dela, com o joelho fletido, mantendo o pé direito apoiado no chão.
+Mantenha a pessoa, a roupa, o fundo e a câmera exatamente iguais.
+```
+
+**Imagem 5 — braço esquerdo + pé direito elevados (edição a partir da imagem 3)**
+
+```
+A partir desta imagem (pé direito já elevado), mude apenas o braço esquerdo: abaixe-o até a
+altura do quadril, mantendo o braço direito esticado à frente na altura do ombro. Mantenha a
+pessoa, a roupa, o fundo e a câmera exatamente iguais.
+```
+
+**Imagem 6 — braço direito + pé esquerdo elevados (edição a partir da imagem 4)**
+
+```
+A partir desta imagem (pé esquerdo já elevado), mude apenas o braço direito: abaixe-o até a
+altura do quadril, mantendo o braço esquerdo esticado à frente na altura do ombro. Mantenha a
+pessoa, a roupa, o fundo e a câmera exatamente iguais.
+```
 
 ## Em aberto
 
