@@ -1,0 +1,123 @@
+<title>POP Vídeos de Exercício</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: folha de procedimento de clínica, coluna única, etapas numeradas porque a ordem importa */
+:root{
+  --bg:#f6f8f7; --fg:#1b2422; --muted:#5a6966; --line:#d7e0dd; --card:#ffffff;
+  --accent:#1f8a5b; --amber:#b9770e;
+  --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121816; --fg:#e4ece9; --muted:#9aaba6; --line:#2a3532; --card:#1a2220;
+  --accent:#4cc28a; --amber:#f2b84b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121816; --fg:#e4ece9; --muted:#9aaba6; --line:#2a3532; --card:#1a2220;
+  --accent:#4cc28a; --amber:#f2b84b; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+main{max-width:760px;margin:0 auto;display:grid;gap:32px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:2.1rem;line-height:1.15}
+h2{font-size:1.25rem;display:flex;gap:12px;align-items:baseline}
+.n{color:var(--accent);font-variant-numeric:tabular-nums}
+.sub{color:var(--muted);margin:8px 0 0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.meta span{font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line);border-radius:6px;padding:3px 10px;color:var(--muted)}
+section{display:grid;gap:10px;min-width:0}
+ul{margin:0;padding-left:20px;display:grid;gap:4px}
+p{margin:0}
+code{font-size:.88em;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:1px 5px;word-break:break-word}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:8px}
+.alerta{border-left:4px solid var(--amber)}
+.alerta strong{color:var(--amber)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+td{border-top:1px solid var(--line);padding:8px 6px;vertical-align:top}
+td:first-child{color:var(--muted);white-space:nowrap;padding-right:16px}
+.tw{overflow-x:auto}
+</style>
+
+<main>
+<header>
+  <h1>Produção de vídeos de exercício</h1>
+  <p class="sub">Procedimento operacional padrão para as séries de escoliose (ScolioFisio) e de amputação (Lab Ortorio), feitas com IA de imagem/vídeo, narração da ElevenLabs e montagem pelo Claude.</p>
+  <div class="meta"><span>Repositório: teste</span><span>Branch: videos_treinamento_escoliose</span><span>Prévia sempre antes do final</span></div>
+</header>
+
+<section>
+  <h2><span class="n">1</span>Definir o exercício</h2>
+  <ul>
+    <li>Receber do fisioterapeuta o <strong>texto do exercício</strong>: nome, posição inicial, movimento, tempo de cada fase e número de repetições.</li>
+    <li>Se houver, gravar ou separar um <strong>vídeo modelo</strong> (celular parado, corpo inteiro, movimento lento).</li>
+    <li>Mandar tudo ao Claude, que registra um briefing em <code>edita/briefings/</code>.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="n">2</span>Gerar a imagem do personagem</h2>
+  <ul>
+    <li>No <strong>Gemini</strong>, gerar a foto da posição inicial (cenário, roupa, apoio). O Claude escreve o prompt.</li>
+    <li>Conferir os detalhes clínicos: lado da curva na escoliose, prótese na perna correta na amputação.</li>
+    <li>Reaproveitar a mesma imagem nos exercícios seguintes, para manter o personagem igual.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="n">3</span>Gerar o movimento</h2>
+  <ul>
+    <li><strong>Escoliose:</strong> em geral bastam imagens paradas de cada fase (o Claude anima com setas, destaques e transições).</li>
+    <li><strong>Amputação:</strong> no Gemini (Veo), enviar a imagem + o prompt do Claude e gerar um clipe curto.</li>
+    <li>Pedir <strong>só a ida</strong> do movimento. A volta, as pausas e as repetições são feitas na edição.</li>
+  </ul>
+  <div class="box alerta">
+    <p><strong>Erros comuns da IA de vídeo</strong></p>
+    <ul>
+      <li>Coloca a prótese na perna errada ou espelha a cena: não precisa gerar de novo, o Claude espelha.</li>
+      <li>Dobra o quadril em vez de mover o corpo inteiro, ou faz marcha no lugar em vez de passo: gerar de novo reforçando o prompt.</li>
+      <li>Movimento rápido ou com pulos: o Claude desacelera, mas pulos não têm conserto.</li>
+      <li>Se um trecho do clipe estiver certo e o resto errado, mande mesmo assim: dá para aproveitar a parte boa.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">4</span>Gerar a narração</h2>
+  <ul>
+    <li>O Claude entrega o texto, uma frase por linha, com as quebras de linha que viram pausas.</li>
+    <li>Gerar no site da <strong>ElevenLabs</strong> e baixar o MP3.</li>
+  </ul>
+  <div class="tw"><table>
+    <tr><td>Voz</td><td>Henrique</td></tr>
+    <tr><td>Modelo</td><td>Eleven Multilingual v2</td></tr>
+    <tr><td>Ajustes</td><td>Stability 70 · Similarity 75 · Style 0 · Speed 0,95</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2><span class="n">5</span>Montagem com o Claude</h2>
+  <ul>
+    <li>Abrir o Claude Code no repositório <code>teste</code>, branch <code>videos_treinamento_escoliose</code>.</li>
+    <li>Enviar a imagem, os clipes e o MP3.</li>
+    <li>O Claude espelha, desacelera, cria pausas e voltas, coloca capa, setas, contador, logos e sincroniza cada frase da narração.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="n">6</span>Prévia, ajustes e vídeo final</h2>
+  <ul>
+    <li>Sempre pedir a <strong>prévia</strong> (meia resolução) antes do vídeo final.</li>
+    <li>Conferir com o fisioterapeuta: movimento correto, lado correto, tempo das fases, texto da narração.</li>
+    <li>Aprovado: pedir o render final em 1920×1080 com o volume normalizado.</li>
+    <li>Guardar o MP4 final fora do Claude (Drive), porque os vídeos renderizados não ficam salvos no repositório.</li>
+  </ul>
+</section>
+
+<section class="box">
+  <p><strong>Dicas para gastar menos</strong></p>
+  <ul>
+    <li>Pedir ao Claude respostas curtas e uma etapa por vez.</li>
+    <li>Na IA de vídeo, gerar um movimento por clipe: clipes curtos e simples erram menos e gastam menos créditos.</li>
+    <li>Começar uma conversa nova a cada série ou quando a conversa ficar muito longa, sempre no repositório <code>teste</code>.</li>
+  </ul>
+</section>
+</main>
