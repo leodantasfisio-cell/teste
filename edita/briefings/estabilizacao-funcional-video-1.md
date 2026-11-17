@@ -11,58 +11,44 @@
 | Voz | ElevenLabs, Multilingual v2, Henrique, stability 70, similarity 75, style 0, speed 0.95 |
 | Logos | LAB ORTORIO e ScolioFisio (abertura e encerramento), mesmo padrão dos vídeos 1-6 |
 
-## Imagens a gerar no Gemini
+## Imagens (geradas no Gemini, aprovadas em 17/11/2026)
 
-Personagem esqueleto 3D (mesmo estilo da Correção Postural), vista de frente, e prompts em inglês.
-Gere a imagem 1 pelo texto. Para as imagens 2 a 6, suba a imagem anterior de volta no Gemini
-(edição de imagem) e peça só a mudança da etapa, para manter o mesmo esqueleto e fundo em todas.
+Correção do usuário: no vídeo-modelo os braços sobem uma vez e ficam parados o resto do exercício —
+só as pernas alternam. `edita/projeto/public/esqueleto/estabilizacao1/`:
 
-**Imagem 1 — posição inicial (prompt de texto)**
+| Arquivo | Etapa |
+| --- | --- |
+| `posicao-inicial.jpg` | Mãos apoiadas nas coxas, pés no chão |
+| `bracos-frente.jpg` | Braços elevados à frente, na altura dos ombros, pés no chão |
+| `pe-esquerdo-elevado.jpg` | Braços à frente (parados) + pé esquerdo elevado |
+| `pe-direito-elevado.jpg` | Braços à frente (parados) + pé direito elevado — espelho de `pe-esquerdo-elevado.jpg`, feito localmente (sem gastar geração no Gemini) |
 
-```
-Realistic 3D anatomical human skeleton, ivory-white bone color, sitting on a backless wooden
-stool, full body visible, front view. Feet flat on the floor, knees at 90 degrees, hands resting
-on the thighs. Plain dark-gray studio background, soft studio lighting, camera fixed at torso
-height.
-```
+## Narração (ElevenLabs, Henrique)
 
-**Imagem 2 — braços à frente (edição a partir da imagem 1)**
-
-```
-From this image, change only the arms: raise both arms straight forward, at shoulder height.
-Keep the skeleton, background and camera exactly the same.
-```
-
-**Imagem 3 — pé direito elevado (edição a partir da imagem 2)**
+**Áudio 1 — Abertura**
 
 ```
-From this image, keep the arms raised forward at shoulder height, and change only the legs:
-lift the right foot off the floor with the knee bent, keeping the left foot flat on the floor.
-Keep the skeleton, background and camera exactly the same.
+Exercício de estabilização funcional, com autocorreção da postura. Faça tudo com calma, no seu tempo. Se sentir dor, pare o exercício. <break time="2s" />
+Sente-se em um banco, com os pés bem apoiados no chão. <break time="2s" />
 ```
 
-**Imagem 4 — pé esquerdo elevado (edição a partir da imagem 2)**
+**Áudio 2 — Exercício**
 
 ```
-From this image, keep the arms raised forward at shoulder height, and change only the legs:
-lift the left foot off the floor with the knee bent, keeping the right foot flat on the floor.
-Keep the skeleton, background and camera exactly the same.
+Coloque as duas mãos sobre as coxas e apoie o peso nelas. <break time="2s" />
+Cresça a coluna para cima e mantenha a autocorreção das suas curvas. <break time="2s" />
+Agora, eleve os dois braços à frente, até a altura dos ombros. <break time="2s" />
+Mantenha os braços parados nessa posição durante todo o exercício. <break time="2s" />
+Comece a elevar os pés, um de cada vez, bem devagar. <break time="2s" />
+Continue alternando os pés, sem parar, mantendo a coluna crescida. <break time="2s" />
+Para terminar, pare os pés, abaixe os braços e volte para a posição inicial, com as mãos nas coxas.
 ```
 
-**Imagem 5 — braço esquerdo baixo + pé direito elevado (edição a partir da imagem 3)**
+**Áudio 3 — Encerramento**
 
 ```
-From this image (right foot already lifted), change only the left arm: lower it to hip height,
-keeping the right arm raised straight forward at shoulder height. Keep the skeleton, background
-and camera exactly the same.
-```
-
-**Imagem 6 — braço direito baixo + pé esquerdo elevado (edição a partir da imagem 4)**
-
-```
-From this image (left foot already lifted), change only the right arm: lower it to hip height,
-keeping the left arm raised straight forward at shoulder height. Keep the skeleton, background
-and camera exactly the same.
+Pode relaxar. <break time="1s" />
+Muito bem! Se este exercício te ajudou, inscreva-se no canal para acompanhar os próximos.
 ```
 
 ## Decisões (17/11/2026)
