@@ -4,37 +4,34 @@ import type { Caption } from "@remotion/captions";
 // Vista de perfil, igual ao vídeo 1: mão na coxa -> pega a bola e eleva o braço à
 // frente (cotovelo esticado) -> movimentos circulares com a bola -> devolve a bola
 // e volta à posição inicial.
-//
-// ATENÇÃO: nenhum áudio foi gravado ainda — todos os trechos abaixo são ESTIMATIVA.
-// Assim que os 3 áudios chegarem, medir com silencedetect (n=-38dB, d=0.28 e d=1.0)
-// e substituir as DURACAO_A*/TRECHOS_A*.
 
 type Trecho = [inicio: number, fim: number];
 
-const DURACAO_A1 = 18; // estimativa (texto parecido com o do vídeo 1)
-const DURACAO_A2 = 32; // estimativa: 6 frases
-const DURACAO_A3 = 8.255; // texto idêntico ao do vídeo 1 (já medido)
+// Medido com silencedetect (n=-38dB, d=0.28 e d=1.0) nos áudios enviados em 17/11/2026.
+const DURACAO_A1 = 21.029;
+const DURACAO_A2 = 36.493;
+const DURACAO_A3 = 8.176;
 
 const TRECHOS_A1: Trecho[] = [
-  [0, 4],
-  [4.5, 7],
-  [7.5, 10],
-  [12, 16],
+  [0, 4.707],
+  [5.772, 7.95],
+  [8.654, 11.104],
+  [13.3, 18.689],
 ];
 
 const TRECHOS_A2: Trecho[] = [
-  [0, 3],
-  [5, 8],
-  [10, 15],
-  [17, 20],
-  [22, 26],
-  [28, 32],
+  [0, 3.202],
+  [5.35, 9.194],
+  [11.46, 18.026],
+  [20.214, 23.515],
+  [25.809, 29.74],
+  [31.981, 36.493],
 ];
 
 const TRECHOS_A3: Trecho[] = [
-  [0, 0.97],
-  [2.189, 2.922],
-  [3.482, 8.255],
+  [0, 1.131],
+  [2.311, 3.059],
+  [3.728, 7.822],
 ];
 
 const TEXTOS_A1 = [
