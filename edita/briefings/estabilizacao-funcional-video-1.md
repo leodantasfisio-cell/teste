@@ -13,55 +13,56 @@
 
 ## Imagens a gerar no Gemini
 
-Gere a imagem 1 pelo texto. Para as imagens 2 a 6, suba a imagem 1 de volta no Gemini (edição de
-imagem) e peça só a mudança da etapa, para manter a mesma pessoa, roupa e fundo em todas.
+Personagem esqueleto 3D (mesmo estilo da Correção Postural), vista de frente, e prompts em inglês.
+Gere a imagem 1 pelo texto. Para as imagens 2 a 6, suba a imagem anterior de volta no Gemini
+(edição de imagem) e peça só a mudança da etapa, para manter o mesmo esqueleto e fundo em todas.
 
 **Imagem 1 — posição inicial (prompt de texto)**
 
 ```
-Mulher jovem sentada em um banco sem encosto, vista de frente, corpo inteiro visível, postura
-ereta, mãos apoiadas sobre as coxas, pés descalços apoiados no chão, joelhos a 90 graus.
-Fundo cinza-claro liso, iluminação suave de estúdio, câmera fixa na altura do tronco,
-estilo foto realista.
+Realistic 3D anatomical human skeleton, ivory-white bone color, sitting on a backless wooden
+stool, full body visible, front view. Feet flat on the floor, knees at 90 degrees, hands resting
+on the thighs. Plain dark-gray studio background, soft studio lighting, camera fixed at torso
+height.
 ```
 
 **Imagem 2 — braços à frente (edição a partir da imagem 1)**
 
 ```
-A partir desta imagem, mude apenas os braços: eleve os dois braços esticados à frente, na
-altura dos ombros. Mantenha a pessoa, a roupa, o fundo e a câmera exatamente iguais.
+From this image, change only the arms: raise both arms straight forward, at shoulder height.
+Keep the skeleton, background and camera exactly the same.
 ```
 
 **Imagem 3 — pé direito elevado (edição a partir da imagem 2)**
 
 ```
-A partir desta imagem, mantenha os braços à frente na altura dos ombros e mude apenas as
-pernas: eleve o pé direito dela, com o joelho fletido, mantendo o pé esquerdo apoiado no chão.
-Mantenha a pessoa, a roupa, o fundo e a câmera exatamente iguais.
+From this image, keep the arms raised forward at shoulder height, and change only the legs:
+lift the right foot off the floor with the knee bent, keeping the left foot flat on the floor.
+Keep the skeleton, background and camera exactly the same.
 ```
 
 **Imagem 4 — pé esquerdo elevado (edição a partir da imagem 2)**
 
 ```
-A partir desta imagem, mantenha os braços à frente na altura dos ombros e mude apenas as
-pernas: eleve o pé esquerdo dela, com o joelho fletido, mantendo o pé direito apoiado no chão.
-Mantenha a pessoa, a roupa, o fundo e a câmera exatamente iguais.
+From this image, keep the arms raised forward at shoulder height, and change only the legs:
+lift the left foot off the floor with the knee bent, keeping the right foot flat on the floor.
+Keep the skeleton, background and camera exactly the same.
 ```
 
-**Imagem 5 — braço esquerdo + pé direito elevados (edição a partir da imagem 3)**
+**Imagem 5 — braço esquerdo baixo + pé direito elevado (edição a partir da imagem 3)**
 
 ```
-A partir desta imagem (pé direito já elevado), mude apenas o braço esquerdo: abaixe-o até a
-altura do quadril, mantendo o braço direito esticado à frente na altura do ombro. Mantenha a
-pessoa, a roupa, o fundo e a câmera exatamente iguais.
+From this image (right foot already lifted), change only the left arm: lower it to hip height,
+keeping the right arm raised straight forward at shoulder height. Keep the skeleton, background
+and camera exactly the same.
 ```
 
-**Imagem 6 — braço direito + pé esquerdo elevados (edição a partir da imagem 4)**
+**Imagem 6 — braço direito baixo + pé esquerdo elevado (edição a partir da imagem 4)**
 
 ```
-A partir desta imagem (pé esquerdo já elevado), mude apenas o braço direito: abaixe-o até a
-altura do quadril, mantendo o braço esquerdo esticado à frente na altura do ombro. Mantenha a
-pessoa, a roupa, o fundo e a câmera exatamente iguais.
+From this image (left foot already lifted), change only the right arm: lower it to hip height,
+keeping the left arm raised straight forward at shoulder height. Keep the skeleton, background
+and camera exactly the same.
 ```
 
 ## Decisões (17/11/2026)
