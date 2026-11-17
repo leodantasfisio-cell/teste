@@ -201,6 +201,27 @@ REGIOES_V3["estab2-baixo"] = {
     "maos": (AMBAR, [ESTAB2_BRACO_BAIXO]),
 }
 
+# Vídeo 3 (mesma pasta): braço à frente com um bastão, bastão elevado acima da
+# cabeça e, por fim, em pé com o bastão elevado.
+ESTAB3_BRACO_FRENTE = _ret(590, 200, 900, 310)
+ESTAB3_BRACO_ELEVADO = _ret(740, 40, 900, 200)
+ESTAB3_BRACO_PE = _ret(740, 10, 900, 160)
+ESTAB3_COLUNA_ELEVADO = _ret(1075, 90, 1115, 480)
+ESTAB3_COLUNA_PE = _ret(1005, 230, 1075, 830)
+
+REGIOES_V3["estab3-bracos"] = {
+    "coluna": (AMBAR, [ESTAB1_COLUNA]),
+    "maos": (AMBAR, [ESTAB3_BRACO_FRENTE]),
+}
+REGIOES_V3["estab3-elevado"] = {
+    "coluna": (AMBAR, [ESTAB3_COLUNA_ELEVADO]),
+    "maos": (AMBAR, [ESTAB3_BRACO_ELEVADO]),
+}
+REGIOES_V3["estab3-pe"] = {
+    "coluna": (AMBAR, [ESTAB3_COLUNA_PE]),
+    "maos": (AMBAR, [ESTAB3_BRACO_PE]),
+}
+
 
 def main(origem: str, destino: str, conjunto: str = "neutro") -> None:
     img = Image.open(origem).convert("RGB")

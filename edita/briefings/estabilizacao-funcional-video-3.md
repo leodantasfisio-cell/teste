@@ -58,19 +58,24 @@ Exercício de estabilização funcional, com autocorreção da postura e um bast
 Sente-se em um banco, com os pés bem apoiados no chão, segurando um bastão. <break time="2s" />
 ```
 
-**Áudio 2 — Exercício**
+**Áudio 2 — Exercício** (termina na sustentação; o ElevenLabs não aceita pausa de 30 s num só áudio)
 
 ```
 Coloque a mão sobre a coxa e apoie o peso nela. <break time="2s" />
 Pegue o bastão com as duas mãos, na horizontal, com as mãos afastadas na largura dos ombros. <break time="2s" />
 Agora, eleve o bastão para cima, o máximo que conseguir, crescendo a coluna. <break time="2s" />
 Incline o tronco para frente, em bloco, sem curvar as costas, e levante-se da cadeira, ficando em pé. <break time="2s" />
-Mantenha essa posição por trinta segundos e continue respirando. <break time="2s" />
+Mantenha essa posição por trinta segundos e continue respirando.
+```
+
+**Áudio 3 — Retomada** (entra depois dos 30 s de silêncio editado, igual ao padrão dos vídeos 1-6)
+
+```
 Agora, sente-se novamente na cadeira, com calma. <break time="2s" />
 Para terminar, abaixe o bastão e volte para a posição inicial.
 ```
 
-**Áudio 3 — Encerramento** (igual aos vídeos 1 e 2)
+**Áudio 4 — Encerramento** (igual aos vídeos 1 e 2)
 
 ```
 Pode relaxar. <break time="1s" />
