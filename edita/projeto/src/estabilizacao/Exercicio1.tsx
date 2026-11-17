@@ -165,6 +165,19 @@ const Conteudo: React.FC<{ r: Roteiro1 }> = ({ r }) => {
 
   const passos = criarPassos(r);
 
+  // Destaques acompanham a frase da narração que fala daquela parte do corpo.
+  // "Coloque as duas mãos sobre as coxas..." (A2+0 a A2+3.071)
+  const dMaosCoxas = janela(t, A2 + 0.2, A2 + 3.071);
+  // "Cresça a coluna para cima..." (A2+5.023 a A2+8.925), reacende na frase final também
+  const dColuna = Math.max(
+    janela(t, A2 + 5.023, A2 + 8.925),
+    janela(t, e.retornoInicio - 1.1, e.fimA2) * 0.7,
+  );
+  // "Agora, eleve os dois braços..." até "...ficam parados" (A2+10.851 a pernasInicio)
+  const dBracos = janela(t, e.bracosInicio + 0.2, e.pernasInicio);
+  // "Comece a elevar os pés..." / "Continue alternando..." (pernasInicio a retornoInicio)
+  const dPe = janela(t, e.pernasInicio + 0.2, e.retornoInicio);
+
   return (
     <AbsoluteFill
       style={{ backgroundColor: cores.fundo, fontFamily: fonteTexto }}
@@ -174,6 +187,8 @@ const Conteudo: React.FC<{ r: Roteiro1 }> = ({ r }) => {
           <EsqueletoFoto
             pasta={pasta}
             imagem="posicao-inicial.jpg"
+            pastaDestaques="destaques-inicial"
+            destaques={{ maos: dMaosCoxas, coluna: dColuna }}
             crescimento={crescimento}
           />
         </AbsoluteFill>
@@ -183,6 +198,8 @@ const Conteudo: React.FC<{ r: Roteiro1 }> = ({ r }) => {
           <EsqueletoFoto
             pasta={pasta}
             imagem="bracos-frente.jpg"
+            pastaDestaques="destaques-bracos"
+            destaques={{ coluna: dColuna, maos: dBracos }}
             crescimento={crescimento}
           />
         </AbsoluteFill>
@@ -190,6 +207,7 @@ const Conteudo: React.FC<{ r: Roteiro1 }> = ({ r }) => {
       {r.pernaSegmentos.map((seg) => {
         const opacidade = janela(t, seg.inicio, seg.fim);
         if (opacidade === 0) return null;
+        const esquerdo = seg.imagem.includes("esquerdo");
         return (
           <AbsoluteFill
             key={`${seg.imagem}-${seg.inicio}`}
@@ -198,6 +216,8 @@ const Conteudo: React.FC<{ r: Roteiro1 }> = ({ r }) => {
             <EsqueletoFoto
               pasta={pasta}
               imagem={seg.imagem}
+              pastaDestaques={esquerdo ? "destaques-pe-esq" : "destaques-pe-dir"}
+              destaques={{ coluna: dColuna, maos: dBracos, pes: dPe }}
               crescimento={crescimento}
             />
           </AbsoluteFill>
