@@ -182,6 +182,25 @@ REGIOES_V3["estab1-braco-cima"] = {
     "pes": (AMBAR, [ESTAB1_PE_ELEVADO]),
 }
 
+# Vídeo 2 (mesma pasta): braço à frente segurando uma bola, movimentos circulares.
+# Mesmo personagem/banco do vídeo 1 (coordenadas de coluna reaproveitadas).
+ESTAB2_BRACO_FRENTE = _ret(690, 220, 1030, 310)
+ESTAB2_BRACO_CIMA = _ret(690, 190, 1030, 280)
+ESTAB2_BRACO_BAIXO = _ret(690, 290, 1000, 440)
+
+REGIOES_V3["estab2-bracos"] = {
+    "coluna": (AMBAR, [ESTAB1_COLUNA]),
+    "maos": (AMBAR, [ESTAB2_BRACO_FRENTE]),
+}
+REGIOES_V3["estab2-cima"] = {
+    "coluna": (AMBAR, [ESTAB1_COLUNA]),
+    "maos": (AMBAR, [ESTAB2_BRACO_CIMA]),
+}
+REGIOES_V3["estab2-baixo"] = {
+    "coluna": (AMBAR, [ESTAB1_COLUNA]),
+    "maos": (AMBAR, [ESTAB2_BRACO_BAIXO]),
+}
+
 
 def main(origem: str, destino: str, conjunto: str = "neutro") -> None:
     img = Image.open(origem).convert("RGB")
