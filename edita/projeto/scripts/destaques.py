@@ -153,35 +153,33 @@ REGIOES_V3["v6-mid"] = _v6(REGIOES_V3["v3-mid"], _ret(872, 602, 968, 742), _ret(
 REGIOES_V3["v6-reta"] = _v6(REGIOES_V3["v3-reta"], _ret(872, 602, 968, 742), _ret(1015, 380, 1128, 548), _ret(940, 255, 1050, 440))
 
 
-# Autocorreção Estabilização Funcional, vídeo 1 (sentado, vista de frente).
+# Autocorreção Estabilização Funcional, vídeo 1 (sentado, vista de LADO/perfil).
 # Coordenadas medidas com grade sobre as próprias imagens (public/esqueleto/estabilizacao1).
-ESTAB1_COLUNA = _ret(985, 205, 1015, 555)
-ESTAB1_MAO_INICIAL_ESQ = _ret(815, 495, 915, 700)
-ESTAB1_MAO_INICIAL_DIR = _ret(1085, 495, 1185, 700)
-ESTAB1_BRACO_ESQ = _ret(770, 200, 900, 600)
-ESTAB1_BRACO_DIR = _ret(1100, 200, 1230, 600)
-ESTAB1_PE_ESQ = _ret(1110, 870, 1270, 1040)
-ESTAB1_PE_DIR = _ret(730, 870, 890, 1040)
+# De perfil só um lado do corpo aparece, então não há espelho esquerdo/direito.
+ESTAB1_COLUNA = _ret(1088, 210, 1135, 500)
+ESTAB1_MAO_COXA = _ret(790, 470, 1070, 710)  # posição inicial: antebraço + mão na coxa
+ESTAB1_BRACO_FRENTE = _ret(560, 190, 1030, 300)  # braço reto à frente, altura do ombro
+ESTAB1_BRACO_CIMA = _ret(560, 60, 1030, 300)  # braço na diagonal, para cima
+ESTAB1_PE_CHAO = _ret(660, 990, 880, 1090)  # pé apoiado no chão
+ESTAB1_PE_ELEVADO = _ret(530, 730, 880, 1090)  # joelho elevado, pé fora do chão
 
-# Nomes de camada iguais aos da Correção Postural ("maos", "pes", "coluna"), para
-# reaproveitar o EsqueletoFoto sem alterar a lista de camadas conhecidas.
 REGIOES_V3["estab1-inicial"] = {
     "coluna": (AMBAR, [ESTAB1_COLUNA]),
-    "maos": (AMBAR, [ESTAB1_MAO_INICIAL_ESQ, ESTAB1_MAO_INICIAL_DIR]),
+    "maos": (AMBAR, [ESTAB1_MAO_COXA]),
 }
 REGIOES_V3["estab1-bracos"] = {
     "coluna": (AMBAR, [ESTAB1_COLUNA]),
-    "maos": (AMBAR, [ESTAB1_BRACO_ESQ, ESTAB1_BRACO_DIR]),
+    "maos": (AMBAR, [ESTAB1_BRACO_FRENTE]),
 }
-REGIOES_V3["estab1-pe-esq"] = {
+REGIOES_V3["estab1-joelho"] = {
     "coluna": (AMBAR, [ESTAB1_COLUNA]),
-    "maos": (AMBAR, [ESTAB1_BRACO_ESQ, ESTAB1_BRACO_DIR]),
-    "pes": (AMBAR, [ESTAB1_PE_ESQ]),
+    "maos": (AMBAR, [ESTAB1_BRACO_FRENTE]),
+    "pes": (AMBAR, [ESTAB1_PE_ELEVADO]),
 }
-REGIOES_V3["estab1-pe-dir"] = {
+REGIOES_V3["estab1-braco-cima"] = {
     "coluna": (AMBAR, [ESTAB1_COLUNA]),
-    "maos": (AMBAR, [ESTAB1_BRACO_ESQ, ESTAB1_BRACO_DIR]),
-    "pes": (AMBAR, [ESTAB1_PE_DIR]),
+    "maos": (AMBAR, [ESTAB1_BRACO_CIMA]),
+    "pes": (AMBAR, [ESTAB1_PE_ELEVADO]),
 }
 
 

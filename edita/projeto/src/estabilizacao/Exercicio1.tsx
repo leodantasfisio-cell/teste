@@ -1,5 +1,5 @@
 import { Audio } from "@remotion/media";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   AbsoluteFill,
   interpolate,
@@ -22,14 +22,18 @@ import { fonteTexto } from "../correcao/fontes";
 import { Logo } from "../correcao/Logo";
 import { criarRoteiro1, type Roteiro1 } from "./roteiro1";
 
-// Pontos de referência na imagem (2000 × 1116, mesma grade da Correção Postural).
-const PONTO_MAO_COXA_ESQ = { x: 770, y: 690 };
-const PONTO_MAO_COXA_DIR = { x: 1230, y: 690 };
-const PONTO_MAO_FRENTE_DIR = { x: 1224, y: 271 };
-const PONTO_PE_ESQUERDO_ELEVADO = { x: 1224, y: 941 }; // aparece à direita da tela
-const PONTO_PE_DIREITO_ELEVADO = { x: 800, y: 941 }; // aparece à esquerda da tela (espelho)
+// Vídeo 1 da pasta "Autocorreção Estabilização Funcional": vista de PERFIL, como o
+// vídeo-modelo. Mãos na coxa -> braço reto à frente (altura do ombro) -> joelho sobe
+// e desce (pé sai do chão) com o braço parado -> o braço também passa a subir na
+// diagonal junto com o joelho ("dissociação de cinturas") -> volta à posição inicial.
+// De perfil só um lado do corpo aparece, então não há imagens espelhadas.
 
-// Seta vertical que cresce de baixo para cima, indicando "eleve isto".
+// Pontos de referência na imagem (2000 × 1116).
+const PONTO_MAO_COXA = { x: 950, y: 590 };
+const PONTO_MAO_FRENTE = { x: 620, y: 240 };
+const PONTO_MAO_CIMA = { x: 650, y: 110 };
+const PONTO_PE_ELEVADO = { x: 620, y: 810 };
+
 const SetaSobe: React.FC<{
   x: number;
   y: number;
@@ -73,34 +77,36 @@ const SetaSobe: React.FC<{
   );
 };
 
-// Vídeo 1 da pasta "Autocorreção Estabilização Funcional": sentado, mãos nas coxas,
-// braços elevados à frente (ficam parados dali em diante) e elevação alternada dos pés.
-// Diferente da Correção Postural, não há destaques de curva nem sustentação de 1 min:
-// o próprio movimento alternado dos pés é o exercício, no ritmo da narração.
-
 const criarPassos = (r: Roteiro1): Passo[] => {
   const { etapas: e } = r;
   return [
     {
       inicio: r.A2,
       fim: e.bracosInicio,
-      kicker: "PASSO 1 DE 3",
-      titulo: "Mãos nas coxas",
+      kicker: "PASSO 1 DE 4",
+      titulo: "Mão na coxa",
       sub: "Cresça a coluna e mantenha a autocorreção",
     },
     {
       inicio: e.bracosInicio,
-      fim: e.pernasInicio,
-      kicker: "PASSO 2 DE 3",
-      titulo: "Braços à frente",
-      sub: "Na altura dos ombros, e ficam parados",
+      fim: e.joelhoInicio,
+      kicker: "PASSO 2 DE 4",
+      titulo: "Braço à frente",
+      sub: "Na altura do ombro, e fica parado",
     },
     {
-      inicio: e.pernasInicio,
+      inicio: e.joelhoInicio,
+      fim: e.bracoCimaInicio,
+      kicker: "PASSO 3 DE 4",
+      titulo: "Joelho sobe",
+      sub: "Tire o pé do chão, bem devagar",
+    },
+    {
+      inicio: e.bracoCimaInicio,
       fim: e.retornoInicio,
-      kicker: "PASSO 3 DE 3",
-      titulo: "Pés alternados",
-      sub: "Eleve um pé de cada vez, bem devagar",
+      kicker: "PASSO 4 DE 4",
+      titulo: "Braço e joelho juntos",
+      sub: "O braço sobe na diagonal junto com o joelho",
     },
   ];
 };
@@ -154,29 +160,25 @@ const Conteudo: React.FC<{ r: Roteiro1 }> = ({ r }) => {
   const t = frame / fps;
 
   const paraBracos = rampa(t, e.bracosInicio, e.bracosInicio + 0.5);
-  const paraPernas = rampa(t, e.pernasInicio, e.pernasInicio + 0.5);
+  const paraJoelho = rampa(t, e.joelhoInicio, e.joelhoInicio + 0.5);
   const paraRetorno = rampa(t, e.retornoInicio, e.retornoInicio + 0.5);
 
   const opPosicaoInicial = Math.max(1 - paraBracos, paraRetorno);
-  const opBracosFrente = Math.min(paraBracos, 1 - paraPernas);
+  const opBracosFrente = Math.min(paraBracos, 1 - paraJoelho);
 
   const crescimento =
-    rampa(t, A2 + 5.023, A2 + 7.5) * (1 - rampa(t, A3, A3 + 1.5));
+    rampa(t, A2 + 5, A2 + 7.5) * (1 - rampa(t, A3, A3 + 1.5));
 
   const passos = criarPassos(r);
 
   // Destaques acompanham a frase da narração que fala daquela parte do corpo.
-  // "Coloque as duas mãos sobre as coxas..." (A2+0 a A2+3.071)
-  const dMaosCoxas = janela(t, A2 + 0.2, A2 + 3.071);
-  // "Cresça a coluna para cima..." (A2+5.023 a A2+8.925), reacende na frase final também
+  const dMaoCoxa = janela(t, A2 + 0.2, e.bracosInicio);
   const dColuna = Math.max(
-    janela(t, A2 + 5.023, A2 + 8.925),
+    janela(t, A2 + 5, A2 + 8),
     janela(t, e.retornoInicio - 1.1, e.fimA2) * 0.7,
   );
-  // "Agora, eleve os dois braços..." até "...ficam parados" (A2+10.851 a pernasInicio)
-  const dBracos = janela(t, e.bracosInicio + 0.2, e.pernasInicio);
-  // "Comece a elevar os pés..." / "Continue alternando..." (pernasInicio a retornoInicio)
-  const dPe = janela(t, e.pernasInicio + 0.2, e.retornoInicio);
+  const dBraco = janela(t, e.bracosInicio + 0.2, e.joelhoInicio);
+  const dPe = janela(t, e.joelhoInicio + 0.2, e.retornoInicio);
 
   return (
     <AbsoluteFill
@@ -188,7 +190,7 @@ const Conteudo: React.FC<{ r: Roteiro1 }> = ({ r }) => {
             pasta={pasta}
             imagem="posicao-inicial.jpg"
             pastaDestaques="destaques-inicial"
-            destaques={{ maos: dMaosCoxas, coluna: dColuna }}
+            destaques={{ maos: dMaoCoxa, coluna: dColuna }}
             crescimento={crescimento}
           />
         </AbsoluteFill>
@@ -199,25 +201,48 @@ const Conteudo: React.FC<{ r: Roteiro1 }> = ({ r }) => {
             pasta={pasta}
             imagem="bracos-frente.jpg"
             pastaDestaques="destaques-bracos"
-            destaques={{ coluna: dColuna, maos: dBracos }}
+            destaques={{ coluna: dColuna, maos: dBraco }}
             crescimento={crescimento}
           />
         </AbsoluteFill>
       ) : null}
-      {r.pernaSegmentos.map((seg) => {
+      {r.joelhoSegmentos.map((seg) => {
         const opacidade = janela(t, seg.inicio, seg.fim);
         if (opacidade === 0) return null;
-        const esquerdo = seg.imagem.includes("esquerdo");
+        const elevado = seg.imagem === "joelho-elevado.jpg";
         return (
           <AbsoluteFill
-            key={`${seg.imagem}-${seg.inicio}`}
+            key={`j-${seg.inicio}`}
             style={{ opacity: opacidade }}
           >
             <EsqueletoFoto
               pasta={pasta}
               imagem={seg.imagem}
-              pastaDestaques={esquerdo ? "destaques-pe-esq" : "destaques-pe-dir"}
-              destaques={{ coluna: dColuna, maos: dBracos, pes: dPe }}
+              pastaDestaques={elevado ? "destaques-joelho" : "destaques-bracos"}
+              destaques={{ coluna: dColuna, maos: dBraco, pes: elevado ? dPe : 0 }}
+              crescimento={crescimento}
+            />
+          </AbsoluteFill>
+        );
+      })}
+      {r.bracoCimaSegmentos.map((seg) => {
+        const opacidade = janela(t, seg.inicio, seg.fim);
+        if (opacidade === 0) return null;
+        const cima = seg.imagem === "braco-cima-joelho.jpg";
+        return (
+          <AbsoluteFill
+            key={`b-${seg.inicio}`}
+            style={{ opacity: opacidade }}
+          >
+            <EsqueletoFoto
+              pasta={pasta}
+              imagem={seg.imagem}
+              pastaDestaques={cima ? "destaques-braco-cima" : "destaques-bracos"}
+              destaques={{
+                coluna: dColuna,
+                maos: dBraco,
+                pes: cima ? dPe : 0,
+              }}
               crescimento={crescimento}
             />
           </AbsoluteFill>
@@ -228,53 +253,63 @@ const Conteudo: React.FC<{ r: Roteiro1 }> = ({ r }) => {
         <EtiquetaPasso key={p.kicker} passo={p} />
       ))}
 
-      {/* Mãos nas coxas: seta e etiqueta logo no início do exercício. */}
       <Chamada
-        texto="Mãos apoiadas nas coxas"
-        alvo={naFoto(PONTO_MAO_COXA_DIR.x, PONTO_MAO_COXA_DIR.y)}
+        texto="Mão apoiada na coxa"
+        alvo={naFoto(PONTO_MAO_COXA.x, PONTO_MAO_COXA.y)}
         ancora={{ x: 1350, y: 780 }}
         inicio={A2 + 0.6}
         fim={e.bracosInicio}
       />
-
-      {/* Eleve os braços à frente: setas subindo nas duas mãos + etiqueta. */}
       <SetaSobe
-        x={naFoto(PONTO_MAO_COXA_ESQ.x, PONTO_MAO_COXA_ESQ.y).x}
-        y={naFoto(PONTO_MAO_COXA_ESQ.x, PONTO_MAO_COXA_ESQ.y).y}
-        inicio={e.bracosInicio}
-        fim={e.bracosInicio + 1.4}
-      />
-      <SetaSobe
-        x={naFoto(PONTO_MAO_COXA_DIR.x, PONTO_MAO_COXA_DIR.y).x}
-        y={naFoto(PONTO_MAO_COXA_DIR.x, PONTO_MAO_COXA_DIR.y).y}
+        x={naFoto(PONTO_MAO_COXA.x, PONTO_MAO_COXA.y).x}
+        y={naFoto(PONTO_MAO_COXA.x, PONTO_MAO_COXA.y).y}
         inicio={e.bracosInicio}
         fim={e.bracosInicio + 1.4}
       />
       <Chamada
-        texto="Braços à frente, altura dos ombros"
-        alvo={naFoto(PONTO_MAO_FRENTE_DIR.x, PONTO_MAO_FRENTE_DIR.y)}
+        texto="Braço à frente, altura do ombro"
+        alvo={naFoto(PONTO_MAO_FRENTE.x, PONTO_MAO_FRENTE.y)}
         ancora={{ x: 1400, y: 300 }}
         inicio={e.bracosInicio + 0.3}
-        fim={e.pernasInicio}
+        fim={e.joelhoInicio}
+      />
+      {r.joelhoSegmentos.map((seg, i) =>
+        seg.imagem === "joelho-elevado.jpg" ? (
+          <SetaSobe
+            key={`seta-j-${i}`}
+            x={naFoto(PONTO_PE_ELEVADO.x, PONTO_PE_ELEVADO.y).x}
+            y={naFoto(PONTO_PE_ELEVADO.x, PONTO_PE_ELEVADO.y).y}
+            inicio={seg.inicio + 0.2}
+            fim={seg.inicio + 1.2}
+          />
+        ) : null,
+      )}
+      {r.bracoCimaSegmentos.map((seg, i) =>
+        seg.imagem === "braco-cima-joelho.jpg" ? (
+          <React.Fragment key={`seta-b-${i}`}>
+            <SetaSobe
+              x={naFoto(PONTO_PE_ELEVADO.x, PONTO_PE_ELEVADO.y).x}
+              y={naFoto(PONTO_PE_ELEVADO.x, PONTO_PE_ELEVADO.y).y}
+              inicio={seg.inicio + 0.2}
+              fim={seg.inicio + 1.2}
+            />
+            <SetaSobe
+              x={naFoto(PONTO_MAO_CIMA.x, PONTO_MAO_CIMA.y).x}
+              y={naFoto(PONTO_MAO_CIMA.x, PONTO_MAO_CIMA.y).y}
+              inicio={seg.inicio + 0.2}
+              fim={seg.inicio + 1.2}
+            />
+          </React.Fragment>
+        ) : null,
+      )}
+      <Chamada
+        texto="Braço sobe junto com o joelho"
+        alvo={naFoto(PONTO_MAO_CIMA.x, PONTO_MAO_CIMA.y)}
+        ancora={{ x: 1400, y: 150 }}
+        inicio={e.bracoCimaInicio + 0.3}
+        fim={e.retornoInicio}
       />
 
-      {/* Pés alternados: seta subindo no pé elevado de cada segmento + etiqueta. */}
-      {r.pernaSegmentos.map((seg, i) => {
-        const esquerdo = seg.imagem.includes("esquerdo");
-        const ponto = esquerdo
-          ? PONTO_PE_ESQUERDO_ELEVADO
-          : PONTO_PE_DIREITO_ELEVADO;
-        const p = naFoto(ponto.x, ponto.y);
-        return (
-          <SetaSobe
-            key={`seta-${i}`}
-            x={p.x}
-            y={p.y}
-            inicio={seg.inicio + 0.2}
-            fim={seg.inicio + 1.3}
-          />
-        );
-      })}
       <Logo left={120} top={110} largura={440} inicio={r.A1} fim={A2 - 0.1} />
       <Logo right={40} top={34} largura={230} inicio={A2} fim={r.DURACAO} />
       <Legendas r={r} />
