@@ -64,9 +64,8 @@ altura do quadril, mantendo o braço esquerdo esticado à frente na altura do om
 pessoa, a roupa, o fundo e a câmera exatamente iguais.
 ```
 
-## Em aberto
+## Decisões (17/11/2026)
 
-- [ ] Duração/número de repetições do ciclo alternado (pés e depois braços+pés) — a sustentação de 60 s dos vídeos 1-6 não se aplica a um exercício dinâmico
-- [ ] O padrão alternado de braços é cruzado (braço esquerdo com pé direito) ou do mesmo lado? Confirmado acima como cruzado — ajustar se não for
-- [ ] Existe versão espelhada (lado esquerdo/direito) ou é um único vídeo?
-- [ ] Rever o vídeo-modelo do Drive para conferir ritmo e número de repetições antes de fechar a narração
+- Vídeo único, sem versão espelhada.
+- Padrão alternado cruzado (braço esquerdo + pé direito, depois braço direito + pé esquerdo), confirmado.
+- Duração: 4 repetições só de pés, depois 4 repetições de braços+pés alternados (~2 s por troca de lado ≈ 32 s de movimento, fora abertura/encerramento). Ajusto depois de ver o vídeo-modelo.
