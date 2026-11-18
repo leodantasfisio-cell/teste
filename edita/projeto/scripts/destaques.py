@@ -222,6 +222,16 @@ REGIOES_V3["estab3-pe"] = {
     "maos": (AMBAR, [ESTAB3_BRACO_PE]),
 }
 
+# Vídeo 4 (mesma pasta): em pé, braços à frente sem bastão (frame final de um clipe
+# gerado no Gemini/Veo, por isso a grade de coordenadas é própria desta imagem).
+ESTAB4_BRACO_PE = _ret(400, 210, 800, 310)
+ESTAB4_COLUNA_PE = _ret(790, 200, 850, 500)
+
+REGIOES_V3["estab4-pe"] = {
+    "coluna": (AMBAR, [ESTAB4_COLUNA_PE]),
+    "maos": (AMBAR, [ESTAB4_BRACO_PE]),
+}
+
 
 def main(origem: str, destino: str, conjunto: str = "neutro") -> None:
     img = Image.open(origem).convert("RGB")
