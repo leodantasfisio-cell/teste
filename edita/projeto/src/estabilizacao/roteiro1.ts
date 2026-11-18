@@ -4,15 +4,12 @@ import type { Caption } from "@remotion/captions";
 // Vista de perfil (lado), como o vídeo-modelo do usuário: mãos na coxa, braço à
 // frente, joelho sobe (pé fora do chão) e, por fim, o braço também sobe na
 // diagonal junto com o joelho ("dissociação de cinturas").
-//
-// ATENÇÃO: os trechos do áudio 2 abaixo são uma ESTIMATIVA (texto reescrito,
-// ainda não medido com silencedetect). Assim que o áudio 2 novo chegar, rodar
-// silencedetect (n=-38dB, d=0.28 e d=1.0) e substituir DURACAO_A2/TRECHOS_A2.
 
 type Trecho = [inicio: number, fim: number];
 
+// Medido com silencedetect (n=-38dB, d=0.28 e d=1.0) no áudio final (18/11/2026).
 const DURACAO_A1 = 17.554;
-const DURACAO_A2 = 46; // estimativa: 9 frases, trocar depois de medir o áudio novo
+const DURACAO_A2 = 42.72;
 const DURACAO_A3 = 8.255;
 
 const TRECHOS_A1: Trecho[] = [
@@ -22,17 +19,16 @@ const TRECHOS_A1: Trecho[] = [
   [11.477, 14.987],
 ];
 
-// Estimativa: ~3 s de fala + 2 s de pausa por linha (ajustar com silencedetect).
 const TRECHOS_A2: Trecho[] = [
-  [0, 3],
-  [5, 8],
-  [10, 13],
-  [15, 18],
-  [20, 23],
-  [25, 28],
-  [30, 34],
-  [36, 40],
-  [42, 46],
+  [0, 2.583],
+  [4.302, 8.234],
+  [9.943, 12.512],
+  [14.197, 16.129],
+  [17.859, 21.208],
+  [23.306, 26.198],
+  [28.204, 32.448],
+  [34.516, 36.982],
+  [39.056, 42.72],
 ];
 
 const TRECHOS_A3: Trecho[] = [

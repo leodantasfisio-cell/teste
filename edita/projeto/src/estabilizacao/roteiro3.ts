@@ -14,22 +14,23 @@ import type { Caption } from "@remotion/captions";
 //   3. retomada, depois dos 30 s: "sente-se novamente" + "para terminar..."
 //   4. encerramento
 //
-// ATENÇÃO: nenhum áudio foi gravado ainda — todos os trechos abaixo são ESTIMATIVA.
-// Assim que os áudios chegarem, medir com silencedetect (n=-38dB, d=0.28 e d=1.0)
-// e substituir as DURACAO_A*/TRECHOS_A*.
+// Áudios 1, 3 e 4 gerados e medidos com silencedetect (n=-38dB, d=0.28 e d=1.0)
+// em 18/11/2026. O áudio 2 ("Pegue o bastão...") ainda não foi gerado (falhou por
+// limite de conta do ElevenLabs) — os trechos dele abaixo continuam ESTIMATIVA;
+// assim que chegar, medir e substituir DURACAO_A2/TRECHOS_A2.
 
 type Trecho = [inicio: number, fim: number];
 
-const DURACAO_A1 = 19; // estimativa
+const DURACAO_A1 = 19.879;
 const DURACAO_A2 = 32; // estimativa: 5 frases, até "...continue respirando"
-const DURACAO_A3 = 8; // estimativa: 2 frases (retomada)
-const DURACAO_A4 = 8.255; // texto idêntico aos vídeos 1 e 2 (já medido)
+const DURACAO_A3 = 8.02;
+const DURACAO_A4 = 7.053;
 
 const TRECHOS_A1: Trecho[] = [
-  [0, 4],
-  [4.5, 7],
-  [7.5, 10],
-  [12, 17],
+  [0, 4.658],
+  [5.619, 7.525],
+  [8.065, 10.216],
+  [12.759, 17.521],
 ];
 
 const TRECHOS_A2: Trecho[] = [
@@ -41,14 +42,14 @@ const TRECHOS_A2: Trecho[] = [
 ];
 
 const TRECHOS_A3: Trecho[] = [
-  [0, 3],
-  [5, 8],
+  [0, 2.491],
+  [4.717, 7.637],
 ];
 
 const TRECHOS_A4: Trecho[] = [
-  [0, 0.97],
-  [2.189, 2.922],
-  [3.482, 8.255],
+  [0, 0.923],
+  [2.122, 2.734],
+  [3.244, 6.732],
 ];
 
 const TEXTOS_A1 = [
