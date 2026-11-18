@@ -232,6 +232,21 @@ REGIOES_V3["estab4-pe"] = {
     "maos": (AMBAR, [ESTAB4_BRACO_PE]),
 }
 
+# Vídeo 5 (mesma pasta): dois bastões verticais, sentada e em pé.
+ESTAB5_MAOS_SENTADA = _ret(580, 220, 900, 310)
+ESTAB5_COLUNA_SENTADA = _ret(1070, 190, 1120, 480)
+ESTAB5_MAOS_PE = _ret(1090, 170, 1310, 290)
+ESTAB5_COLUNA_PE = _ret(925, 150, 995, 500)
+
+REGIOES_V3["estab5-bracos"] = {
+    "coluna": (AMBAR, [ESTAB5_COLUNA_SENTADA]),
+    "maos": (AMBAR, [ESTAB5_MAOS_SENTADA]),
+}
+REGIOES_V3["estab5-pe"] = {
+    "coluna": (AMBAR, [ESTAB5_COLUNA_PE]),
+    "maos": (AMBAR, [ESTAB5_MAOS_PE]),
+}
+
 
 def main(origem: str, destino: str, conjunto: str = "neutro") -> None:
     img = Image.open(origem).convert("RGB")
