@@ -224,8 +224,8 @@ REGIOES_V3["estab3-pe"] = {
 
 # Vídeo 4 (mesma pasta): em pé, braços à frente sem bastão (frame final de um clipe
 # gerado no Gemini/Veo, por isso a grade de coordenadas é própria desta imagem).
-ESTAB4_BRACO_PE = _ret(400, 210, 800, 310)
-ESTAB4_COLUNA_PE = _ret(790, 200, 850, 500)
+ESTAB4_BRACO_PE = _ret(650, 210, 1050, 310)
+ESTAB4_COLUNA_PE = _ret(1040, 200, 1100, 500)
 
 REGIOES_V3["estab4-pe"] = {
     "coluna": (AMBAR, [ESTAB4_COLUNA_PE]),
