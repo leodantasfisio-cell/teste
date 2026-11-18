@@ -25,6 +25,8 @@ import { Exercicio3 as ExercicioEstabilizacao3 } from "./estabilizacao/Exercicio
 import { DURACAO_ESTABILIZACAO_3 } from "./estabilizacao/roteiro3";
 import { Exercicio4 } from "./estabilizacao/Exercicio4";
 import { DURACAO_ESTABILIZACAO_4 } from "./estabilizacao/roteiro4";
+import { Exercicio5 as ExercicioEstabilizacao5 } from "./estabilizacao/Exercicio5";
+import { DURACAO_ESTABILIZACAO_5 } from "./estabilizacao/roteiro5";
 
 type Props = {};
 
@@ -178,6 +180,14 @@ export const MyComposition = () => {
         id="EstabilizacaoFuncional4"
         component={Exercicio4}
         durationInFrames={DURACAO_ESTABILIZACAO_4 * 30}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="EstabilizacaoFuncional5"
+        component={ExercicioEstabilizacao5}
+        durationInFrames={DURACAO_ESTABILIZACAO_5 * 30}
         fps={30}
         width={1920}
         height={1080}
