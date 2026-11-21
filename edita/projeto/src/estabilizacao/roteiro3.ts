@@ -14,15 +14,13 @@ import type { Caption } from "@remotion/captions";
 //   3. retomada, depois dos 30 s: "sente-se novamente" + "para terminar..."
 //   4. encerramento
 //
-// Áudios 1, 3 e 4 gerados e medidos com silencedetect (n=-38dB, d=0.28 e d=1.0)
-// em 18/11/2026. O áudio 2 ("Pegue o bastão...") ainda não foi gerado (falhou por
-// limite de conta do ElevenLabs) — os trechos dele abaixo continuam ESTIMATIVA;
-// assim que chegar, medir e substituir DURACAO_A2/TRECHOS_A2.
+// Todos os 4 áudios gerados e medidos com silencedetect (n=-38dB, d=0.28 e d=1.0)
+// — áudio 2 finalizado em 21/11/2026.
 
 type Trecho = [inicio: number, fim: number];
 
 const DURACAO_A1 = 19.879;
-const DURACAO_A2 = 32; // estimativa: 5 frases, até "...continue respirando"
+const DURACAO_A2 = 30.642;
 const DURACAO_A3 = 8.02;
 const DURACAO_A4 = 7.053;
 
@@ -34,11 +32,11 @@ const TRECHOS_A1: Trecho[] = [
 ];
 
 const TRECHOS_A2: Trecho[] = [
-  [0, 3],
-  [5, 10],
-  [12, 16],
-  [18, 24],
-  [26, 32],
+  [0, 2.67],
+  [5.044, 10.243],
+  [12.417, 16.502],
+  [18.677, 24.575],
+  [26.83, 30.642],
 ];
 
 const TRECHOS_A3: Trecho[] = [

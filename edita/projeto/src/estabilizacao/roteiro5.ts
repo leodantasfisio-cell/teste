@@ -7,25 +7,21 @@ import type { Caption } from "@remotion/captions";
 // bastões -> segura 30 s em pé -> senta de novo -> solta os bastões e volta à
 // posição inicial. Reaproveita posicao-inicial.jpg do vídeo 1.
 //
-// PENDÊNCIAS (18/11/2026):
-// - Imagens ainda não geradas: bracos-frente-bastoes.jpg, em-pe-bastoes.jpg
-//   (prompts no briefing edita/briefings/estabilizacao-funcional-video-5.md)
-// - Áudios 1, 3 e 4 ainda não gerados (falharam por limite de conta do
-//   ElevenLabs) — trechos abaixo são ESTIMATIVA. O áudio 2 já foi gerado e
-//   medido com silencedetect.
+// Imagens e os 4 áudios finalizados em 21/11/2026, todos medidos com
+// silencedetect (n=-38dB, d=0.28 e d=1.0).
 
 type Trecho = [inicio: number, fim: number];
 
-const DURACAO_A1 = 20; // estimativa
-const DURACAO_A2 = 29.858; // medido
-const DURACAO_A3 = 8; // estimativa
-const DURACAO_A4 = 7.053; // estimativa: texto idêntico aos vídeos 1-4
+const DURACAO_A1 = 20.846;
+const DURACAO_A2 = 29.858;
+const DURACAO_A3 = 8.202;
+const DURACAO_A4 = 7.549;
 
 const TRECHOS_A1: Trecho[] = [
-  [0, 4.5],
-  [5, 7.5],
-  [8, 10.5],
-  [12.5, 18],
+  [0, 4.605],
+  [5.465, 7.391],
+  [8.025, 10.141],
+  [12.48, 18.423],
 ];
 
 const TRECHOS_A2: Trecho[] = [
@@ -36,14 +32,14 @@ const TRECHOS_A2: Trecho[] = [
 ];
 
 const TRECHOS_A3: Trecho[] = [
-  [0, 2.5],
-  [4.7, 7.7],
+  [0, 2.538],
+  [4.773, 8.202],
 ];
 
 const TRECHOS_A4: Trecho[] = [
-  [0, 0.923],
-  [2.122, 2.734],
-  [3.244, 6.732],
+  [0, 0.891],
+  [2.12, 2.754],
+  [3.421, 7.549],
 ];
 
 const TEXTOS_A1 = [
