@@ -7,7 +7,7 @@
 | Posição inicial | Sentada, mãos apoiadas atrás da cabeça (nuca), mantendo crescimento axial e autocorreção das curvas |
 | Exercício | Realiza o crescimento axial, com as mãos tracionando a cabeça superiormente (alonga o pescoço/coluna puxando a cabeça para cima) |
 | Retorno | Volta para a posição inicial |
-| Visual | Vista de PERFIL, igual aos vídeos 1-6 (o vídeo-modelo foi filmado de costas, mas mantenho o padrão visual da série) |
+| Visual | Vista DE COSTAS (diferente dos vídeos 1-6, que são de perfil) — decisão do usuário em 23/11/2026, para seguir o ângulo do vídeo-modelo |
 | Voz | ElevenLabs, Multilingual v2, Henrique, stability 70, similarity 75, style 0, speed 0.95 |
 
 ## Análise do vídeo-modelo
@@ -20,40 +20,29 @@ sem inclinar tronco, sem levantar da cadeira.
 
 ## Imagens necessárias
 
-Reaproveita `posicao-inicial.jpg` do vídeo 1 como base (sentada no banquinho, perfil). Preciso de 2 imagens
-novas em `edita/projeto/public/esqueleto/estabilizacao7/`:
+Vista DE COSTAS (decisão do usuário, 23/11/2026) — não reaproveita nenhuma imagem dos vídeos 1-6 (todas de
+perfil). 2 imagens novas em `edita/projeto/public/esqueleto/estabilizacao7/`, geradas do zero:
 
-**1 — mãos atrás da cabeça (geração do zero)**
+**1 — mãos atrás da cabeça, de costas**
 
 ```
-A 3D anatomical skeleton model with ivory-white bones, photographed in side profile, facing left, sitting
-upright on a backless wooden stool, feet flat on the floor, knees bent at 90 degrees, spine straight and
-tall.
-
-This is the classic gym stretch pose "hands laced behind the head" (also called "hands behind neck" or
-"prisoner pose" without being tied) — like someone stretching their neck and shoulders after a workout. It
-is NOT a face-palm pose, NOT a hand-on-forehead pose, and NOT a hand-covering-the-face pose — the entire
-face and front of the skull must stay fully visible and unobstructed, in clean profile, looking straight
-ahead.
-
-Since the skeleton faces left, the back of its skull is on the RIGHT side of the head. Both hands are
-clasped together against that right/back side of the skull, resting on the occiput (the back-bottom bump of
-the skull), roughly at the same height as the top of the ears — not above the top of the head, not in front
-of the eyes or nose. From there, both upper arms angle up and backward from the shoulders to reach the hands
-to the back of the head; the visible elbow sticks out behind the line of the back, pointing up and back, well
-clear of the face and chest.
-
-Dark-gray studio background, soft even studio lighting, photorealistic render, same camera framing and
-distance as a seated side-profile shot.
+A 3D anatomical skeleton model with ivory-white bones, photographed from directly BEHIND, sitting upright on
+a backless wooden stool, feet flat on the floor, knees bent at 90 degrees, spine straight and tall, viewed
+dead-center from the back (the back of the ribcage, spine and skull facing the camera; no part of the face is
+visible). Both hands are clasped together behind the head, fingers laced over the back of the skull (occiput),
+both elbows pointing outward to the sides, symmetrically, roughly at ear height — the classic "hands behind
+head" neck-stretch pose. Dark-gray studio background, soft even studio lighting, photorealistic render,
+camera centered and level with the torso, same framing style as the other side-profile shots in this series
+(skeleton roughly filling the frame height, stool fully visible).
 ```
 
 **2 — crescimento axial, tracionando a cabeça para cima (edite a imagem 1)**
 
 ```
-From this image, keep the hands clasped behind the head in exactly the same grip and the elbows in the same
-position, and show the neck and spine slightly elongated upward, as if the hands are gently pulling the head
-upward and the whole spine is growing taller — chin very slightly tucked, head raised a touch higher than
-before. Keep the stool, the side profile view, background and camera exactly the same.
+From this image, keep the hands clasped behind the head in exactly the same grip and the elbows in exactly
+the same position, and show the neck and spine slightly elongated upward, as if the hands are gently pulling
+the head upward and the whole spine is growing taller — shoulders relax slightly down while the head rises a
+touch higher than before. Keep the stool, the back view, background and camera exactly the same.
 ```
 
 ## Narração (ElevenLabs, Henrique) — rascunho
