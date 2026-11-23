@@ -23,12 +23,15 @@ sem inclinar tronco, sem levantar da cadeira.
 Reaproveita `posicao-inicial.jpg` do vídeo 1 como base (sentada no banquinho, perfil). Preciso de 2 imagens
 novas em `edita/projeto/public/esqueleto/estabilizacao7/`:
 
-**1 — mãos atrás da cabeça (edite a `posicao-inicial.jpg` do vídeo 1)**
+**1 — mãos atrás da cabeça (geração do zero)**
 
 ```
-From this image, change only the arms: raise both arms and clasp the hands together behind the head/neck,
-fingers interlaced, elbows pointing out to the sides. Keep the skeleton's torso, the stool, the side profile
-view, background and camera exactly the same.
+A 3D anatomical skeleton model with ivory-white bones, photographed in side profile (left side facing
+camera), sitting upright on a backless wooden stool, feet flat on the floor, knees bent at 90 degrees, spine
+straight and tall. Both arms are raised with hands clasped together behind the head at the base of the
+skull, fingers interlaced, elbows pointing out to the sides, away from the head. Dark-gray studio background,
+soft even studio lighting, photorealistic render, same camera framing and distance as a seated side-profile
+shot.
 ```
 
 **2 — crescimento axial, tracionando a cabeça para cima (edite a imagem 1)**
