@@ -97,10 +97,12 @@ const Conteudo: React.FC<{ r: Roteiro7 }> = ({ r }) => {
   const { fps } = useVideoConfig();
   const t = frame / fps;
 
+  const paraCostas = rampa(t, A2, A2 + 1.0);
   const paraCresce = rampa(t, e.cresceInicio, e.cresceInicio + 1.0);
   const paraRetorno = rampa(t, e.retornoInicio, e.retornoInicio + 1.0);
 
-  const opMaosCabeca = Math.max(1 - paraCresce, paraRetorno);
+  const opLado = 1 - paraCostas;
+  const opMaosCabeca = Math.max(Math.min(paraCostas, 1 - paraCresce), paraRetorno);
   const opCresce = Math.min(paraCresce, 1 - paraRetorno);
 
   const passos = criarPassos(r);
@@ -109,6 +111,11 @@ const Conteudo: React.FC<{ r: Roteiro7 }> = ({ r }) => {
     <AbsoluteFill
       style={{ backgroundColor: cores.fundo, fontFamily: fonteTexto }}
     >
+      {opLado > 0 ? (
+        <AbsoluteFill style={{ opacity: opLado }}>
+          <EsqueletoFoto pasta={pasta} imagem="posicao-inicial-lado.jpg" />
+        </AbsoluteFill>
+      ) : null}
       {opMaosCabeca > 0 ? (
         <AbsoluteFill style={{ opacity: opMaosCabeca }}>
           <EsqueletoFoto pasta={pasta} imagem="maos-cabeca.jpg" />
