@@ -28,10 +28,12 @@ novas em `edita/projeto/public/esqueleto/estabilizacao7/`:
 ```
 A 3D anatomical skeleton model with ivory-white bones, photographed in side profile (left side facing
 camera), sitting upright on a backless wooden stool, feet flat on the floor, knees bent at 90 degrees, spine
-straight and tall. Both arms are raised with hands clasped together behind the head at the base of the
-skull, fingers interlaced, elbows pointing out to the sides, away from the head. Dark-gray studio background,
-soft even studio lighting, photorealistic render, same camera framing and distance as a seated side-profile
-shot.
+straight and tall. Both hands are clasped together BEHIND the skull, touching the BACK of the head at the
+base of the skull (occiput/nape area) — NOT in front of the face, NOT covering the forehead or eyes. The
+visible elbow points backward and out to the side, away from the head, roughly level with the ears, with the
+upper arm going up and back from the shoulder to reach behind the head. The face and front of the skull stay
+fully visible and unobstructed, looking straight ahead. Dark-gray studio background, soft even studio
+lighting, photorealistic render, same camera framing and distance as a seated side-profile shot.
 ```
 
 **2 — crescimento axial, tracionando a cabeça para cima (edite a imagem 1)**
