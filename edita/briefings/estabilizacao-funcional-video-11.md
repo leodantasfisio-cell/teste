@@ -25,14 +25,15 @@ do vídeo 10. Só falta 1 imagem nova em `edita/projeto/public/esqueleto/estabil
 **1 — tronco girado, mantendo a inclinação para trás e o bastão elevado (edite `bastao-inclinado-atras.jpg` do vídeo 10)**
 
 ```
-Take this exact skeleton, stool, stick, pose and backward lean, but change the CAMERA-FACING ANGLE of the
-ribcage, shoulders and skull: instead of the pure side-profile view (one shoulder directly behind the
-other), rotate the whole upper body — ribcage, shoulders, skull — about 45 degrees around the spine's
-vertical axis, so roughly HALF of the chest and HALF of the face now face the camera, like a person twisting
-at the waist to look back over toward the viewer. This must look visibly different from a side profile: both
-eyes and both shoulders should be at least partly visible to the camera, not just one. The hips, legs and
-stool stay facing the original side direction, unchanged — only the spine above the pelvis twists. Keep the
-arms, the stick overhead, the backward lean angle, the lighting and the background exactly the same.
+Take this exact skeleton, stool, stick, pose and backward lean. I need the SHOULDERS and RIBCAGE — not just
+the head — rotated toward the camera. Right now the two shoulders are stacked directly one behind the other
+(pure side view); instead, separate them: pull the near shoulder (the one closer to the camera) forward and
+toward the viewer, and push the far shoulder back, so the collarbones and the front of the ribcage/sternum
+become visible at an angle, like a person twisting their upper back at the waist. The face should match that
+same rotation (already mostly facing the camera is good — keep that). The pelvis, hips, legs and stool do
+NOT rotate — only the ribcage, shoulders, arms and head turn together, as one twisting block above the
+waist. Keep the arms raised with the stick overhead, the backward lean angle, the lighting and the
+background exactly the same.
 ```
 
 ## Narração (ElevenLabs, Henrique) — rascunho
