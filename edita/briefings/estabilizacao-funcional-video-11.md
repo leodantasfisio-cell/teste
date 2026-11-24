@@ -25,11 +25,14 @@ do vídeo 10. Só falta 1 imagem nova em `edita/projeto/public/esqueleto/estabil
 **1 — tronco girado, mantendo a inclinação para trás e o bastão elevado (edite `bastao-inclinado-atras.jpg` do vídeo 10)**
 
 ```
-From this image, keep the arms, the stick, the backward lean and the stool exactly as they are, and rotate
-only the torso and head: turn the trunk about a quarter turn toward the camera (a trunk rotation, not a
-bigger lean), as if twisting at the waist while keeping the same backward tilt and the arms raised overhead
-with the stick. The face now looks mostly toward the camera instead of in profile, shoulders rotated with
-it. Keep the stool, the hips facing the same direction as before, background and camera exactly the same.
+Take this exact skeleton, stool, stick, pose and backward lean, but change the CAMERA-FACING ANGLE of the
+ribcage, shoulders and skull: instead of the pure side-profile view (one shoulder directly behind the
+other), rotate the whole upper body — ribcage, shoulders, skull — about 45 degrees around the spine's
+vertical axis, so roughly HALF of the chest and HALF of the face now face the camera, like a person twisting
+at the waist to look back over toward the viewer. This must look visibly different from a side profile: both
+eyes and both shoulders should be at least partly visible to the camera, not just one. The hips, legs and
+stool stay facing the original side direction, unchanged — only the spine above the pelvis twists. Keep the
+arms, the stick overhead, the backward lean angle, the lighting and the background exactly the same.
 ```
 
 ## Narração (ElevenLabs, Henrique) — rascunho
