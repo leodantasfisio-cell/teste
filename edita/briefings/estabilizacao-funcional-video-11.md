@@ -24,16 +24,20 @@ do vídeo 10. Só falta 1 imagem nova em `edita/projeto/public/esqueleto/estabil
 
 **1 — tronco girado, mantendo a inclinação para trás e o bastão elevado (edite `bastao-inclinado-atras.jpg` do vídeo 10)**
 
+Edição não funcionou em 3 tentativas (o Gemini sempre devolve o esqueleto em perfil puro, sem girar os
+ombros). Mudando para geração do zero, igual ao que resolveu o vídeo 5 e o vídeo 6:
+
 ```
-Take this exact skeleton, stool, stick, pose and backward lean. I need the SHOULDERS and RIBCAGE — not just
-the head — rotated toward the camera. Right now the two shoulders are stacked directly one behind the other
-(pure side view); instead, separate them: pull the near shoulder (the one closer to the camera) forward and
-toward the viewer, and push the far shoulder back, so the collarbones and the front of the ribcage/sternum
-become visible at an angle, like a person twisting their upper back at the waist. The face should match that
-same rotation (already mostly facing the camera is good — keep that). The pelvis, hips, legs and stool do
-NOT rotate — only the ribcage, shoulders, arms and head turn together, as one twisting block above the
-waist. Keep the arms raised with the stick overhead, the backward lean angle, the lighting and the
-background exactly the same.
+A 3D anatomical skeleton model with ivory-white bones, sitting on a backless wooden stool, knees bent at 90
+degrees, feet flat on the floor. The pelvis and legs face directly sideways (full side profile, like someone
+sitting side-on to the camera), but the spine twists above the waist: the ribcage and shoulders are rotated
+about 45 degrees from that side-facing pelvis, turning toward the camera, so the collarbones and front of
+the ribcage/sternum are visible at an angle instead of a flat side silhouette — like a seated torso twist.
+The head and face follow the same rotation, turned mostly toward the camera. Both arms are raised straight
+overhead, hands together gripping a horizontal wooden stick above the head. The torso also leans back
+slightly from the hips, a controlled backward lean (not a big recline), spine straight. Dark-gray studio
+background, soft even studio lighting, photorealistic render, same camera framing and distance as the other
+seated shots in this series.
 ```
 
 ## Narração (ElevenLabs, Henrique) — rascunho
