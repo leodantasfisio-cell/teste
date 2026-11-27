@@ -52,13 +52,17 @@ the sides.
 **3 — ponte com uma perna estendida para cima**
 
 ```
-From this image, keep the bridge (hips lifted, shoulders on the floor), the floor, side profile view,
-background and camera exactly the same. Change ONLY the leg closer to the camera (the one in front in this
-side view): straighten it completely at the knee and raise it so it points up and away from the body, roughly
-in line with the torso, foot pointed. The OTHER leg (the one farther from the camera, partly hidden behind
-the front leg) must NOT move: keep its knee bent at 90 degrees with its foot still flat on the floor, exactly
-as in this image — it is the only thing still touching the ground besides the shoulders, supporting the
-bridge. Do not lift both legs, and do not bend the raised leg's knee.
+From this image, keep the bridge (hips lifted, shoulders on the floor), the OTHER leg (farther from the
+camera) exactly as it is — knee bent at 90 degrees, foot flat on the floor, unchanged, still the only thing
+touching the ground besides the shoulders — and keep the floor, side profile view, background and camera
+exactly the same.
+
+Change ONLY the near leg (the one closer to the camera), and only by straightening its knee: its thigh must
+stay at the EXACT SAME ANGLE at the hip as the other leg's thigh (both thighs parallel, pointing the same
+direction up from the hip, like two legs that started bent together and one simply had its knee unbend).
+Do NOT swing the leg up and over, do NOT point it past vertical or back toward the head — it should look like
+a simple knee extension, the lower leg/shin now in a straight line with that same thigh, foot pointing
+forward/up away from the hip at that same thigh angle, not hyperextended.
 ```
 
 ## Narração (ElevenLabs, Henrique) — rascunho
