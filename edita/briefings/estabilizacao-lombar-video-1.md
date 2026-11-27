@@ -10,7 +10,7 @@ exercício confirmado pelo usuário)
 | Posição inicial | Deitada de costas (supina) em uma maca/mesa, joelhos dobrados a 90°, pés apoiados na maca, braços ao lado do corpo |
 | Exercício | Eleva o quadril (ponte); mantendo a ponte, estende uma perna para cima (fisioterapeuta segura o pé/tornozelo); alterna entre as pernas |
 | Retorno | Dobra a perna de volta, desce o quadril, volta para a posição inicial |
-| Visual | **Novo**: esqueleto deitado de perfil sobre uma maca/mesa (em vez de sentado no banquinho), mesmo estilo visual (ossos cor marfim, fundo cinza-escuro de estúdio) |
+| Visual | **Novo**: esqueleto deitado de perfil no chão (em vez de sentado no banquinho), mesmo estilo visual (ossos cor marfim, fundo cinza-escuro de estúdio) |
 | Voz | ElevenLabs, Multilingual v2, Henrique, stability 70, similarity 75, style 0, speed 0.95 |
 
 ## Análise do vídeo-modelo
@@ -28,34 +28,33 @@ volta à posição inicial.
 ## Imagens necessárias (todas novas — pasta nova, estilo novo)
 
 Pasta: `edita/projeto/public/esqueleto/estabilizacao-lombar1/`. Preciso de 3 imagens, geradas do zero no
-Gemini, todas com o mesmo esqueleto/maca/fundo/câmera:
+Gemini, todas com o mesmo esqueleto/chão/fundo/câmera:
 
 **1 — posição inicial, deitada, joelhos dobrados**
 
 ```
-A 3D anatomical skeleton model with ivory-white bones, lying on its back (supine) on a backless wooden
-massage table/bench, photographed in side profile. Both knees are bent at 90 degrees, both feet flat on the
-table surface, arms resting flat at the sides of the body, palms down. The head rests on the table. Dark-gray
-studio background, soft even studio lighting, photorealistic render, camera at table height, framing the
-whole body and table from the side.
+A 3D anatomical skeleton model with ivory-white bones, lying on its back (supine) on the floor,
+photographed in side profile. Both knees are bent at 90 degrees, both feet flat on the floor, arms resting
+flat at the sides of the body, palms down. The head rests on the floor. Dark-gray studio background, soft
+even studio lighting, photorealistic render, camera at floor height, framing the whole body from the side.
 ```
 
 **2 — ponte (quadril elevado), joelhos dobrados**
 
 ```
-From this image, keep the skeleton, table, side profile view, background and camera exactly the same, and
-change only the pelvis and lower spine: lift the hips/pelvis straight up off the table into a bridge
-position, so the body forms a straight diagonal line from the shoulders (still on the table) through the
-hips to the knees. Knees stay bent at 90 degrees, both feet flat on the table. Arms stay flat on the table at
+From this image, keep the skeleton, floor, side profile view, background and camera exactly the same, and
+change only the pelvis and lower spine: lift the hips/pelvis straight up off the floor into a bridge
+position, so the body forms a straight diagonal line from the shoulders (still on the floor) through the
+hips to the knees. Knees stay bent at 90 degrees, both feet flat on the floor. Arms stay flat on the floor at
 the sides.
 ```
 
 **3 — ponte com uma perna estendida para cima**
 
 ```
-From this image, keep the bridge position, the table, side profile view, background and camera exactly the
+From this image, keep the bridge position, the floor, side profile view, background and camera exactly the
 same, and change only one leg: extend it straight up from the hip, foot pointed toward the ceiling, while the
-other knee stays bent with its foot flat on the table, still supporting the bridge. Keep everything else
+other knee stays bent with its foot flat on the floor, still supporting the bridge. Keep everything else
 exactly the same.
 ```
 
