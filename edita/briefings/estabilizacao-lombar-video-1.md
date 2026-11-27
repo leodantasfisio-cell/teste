@@ -52,10 +52,13 @@ the sides.
 **3 — ponte com uma perna estendida para cima**
 
 ```
-From this image, keep the bridge position, the floor, side profile view, background and camera exactly the
-same, and change only one leg: extend it straight up from the hip, foot pointed toward the ceiling, while the
-other knee stays bent with its foot flat on the floor, still supporting the bridge. Keep everything else
-exactly the same.
+From this image, keep the bridge (hips lifted, shoulders on the floor), the floor, side profile view,
+background and camera exactly the same. Change ONLY the leg closer to the camera (the one in front in this
+side view): straighten it completely at the knee and raise it so it points up and away from the body, roughly
+in line with the torso, foot pointed. The OTHER leg (the one farther from the camera, partly hidden behind
+the front leg) must NOT move: keep its knee bent at 90 degrees with its foot still flat on the floor, exactly
+as in this image — it is the only thing still touching the ground besides the shoulders, supporting the
+bridge. Do not lift both legs, and do not bend the raised leg's knee.
 ```
 
 ## Narração (ElevenLabs, Henrique) — rascunho
